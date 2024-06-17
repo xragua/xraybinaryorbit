@@ -43,6 +43,6 @@ Castor, J. I., Abbott, D. C., & Klein, R. I. (1975). Radiation-driven winds in O
 - **rebin_snr**: Rebins data to achieve a specific signal-to-noise ratio.
 - **rebin_bins**: Rebins data into a specified number of bins.
 - **fold_pulse**: Folds pulse profiles over the orbital period.
-- **period_sliding_window**: Analyzes period changes using a sliding window method.
+- **period_sliding_window**:(based in Lomb Scargle periodogram) Analyzes period changes using a sliding window method.
 
-xraybinaryorb is designed to make the complex analysis of X-ray binary systems more accessible and efficient, leveraging modern computational techniques and interactive tools.
+Examples
