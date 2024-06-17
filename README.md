@@ -1,4 +1,4 @@
-# xraybinaryorb
+# xraybinaryorbiy
 
 xraybinaryorb is a user friendly Python package designed to facilitate the analysis of orbital modulations in X-ray binaries. Orbital modulation in these systems are allways present, potentially providing valuable information about XRB systems, but due to the lack of resolution are generally overseen. This modulations can be complex, with numerous parameters influencing the observed X-ray flux. 
 
