@@ -208,6 +208,8 @@ Our package offers a diverse range of functionalities and a user-friendly intera
 
 To streamline usability, we have implemented a user-friendly form system that allows all parameters to be saved and easily loaded for future interactions, eliminating the need for users to input them repeatedly.
 
+The functions obtained in this pakage had already been used in published papers:[@2021MNRAS.501.5892S], [@2022MNRAS.512..304S] and in others currently under rferee process.
+
 # Acknowledgements
 
 This research has been funded by the ASFAE/2022/02 project from the Generalitat Valenciana. 
