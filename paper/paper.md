@@ -140,7 +140,6 @@ The functions contained in this package are the following:
 - **orbital_time_to_phase**: Converts orbital time to phase.
 
 ### Fitting Functions
-(Note: 'ps' stands for particle swarm optimization and 'ls' stands for least squares. Particle swarm optimization is preferred as least squares does not always converge.)
 - **fit_orbit_ps**: Fits orbital parameters using particle swarm optimization.
 - **fit_orbit_ls**: Fits orbital parameters using least squares.
 - **fit_disc_ps**: Fits disc parameters using particle swarm optimization.
