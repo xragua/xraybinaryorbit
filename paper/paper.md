@@ -71,7 +71,7 @@ $$ \rho = \frac{\dot{M}}{4 \pi v R^2} $$
 
 where:
 - \( \rho \) is the density of the wind at a given distance \( R \),
-- \( \dot{M} \) is the mass accretion rate in grams per second,
+- \( $$\dot{M}$$ \) is the mass accretion rate in grams per second,
 - \( v \) is the orbital speed at distances greater than the stellar radius,
 - \( R \) is the orbital radius at distances greater than the stellar radius.
 
@@ -79,15 +79,15 @@ In this package, we assume that the wind is spherically distributed and ionized.
 
 ## Accretion Luminosity and Ionization Parameter:
 
-Accretion is the process by which gravitational potential energy is extracted from material accreting onto a gravitating body. This phenomenon serves as the primary power source in various types of close binary systems and is also believed to fuel active galactic nuclei and quasars. When considering a flux of matter with an accretion rate \( \dot{M} \), the resulting luminosity (assuming all mechanical energy is radiated) is defined as the accretion luminosity:
+Accretion is the process by which gravitational potential energy is extracted from material accreting onto a gravitating body. This phenomenon serves as the primary power source in various types of close binary systems and is also believed to fuel active galactic nuclei and quasars. When considering a flux of matter with an accretion rate \( $$\dot{M}$$ \), the resulting luminosity (assuming all mechanical energy is radiated) is defined as the accretion luminosity:
 
-$$ L_{ac} = \frac{GM\dot{M}}{R} $$
+$$ L_{ac} = \frac{GM \dot{M}}{R} $$
 
 where:
 - \( L_{ac} \) is the accretion luminosity,
 - \( G \) is the gravitational constant,
 - \( M \) is the mass of the gravitating body,
-- \( \dot{M} \) is the accretion rate,
+- \( $$\dot{M}$$ \) is the accretion rate,
 - \( R \) is the characteristic radius associated with the accretion process.
 
 The ionization parameter \( \xi \) is defined as:
