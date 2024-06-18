@@ -61,17 +61,13 @@ We will take this fact into consideration in all our functions and provide dedic
 
 ## CAK model:
 
-The CAK model, proposed by Castor, Abbott, and Klein in 1975 (Castor et al. 1975), is a theoretical framework used to describe radiation-driven winds in massive stars. These stars have strong stellar winds driven by the interaction between their radiation and the surrounding material.
+The CAK model, proposed by Castor, Abbott, and Klein in 1975 [@1975ApJ...195..157C], is a theoretical framework used to describe radiation-driven winds in massive stars. These stars have strong stellar winds driven by the interaction between their radiation and the surrounding material.
 
 The CAK model provides a quantitative description of how the wind velocity, density, and ionization state vary with distance from the star.
 
 $$ \rho = \frac{\dot{M}}{4 \pi v R^2} $$
 
-where:
-- \( \rho \) is the density of the wind at a given distance \( R \),
-- \( $$\dot{M}$$ \) is the mass accretion rate in grams per second,
-- \( v \) is the orbital speed at distances greater than the stellar radius,
-- \( R \) is the orbital radius at distances greater than the stellar radius.
+where $\rho$ is the density of the wind at a given distance R $\dot{M}$ is the mass accretion rate in grams per second, v is the orbital speed at distances greater than the stellar radius, R is the orbital radius at distances greater than the stellar radius.
 
 In this package, we assume that the wind is spherically distributed and ionized.
 
@@ -81,16 +77,13 @@ Accretion is the process by which gravitational potential energy is extracted fr
 
 $$ L_{ac} = \frac{GM \dot{M}}{R} $$
 
-where \( L_{ac} \) is the accretion luminosity, \( G \) is the gravitational constant, \( M \) is the mass of the gravitating body, \( $$\dot{M}$$ \) is the accretion rate, and \( R \) is the characteristic radius associated with the accretion process.
+where $L_{ac}$ is the accretion luminosity, G is the gravitational constant, M is the mass of the gravitating body, $\dot{M}$ is the accretion rate, and R is the characteristic radius associated with the accretion process.
 
-The ionization parameter \( \xi \) is defined as:
+The ionization parameter $\xi$ is defined as:
 
 $$ \xi = \frac{L_{\rm X}}{n(r_{\rm X}) r_{\rm X}^{2}} $$
 
-where:
-- \( L_{\rm X} \) is the X-ray luminosity,
-- \( n(r_{\rm X}) \) is the local particle density at a distance \( r_{\rm X} \) from the X-ray source (such as a neutron star),
-- \( r_{\rm X} \) is the distance from the X-ray source.
+where $L_{\rm X}$ is the X-ray luminosity, $n(r_{\rm X})$ is the local particle density at a distance  $ r_{\rm X}$ from the X-ray source (such as a neutron star), $r_{\rm X}$ is the distance from the X-ray source.
 
 This parameter quantifies the ionization state of the surrounding medium due to X-ray radiation from the neutron star. We provide a function which calculates the ionization map if the binary system plane taking into account these calculations within the CAK frame.
 
@@ -122,7 +115,7 @@ $$ v_{D} = (-r\omega \sin\phi \sin i) $$
 
 $$ \lambda_{D} = \lambda_{\text{rest}}\left(1+\frac{v_{D}}{c}\right) $$
 
-where r is the orbital radius, a is the semimajor axis, b is the distance to the barycenter (the semimajor axis corrected by the reduced mass of the stellar system), e is the eccentricity, \phi is the orbital phase,  W is the angle to the periapsis, \omega is the angular velocity, i is the inclination, and \lambda_{\rm D} and \lambda_{\rm rest} are the center of the emission line, Doppler shifted and at rest, respectively, in wavelength units.
+where r is the orbital radius, a is the semimajor axis, b is the distance to the barycenter (the semimajor axis corrected by the reduced mass of the stellar system), e is the eccentricity, \phi is the orbital phase,  W is the angle to the periapsis, $\omega$ is the angular velocity, i is the inclination, and $\lambda_{\rm D}$ and $\lambda_{\rm rest}$ are the center of the emission line, Doppler shifted and at rest, respectively, in wavelength units.
  In the case of composed models, the Doppler effect will be the sum of the velocities involved in the system.
 
 ## Lomb-Scargle Periodogram:
