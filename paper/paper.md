@@ -146,18 +146,6 @@ The Lomb-Scargle periodogram is a method used in astrophysics and other fields t
 
 In the context of X-ray astronomy and other observational sciences, the Lomb-Scargle method allows researchers to analyze irregularly spaced observations and extract information about periodic variations in X-ray flux, pulsations, or other cyclical phenomena.
 
-The formula for the Lomb-Scargle periodogram is:
-
-$$ P(\omega) = \frac{1}{2} \left[ \frac{\left( \sum_{i=1}^{N} (y_i - \bar{y}) \cos(\omega(t_i - \tau)) \right)^2}{\sum_{i=1}^{N} \cos^2(\omega(t_i - \tau))} + \frac{\left( \sum_{i=1}^{N} (y_i - \bar{y}) \sin(\omega(t_i - \tau)) \right)^2}{\sum_{i=1}^{N} \sin^2(\omega(t_i - \tau))} \right] $$
-
-where:
-- \( P(\omega) \) is the Lomb-Scargle periodogram at frequency \( \omega \),
-- \( N \) is the number of data points,
-- \( y_i \) are the observed values at time \( t_i \),
-- \( \bar{y} \) is the mean of the observed values,
-- \( \omega \) is the angular frequency,
-- \( \tau \) is a time offset.
-
 # Functions and Methods
 
 The functions contained in this package are the following: 
