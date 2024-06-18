@@ -182,7 +182,9 @@ The functions contained in this package are the following:
 
 Within the Fitting functions, we use a particle swarm approach (Clerc & Kennedy 2002, Bratton & Kennedy 2007) as a classical least squares algorithm does not always converge.
 
-![Alt text](paper/joss.jpg)
+![View of coastal dunes in a nature reserve on Sylt, an island in
+the North Sea. Sylt (Danish: *Slid*) is Germany's northernmost
+island.](joss.jpg){#sylt width="100%"}
 
 # Statement of Need
 
