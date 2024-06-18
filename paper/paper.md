@@ -120,7 +120,7 @@ where r is the orbital radius, a is the semimajor axis, b is the distance to the
 
 ## Lomb-Scargle Periodogram:
 
-The Lomb-Scargle periodogram is a method used in astrophysics and other fields to find the dominant frequencies in unevenly sampled data. It is particularly useful for detecting periodic signals with variable amplitudes and non-sinusoidal shapes. The periodogram computes the power spectral density of a time series, identifying the periodicities that best fit the observed data points.
+The Lomb-Scargle periodogram [@1982ApJ...263..835S] is a method used in astrophysics and other fields to find the dominant frequencies in unevenly sampled data. It is particularly useful for detecting periodic signals with variable amplitudes and non-sinusoidal shapes. The periodogram computes the power spectral density of a time series, identifying the periodicities that best fit the observed data points.
 
 In the context of X-ray astronomy and other observational sciences, the Lomb-Scargle method allows researchers to analyze irregularly spaced observations and extract information about periodic variations in X-ray flux, pulsations, or other cyclical phenomena.
 
