@@ -73,7 +73,7 @@ In this package, we assume that the wind is spherically distributed and ionized.
 
 ## Accretion Luminosity and Ionization Parameter:
 
-Accretion is the process by which gravitational potential energy is extracted from material accreting onto a gravitating body. This phenomenon serves as the primary power source in various types of close binary systems and is also believed to fuel active galactic nuclei and quasars. When considering a flux of matter with an accretion rate \( $$\dot{M}$$ \), the resulting luminosity (assuming all mechanical energy is radiated) is defined as the accretion luminosity:
+Accretion is the process by which gravitational potential energy is extracted from material accreting onto a gravitating body. This phenomenon serves as the primary power source in various types of close binary systems and is also believed to fuel active galactic nuclei and quasars. When considering a flux of matter with an accretion rate $\dot{M}$ , the resulting luminosity (assuming all mechanical energy is radiated) is defined as the accretion luminosity:
 
 $$ L_{ac} = \frac{GM \dot{M}}{R} $$
 
