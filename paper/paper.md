@@ -165,7 +165,7 @@ Within the Fitting functions, we use a particle swarm approach ([@pyswarms], [@1
 
 # Statement of Need
 
-Orbital modulations offer valuable insights into X-ray binary systems, although their application is not always straightforward due to the complexity of geometrical calculations and numerous involved parameters. Nearly all current studies on individual X-ray binaries can benefit significantly from the functions provided in this package. It can be surprising how sensitive column density, ionization maps, or Doppler shifts are to slight variations in these parameters.
+Orbital modulations offer valuable insights into X-ray binary systems, although their application is not always straightforward due to the complexity of geometrical calculations and numerous involved parameters. Nearly all current studies on individual X-ray binaries can benefit significantly from the functions provided in this package. 
 
 To streamline usability, we have implemented a user-friendly form system that allows all parameters to be saved and easily loaded for future interactions, eliminating the need for users to input them repeatedly.
 
