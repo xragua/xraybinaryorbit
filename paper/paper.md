@@ -50,7 +50,7 @@ Orbital modulations are complex and depend on several parameters and geometrical
 
 If the eccentricity of our system is different than 0, the orbital phase will not vary linearly with the observational time, as the speed will increase at periastron primarily due to the conservation of angular momentum, which dictates that as the compact object moves closer to the central star, it must travel faster to maintain the total angular momentum of the system. This relationship is further influenced by Kepler’s laws of planetary motion, which describe how objects sweep out equal areas in equal times, and the gravitational force between two bodies, which strengthens as they approach each other and weakens as they move apart (see for example [@2006ima..book.....C]).
 
-r^2 * ω = h
+$$r^2 * ω = h$$
 
 where:
 
@@ -68,13 +68,13 @@ The CAK model, proposed by Castor, Abbott, and Klein in 1975 [@1975ApJ...195..15
 
 The CAK model provides a quantitative description of how the wind velocity, density, and ionization state vary with distance from the star. 
 
-\[ \rho = \frac{\dot{M}_{\text{grams}}}{4 \pi v_{\text{orb}} R_{\text{orb}}^2} \]
+$$\[ \rho = \frac{\dot{M}}{4 \pi v R^2} \]$$
 
 where:
-- \( \rho \) is the density of the wind at a given distance R
-- \( \dot{M}_{\text{grams}} \) is the mass accretion rate in grams per second,
-- \( v_{\text{orb}}(R_{\text{orb}} > R_{\star}) \) is the orbital speed at distances greater than the stellar radius,
-- \( R_{\text{orb}}(R_{\text{orb}} > R_{\star}) \) is the orbital radius at distances greater than the stellar radius.
+- $$\( \rho \)$$ is the density of the wind at a given distance R
+- $$\( \dot{M} \)$$ is the mass accretion rate in grams per second,
+- $$\( v \)$$ is the orbital speed at distances greater than the stellar radius,
+- $$\( R \)$$ is the orbital radius at distances greater than the stellar radius.
 
 In this package we will asume that the wind is spherially distributed and unionized.
 
@@ -84,23 +84,23 @@ In this package we will asume that the wind is spherially distributed and unioni
 
 Accretion is the process by which gravitational potential energy is extracted from material accreting onto a gravitating body. This phenomenon serves as the primary power source in various types of close binary systems and is also believed to fuel active galactic nuclei and quasars. When considering a flux of matter with an accretion rate $\dot{M}$, the resulting luminosity (assuming all mechanical energy is radiated) is defined as the accretion luminosity:
 
-\[ L_{ac} = \frac{GM\dot{M}}{R} \]
+$$\[ L_{ac} = \frac{GM\dot{M}}{R} \]$$
 
 where:
-- \( L_{ac} \) is the accretion luminosity,
-- \( G \) is the gravitational constant,
-- \( M \) is the mass of the gravitating body,
-- \( \dot{M} \) is the accretion rate,
-- \( R \) is the characteristic radius associated with the accretion process.
+- $$\( L_{ac} \)$$ is the accretion luminosity,
+- $$\( G \)$$ is the gravitational constant,
+- $$\( M \)$$ is the mass of the gravitating body,
+- $$\( \dot{M} \)$$ is the accretion rate,
+- $$\( R \)$$ is the characteristic radius associated with the accretion process.
 
 The ionization parameter \( \xi \) is defined as:
 
-\[ \xi = \frac{L_{\rm X}}{n(r_{\rm X}) r_{\rm X}^{2}} \]
+$$\[ \xi = \frac{L_{\rm X}}{n(r_{\rm X}) r_{\rm X}^{2}} \]$$
 
 where:
-- \( L_{\rm X} \) is the X-ray luminosity,
-- \( n(r_{\rm X}) \) is the local particle density at a distance \( r_{\rm X} \) from the X-ray source (such as a neutron star),
-- \( r_{\rm X} \) is the distance from the X-ray source.
+- $$\( L_{\rm X} \)$$ is the X-ray luminosity,
+- $$\( n(r_{\rm X}) \)$$ is the local particle density at a distance \( r_{\rm X} \) from the X-ray source (such as a neutron star),
+- $$\( r_{\rm X} \)$$ is the distance from the X-ray source.
 
 This parameter quantifies the ionization state of the surrounding medium due to X-ray radiation from the neutron star.
 We provide a function which calculates the ionization map if the binary system plane taking into account this calculations within the CAK frame.
