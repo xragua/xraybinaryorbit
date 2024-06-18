@@ -122,7 +122,7 @@ $$ v_{D} = (-r\omega \sin\phi \sin i) $$
 
 $$ \lambda_{D} = \lambda_{\text{rest}}\left(1+\frac{v_{D}}{c}\right) $$
 
-where \( r \) is the orbital radius, \( a \) is the semimajor axis, \( b \) is the distance to the barycenter (the semimajor axis corrected by the reduced mass of the stellar system), \( e \) is the eccentricity, \( \phi \) is the orbital phase, \( W \) is the angle to the periapsis, \( \omega \) is the angular velocity, \( i \) is the inclination, and \( \lambda_{\rm D} \) and \( \lambda_{\rm rest} \) are the center of the emission line, Doppler shifted and at rest, respectively, in wavelength units.
+where r is the orbital radius, a is the semimajor axis, b is the distance to the barycenter (the semimajor axis corrected by the reduced mass of the stellar system), e is the eccentricity, \phi is the orbital phase,  W is the angle to the periapsis, \omega is the angular velocity, i is the inclination, and \lambda_{\rm D} and \lambda_{\rm rest} are the center of the emission line, Doppler shifted and at rest, respectively, in wavelength units.
  In the case of composed models, the Doppler effect will be the sum of the velocities involved in the system.
 
 ## Lomb-Scargle Periodogram:
