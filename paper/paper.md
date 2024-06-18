@@ -81,12 +81,7 @@ Accretion is the process by which gravitational potential energy is extracted fr
 
 $$ L_{ac} = \frac{GM \dot{M}}{R} $$
 
-where:
-- \( L_{ac} \) is the accretion luminosity,
-- \( G \) is the gravitational constant,
-- \( M \) is the mass of the gravitating body,
-- \( $$\dot{M}$$ \) is the accretion rate,
-- \( R \) is the characteristic radius associated with the accretion process.
+where \( L_{ac} \) is the accretion luminosity, \( G \) is the gravitational constant, \( M \) is the mass of the gravitating body, \( \dot{M} \) is the accretion rate, and \( R \) is the characteristic radius associated with the accretion process.
 
 The ionization parameter \( \xi \) is defined as:
 
@@ -127,16 +122,8 @@ $$ v_{D} = (-r\omega \sin\phi \sin i) $$
 
 $$ \lambda_{D} = \lambda_{\text{rest}}\left(1+\frac{v_{D}}{c}\right) $$
 
-where:
-- \( r \) is the orbital radius,
-- \( a \) is the semimajor axis,
-- \( b \) the distance to the barycenter (the semimajor axis corrected by the reduced mass of the stellar system),
-- \( e \) is the eccentricity,
-- \( \phi \) the orbital phase,
-- \( W \) the angle to the periapsis,
-- \( \omega \) the angular velocity,
-- \( i \) the inclination,
-- \( \lambda_{\rm D} \) and \( \lambda_{\rm rest} \) the center of the emission line, Doppler shifted and at rest, respectively, in wavelength units. In the case of composed models, the Doppler effect will be the sum of the velocities involved in the system.
+where \( r \) is the orbital radius, \( a \) is the semimajor axis, \( b \) is the distance to the barycenter (the semimajor axis corrected by the reduced mass of the stellar system), \( e \) is the eccentricity, \( \phi \) is the orbital phase, \( W \) is the angle to the periapsis, \( \omega \) is the angular velocity, \( i \) is the inclination, and \( \lambda_{\rm D} \) and \( \lambda_{\rm rest} \) are the center of the emission line, Doppler shifted and at rest, respectively, in wavelength units.
+ In the case of composed models, the Doppler effect will be the sum of the velocities involved in the system.
 
 ## Lomb-Scargle Periodogram:
 
@@ -180,21 +167,17 @@ The functions contained in this package are the following:
 - **fold_pulse**: Folds pulse profiles over the orbital period.
 - **period_sliding_window**: Analyzes period changes using a sliding window method.
 
-Within the Fitting functions, we use a particle swarm approach (Clerc & Kennedy 2002, Bratton & Kennedy 2007) as a classical least squares algorithm does not always converge.
+Within the Fitting functions, we use a particle swarm approach ([@pyswarms], [@10.1162/EVCO_r_00180]) as a classical least squares algorithm does not always converge.
 
-![View of coastal dunes in a nature reserve on Sylt, an island in
-the North Sea. Sylt (Danish: *Slid*) is Germany's northernmost
-island.](joss.jpg){#sylt width="100%"}
+![Some results obtained with the functions contained in this package.](joss.jpg){#sylt width="100%"}
 
 # Statement of Need
 
-Orbital modulations offer valuable insights into X-ray binary systems, although their application is not always straightforward due to the complexity of geometrical calculations and numerous involved parameters. Nearly all current studies on individual X-ray binaries can benefit significantly from the functions provided in this package.
-
-Our package offers a diverse range of functionalities and a user-friendly interactive form-based method for inputting and saving all required parameters. It can be surprising how sensitive column density, ionization maps, or Doppler shifts are to slight variations in these parameters.
+Orbital modulations offer valuable insights into X-ray binary systems, although their application is not always straightforward due to the complexity of geometrical calculations and numerous involved parameters. Nearly all current studies on individual X-ray binaries can benefit significantly from the functions provided in this package. It can be surprising how sensitive column density, ionization maps, or Doppler shifts are to slight variations in these parameters.
 
 To streamline usability, we have implemented a user-friendly form system that allows all parameters to be saved and easily loaded for future interactions, eliminating the need for users to input them repeatedly.
 
-The functions obtained in this package had already been used in published papers (Sanjurjo-Ferrín et al. 2021, 2022) and in others currently under referee process.
+The functions obtained in this package had had already been used in published papers ([@2022MNRAS.512..304S],[@2021MNRAS.501.5892S]) and in others currently under referee process.
 
 # Acknowledgements
 
