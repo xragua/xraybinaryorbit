@@ -53,7 +53,7 @@ If the eccentricity of our system is different than 0, the orbital phase will no
 
 $$ r^2 \cdot \omega = h $$
 
-where r is the orbital radius, \omega  is the angular velocity and h is the specific angular momentum.
+where r is the orbital radius, $\omega$  is the angular velocity and h is the specific angular momentum.
 
 This equation illustrates how the angular velocity  \omega increases as the orbital radius  r decreases, maintaining the constant specific angular momentum h of the system.
 
