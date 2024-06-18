@@ -55,7 +55,8 @@ Some examples require additional files, which are contained in each folder. If u
 
 #### Examples based on real data:
 - **example_ionization_map**: Provides an example of mapping ionization levels using real observational data.
-- **example_NS_doppler_shifts**: Demonstrates the analysis of neutron star Doppler shifts using real data.
+- **example_NS_doppler_shifts**: Demonstrates the analysis of neutron star Spin period Doppler shifts using real data.
+- **example_fexxv_doppler_shifts**: Demonstrates the analysis of fexxv emission line center doppler shifts and a trayectory calculation based on them.
 
 
 ### FUNCTIONS:
