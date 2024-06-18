@@ -36,28 +36,29 @@ bibliography: paper.bib
 
 X-ray astronomy is a young discipline, spanning no more than a few decades. The Earth's atmosphere is opaque to this type of radiation, so observations in this part of the spectrum had to wait until the beginning of the space era, with rocket launchers that could carry X-ray telescopes, to reveal the universe from a brand new point of view.
 
-X-ray binary systems consist of two stars in close orbit around each other, where one of the stars is typically a compact object such as a neutron star or a black hole. The compact object accretes matter from its companion star, which can be a main sequence star, a giant star, or even another compact object. The X-ray radiation in these systems is generated through the accretion of matter from the companion's powerful stellar wind, typical of these early type stars (Frank et al. 2002).
+X-ray binary systems consist of two stars in close orbit around each other, where one of the stars is typically a compact object such as a neutron star or a black hole. The compact object accretes matter from its companion star, which can be a main sequence star, a giant star, or even another compact object. The X-ray radiation in these systems is generated through the accretion of matter from the companion's powerful stellar wind, typical of these early type stars [@Frank_King_Raine_2002].
 
-On the other hand, close binaries may become compact-object mergers and eventually sources of gravitational waves and/or short $\gamma$-ray bursts. They will also provide insight on the behavior of matter at extreme gravitational and magnetic fields. Understanding these processes is fundamental to modern astrophysics and has been the driver of multiple theoretical and observational studies (Abbott et al. 2017).
+On the other hand, close binaries may become compact-object mergers and eventually sources of gravitational waves and/or short $\gamma$-ray bursts. They will also provide insight on the behavior of matter at extreme gravitational and magnetic fields. Understanding these processes is fundamental to modern astrophysics and has been the driver of multiple theoretical and observational studies [@2017PhRvL.119p1101A].
 
-The study of orbital modulations in X-ray binaries provides crucial insights into their physical properties and dynamics. These modulations can be overlooked, as the lack of resolution of current instruments (Chandra or Xmm) prevents from obtaining the adequate data, unless the modulation is prominent enough, which also depends on the system properties and the brightness of the source, however, upcoming telescopes like XIFU in Athena (Barret et al. 2016) and XRISM (XRISM Science Team 2022), with their much higher resolution will amplify the importance of these analyses. These advanced instruments hold the promise of delivering deeper insights into the intricate dynamics of X-ray systems.
+The study of orbital modulations in X-ray binaries provides crucial insights into their physical properties and dynamics. These modulations can be overlooked, as the lack of resolution of current instruments (Chandra or Xmm) prevents from obtaining the adequate data, unless the modulation is prominent enough, which also depends on the system properties and the brightness of the source, however, upcoming telescopes like XIFU in Athena [@2016SPIE.9905E..2FB] and XRISM [@2022arXiv220205399X], with their much higher resolution will amplify the importance of these analyses. These advanced instruments hold the promise of delivering deeper insights into the intricate dynamics of X-ray systems.
 
 Orbital modulations are complex and depend on several parameters and geometrical considerations which make their execution a little bit tedious. With these packages, we provide a series of user-friendly functions, useful in most analysis which will allow astronomers to easily apply this type of analysis.
 
 # Science behind
+The functions contained in this analysis rely in the following theories:
 
 ## Conservation of angular momentum in orbital mechanics:
 
-If the eccentricity of our system is different than 0, the orbital phase will not vary linearly with the observational time, as the speed will increase at periastron primarily due to the conservation of angular momentum, which dictates that as the compact object moves closer to the central star, it must travel faster to maintain the total angular momentum of the system. This relationship is further influenced by Kepler’s laws of planetary motion, which describe how objects sweep out equal areas in equal times, and the gravitational force between two bodies, which strengthens as they approach each other and weakens as they move apart (Carroll & Ostlie 2006).
+If the eccentricity of our system is different than 0, the orbital phase will not vary linearly with the observational time, as the speed will increase at periastron primarily due to the conservation of angular momentum, which dictates that as the compact object moves closer to the central star, it must travel faster to maintain the total angular momentum of the system. This relationship is further influenced by Kepler’s laws of planetary motion, which describe how objects sweep out equal areas in equal times, and the gravitational force between two bodies, which strengthens as they approach each other and weakens as they move apart (see [@2006ima..book.....C] as an example).
 
 $$ r^2 \cdot \omega = h $$
 
 where:
-- \( r \) is the orbital radius,
-- \( \omega \) is the angular velocity,
-- \( h \) is the specific angular momentum.
+-  r is the orbital radius,
+- $$\omega$$  is the angular velocity,
+-  h is the specific angular momentum.
 
-This equation illustrates how the angular velocity \( \omega \) increases as the orbital radius \( r \) decreases, maintaining the constant specific angular momentum \( h \) of the system.
+This equation illustrates how the angular velocity  $$\omega$$ increases as the orbital radius  r decreases, maintaining the constant specific angular momentum h of the system.
 
 We will take this fact into consideration in all our functions and provide dedicated functions to transform phase into time and vice versa.
 
