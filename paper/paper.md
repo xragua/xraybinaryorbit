@@ -81,7 +81,7 @@ Accretion is the process by which gravitational potential energy is extracted fr
 
 $$ L_{ac} = \frac{GM \dot{M}}{R} $$
 
-where \( L_{ac} \) is the accretion luminosity, \( G \) is the gravitational constant, \( M \) is the mass of the gravitating body, \( \dot{M} \) is the accretion rate, and \( R \) is the characteristic radius associated with the accretion process.
+where \( L_{ac} \) is the accretion luminosity, \( G \) is the gravitational constant, \( M \) is the mass of the gravitating body, \( $$\dot{M}$$ \) is the accretion rate, and \( R \) is the characteristic radius associated with the accretion process.
 
 The ionization parameter \( \xi \) is defined as:
 
