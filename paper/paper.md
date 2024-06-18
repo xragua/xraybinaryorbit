@@ -201,16 +201,4 @@ The functions obtained in this package had already been used in published papers
 This research has been funded by the ASFAE/2022/02 project from the Generalitat Valenciana. 
 
 # References
-- Abbott, B. P., et al. 2017, Phys. Rev. Lett., 119, 161101
-- Barret, D., et al. 2016, Proc. SPIE, 9905, 99052F
-- Carroll, B. W., & Ostlie, D. A. 2006, An Introduction to Modern Astrophysics, 2nd edn. (San Francisco, CA: Pearson Addison-Wesley)
-- Castor, J., Abbott, D. C., & Klein, R. I. 1975, ApJ, 195, 157
-- Clerc, M., & Kennedy, J. 2002, IEEE Transactions on Evolutionary Computation, 6, 58
-- Frank, J., King, A., & Raine, D. 2002, Accretion Power in Astrophysics, 3rd edn. (Cambridge, UK: Cambridge Univ. Press)
-- Sanjurjo-Ferrín, G., et al. 2021, MNRAS, 501, 5892
-- Sanjurjo-Ferrín, G., et al. 2022, MNRAS, 512, 304
-- XRISM Science Team 2022, https://xrism-science.jaxa.jp
-- Bratton, D., & Kennedy, J. 2007, Particle Swarm Optimization, 1st edn. (Cambridge, MA: MIT Press)
-- Pyswarms contributors (2022), https://pyswarms.readthedocs.io/en/latest
-
 
