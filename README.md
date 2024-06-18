@@ -45,4 +45,16 @@ Castor, J. I., Abbott, D. C., & Klein, R. I. (1975). Radiation-driven winds in O
 - **fold_pulse**: Folds pulse profiles over the orbital period.
 - **period_sliding_window**:(based in Lomb Scargle periodogram) Analyzes period changes using a sliding window method.
 
-Examples
+### Examples:
+Some examples require extra files which are contained in each folder, if used, all files should be kept in the running directory.
+
+Examples based on theoretical data:
+
+- ** example_doppler_theoretical
+- ** example_density_NH
+- ** example_time_phase_relation
+- 
+Examples based in real data:
+
+- ** example_ionization_map
+- ** example_NS_doppler_shifts
