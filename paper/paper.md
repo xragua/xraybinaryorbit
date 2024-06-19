@@ -1,5 +1,5 @@
 ---
-title: 'Orbital modulations in X-RAY stellar binary systems'
+title: 'Orbital Dynamics in X-RAY stellar binary systems'
 tags:
   - Python
   - x-ray astronomy
@@ -34,28 +34,26 @@ bibliography: paper.bib
 
 # Summary
 
-X-ray astronomy is a young discipline, spanning no more than a few decades. The Earth's atmosphere is opaque to this type of radiation, so observations in this part of the spectrum had to wait until the beginning of the space era, with rocket launchers that could carry X-ray telescopes, to reveal the universe from a brand new point of view.
 
-X-ray binary systems consist of two stars in close orbit around each other, where one of the stars is typically a compact object such as a neutron star or a black hole. The compact object accretes matter from its companion star, which can be a main sequence star, a giant star, or even another compact object. The X-ray radiation in these systems is generated through the accretion of matter from the companion's powerful stellar wind, typical of these early type stars [@Frank_King_Raine_2002].
+X-ray astronomy is a young discipline, spanning no more than a few decades. The Earth's atmosphere is opaque to this type of radiation, so observations in this part of the spectrum had to wait until the beginning of the space era, with rocket launchers carrying X-ray telescopes to reveal the universe from a brand-new point of view.
 
-On the other hand, close binaries may become compact-object mergers and eventually sources of gravitational waves and/or short $\gamma$-ray bursts. They will also provide insight on the behavior of matter at extreme gravitational and magnetic fields. Understanding these processes is fundamental to modern astrophysics and has been the driver of multiple theoretical and observational studies [@2017PhRvL.119p1101A].
+X-ray binary systems consist of two stars in close orbit around each other, where one of the stars is typically a compact object such as a neutron star or a black hole. The compact object accretes matter from its companion star, which can be a main sequence star, a giant star, or even another compact object. The X-ray radiation in these systems is generated through the accretion of matter from the companion's powerful stellar wind, typical of these early-type stars. Close binaries may become compact-object mergers and eventually sources of gravitational waves and/or short gamma-ray bursts. They will also provide insight into the behavior of matter under extreme gravitational and magnetic fields. Understanding these processes is fundamental to modern astrophysics and has driven numerous theoretical and observational studies.
 
-The study of orbital modulations in X-ray binaries provides crucial insights into their physical properties and dynamics. These modulations can be overlooked, as the lack of resolution of current instruments (Chandra or Xmm) prevents from obtaining the adequate data, unless the modulation is prominent enough, which also depends on the system properties and the brightness of the source, however, upcoming telescopes like XIFU in Athena [@2016SPIE.9905E..2FB] and XRISM [@2022arXiv220205399X], with their much higher resolution will amplify the importance of these analyses. These advanced instruments hold the promise of delivering deeper insights into the intricate dynamics of X-ray systems.
+The study of orbital modulations in X-ray binaries is essential for understanding their physical properties and dynamics. Currently, these modulations are often overlooked, probably due to the limited resolution of existing instruments like Chandra and XMM, which makes it challenging to obtain adequate data unless the modulation is particularly prominent. The prominence of these modulations depends primarily on the system's properties and the source's brightness. However, upcoming telescopes such as Athena's X-IFU and XRISM, with their significantly higher resolution, will enhance the importance of these analyses. These advanced instruments are expected to provide deeper insights into the intricate dynamics of X-ray systems.
 
-Orbital modulations are complex and depend on several parameters and geometrical considerations which make their execution a little bit tedious. With these packages, we provide a series of user-friendly functions, useful in most analysis which will allow astronomers to easily apply this type of analysis.
+Although orbital modulations are widely known, they are complex to analyze and depend on several parameters and geometrical considerations. With this in mind, we collected all the functions we created through years of analyzing close X-ray binaries and formed a python package useful in almost every X-ray binary analysis, with the aim of facilitating its implementation for other astronomers.
+
+Some timing analysis functions are also provided, as their evolution though an orbit can also proide insights into the system dynamics.
 
 # Science behind
-The functions contained in this analysis rely in the following theories:
+
+The functions contained in this package rely in the following theories:
 
 ## Conservation of angular momentum in orbital mechanics:
 
-If the eccentricity of our system is different than 0, the orbital phase will not vary linearly with the observational time, as the speed will increase at periastron primarily due to the conservation of angular momentum, which dictates that as the compact object moves closer to the central star, it must travel faster to maintain the total angular momentum of the system. This relationship is further influenced by Kepler’s laws of planetary motion, which describe how objects sweep out equal areas in equal times, and the gravitational force between two bodies, which strengthens as they approach each other and weakens as they move apart (see [@2006ima..book.....C] as an example).
+If the eccentricity of our system is different than 0, the orbital phase will not vary linearly with the observational time, as the speed will increase at periastron primarily due to the conservation of angular momentum, which dictates that as the compact object moves closer to the central star, it must travel faster to maintain the total angular momentum of the system. This relationship is further influenced by Kepler’s laws of planetary motion, which describe how objects sweep out equal areas in equal times (see [@2006ima..book.....C] as an example).
 
 $$ r^2 \cdot \omega = h $$
-
-where r is the orbital radius, $\omega$  is the angular velocity and h is the specific angular momentum.
-
-This equation illustrates how the angular velocity  $\omega$ increases as the orbital radius  r decreases, maintaining the constant specific angular momentum h of the system.
 
 We will take this fact into consideration in all our functions and provide dedicated functions to transform phase into time and vice versa.
 
@@ -63,17 +61,16 @@ We will take this fact into consideration in all our functions and provide dedic
 
 The CAK model, proposed by Castor, Abbott, and Klein in 1975 [@1975ApJ...195..157C], is a theoretical framework used to describe radiation-driven winds in massive stars. These stars have strong stellar winds driven by the interaction between their radiation and the surrounding material.
 
-The CAK model provides a quantitative description of how the wind velocity, density, and ionization state vary with distance from the star.
+The CAK model provides a quantitative description of how the wind velocity, density, and ionization state vary with distance from the companion.
 
 $$ \rho = \frac{\dot{M}}{4 \pi v R^2} $$
 
-where $\rho$ is the density of the wind at a given distance R $\dot{M}$ is the mass accretion rate in grams per second, v is the orbital speed at distances greater than the stellar radius, R is the orbital radius at distances greater than the stellar radius.
-
-In this package, we assume that the wind is spherically distributed and ionized.
+where $\rho$ is the density of the wind at a given distance R $\dot{M}$ is the mass accretion rate in units of mass per unit of time, v is the orbital speed at distances greater than the stellar radius and R is the distance to the star.
+In this package, we assume that the wind is spherically distributed and unionized.
 
 ## Accretion Luminosity and Ionization Parameter:
 
-Accretion is the process by which gravitational potential energy is extracted from material accreting onto a gravitating body. This phenomenon serves as the primary power source in various types of close binary systems and is also believed to fuel active galactic nuclei and quasars. When considering a flux of matter with an accretion rate $\dot{M}$ , the resulting luminosity (assuming all mechanical energy is radiated) is defined as the accretion luminosity:
+Accretion is the process by which gravitational potential energy is extracted from material accreting onto a gravitating body  (see [@Frank_King_Raine_2002]). This phenomenon serves as the primary power source in various types of close binary systems and is also believed to fuel active galactic nuclei and quasars. When considering a flux of matter with an accretion rate $\dot{M}$, the resulting luminosity (assuming all mechanical energy is radiated) is defined as the accretion luminosity:
 
 $$ L_{ac} = \frac{GM \dot{M}}{R} $$
 
@@ -142,20 +139,19 @@ The functions contained in this package are the following:
 ### Fitting Functions
 - **fit_orbit_ps**: Fits orbital parameters using particle swarm optimization.
 - **fit_orbit_ls**: Fits orbital parameters using least squares.
-- **fit_disc_ps**: Fits disc parameters using particle swarm optimization.
-- **fit_disc_ls**: Fits disc parameters using least squares.
+- **fit_disc_ps**: Fits disc contained in a main orbit parameters using particle swarm optimization.
+- **fit_disc_ls**: Fits disc contained in a main orbit parameters using least squares.
 - **fit_spiral_ps**: Fits spiral parameters using particle swarm optimization.
 - **fit_spiral_ls**: Fits spiral parameters using least squares.
-- **fit_spiral_in_orbit_ps**: Fits combined spiral and orbit parameters using particle swarm optimization.
-- **fit_spiral_in_orbit_ls**: Fits combined spiral and orbit parameters using least squares.
-- **nh_orbit**: Calculates the column density (N_H) variations through the orbit.
-- **fit_nh_ps**: Fits N_H variations using particle swarm optimization.
+- **fit_spiral_in_orbit_ps**: Fits combined spiral orbit parameters using particle swarm optimization.
+- **fit_spiral_in_orbit_ls**: Fits combined spiral and orbit parameters using least squares
+- **fit_nh_ps**: Fits NH variations through an orbit using particle swarm optimization.
 
 ### Timing Functions
-- **hr**: Calculates hardness ratios.
-- **cr**: Computes count rates.
+- **hr**: Calculates hardness ratio its error.
+- **cr**: Computes the color ratio and its error.
 - **rebin_snr**: Rebins data to achieve a specific signal-to-noise ratio.
-- **rebin_bins**: Rebins data into a specified number of bins.
+- **rebin_bins**: Rebins data into a specified bin size (in seconds).
 - **fold_pulse**: Folds pulse profiles over the orbital period.
 - **period_sliding_window**: Analyzes period changes using a sliding window method.
 
@@ -164,7 +160,7 @@ Within the Fitting functions, we use a particle swarm approach ([@pyswarms], [@1
 ![Some results obtained with the functions contained in this package.](joss.jpg){#sylt width="100%"}
 
 # Statement of Need
-
+like XIFU in Athena [@2016SPIE.9905E..2FB] and XRISM [@2022arXiv220205399X],
 Orbital modulations offer valuable insights into X-ray binary systems, although their application is not always straightforward due to the complexity of geometrical calculations and numerous involved parameters. Nearly all current studies on individual X-ray binaries can benefit significantly from the functions provided in this package. 
 
 To streamline usability, we have implemented a user-friendly form system that allows all parameters to be saved and easily loaded for future interactions, eliminating the need for users to input them repeatedly.
