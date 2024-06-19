@@ -2081,7 +2081,7 @@ def spiral(x_data, iphase_spiral, semimajor_spiral, b, omega, inclination_spiral
     if method_=="discrete":
     #...................................................
         phase_discrete =  (t - min(t)) * omega + iphase_spiral
-        R = semimajor_spiral * np.exp(b * 2 * np.pi * x)
+        R = semimajor_spiral * np.exp(b * 2 * np.pi * phase_discrete)
 
         vdop_bin = -R * rsun_m * omega * np.sin(2 * np.pi * phase_discrete ) * np.sin(2 * np.pi * inclination_spiral/360)
         #..................................................
@@ -2138,8 +2138,10 @@ def fit_spiral_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter = 1000, swa
     parameter_names = ["iphase_spiral", "semimajor_spiral", "b", "omega", "inclination_spiral", "feature"]
     #............................................
     x_data, y_err_weight = define_x_y_sy(x_data,y_data, y_err)
+    
+    t=x_data
         
-    if method_ == "discrete" and len(np.shape(x_data)) == 1 and len(x_data) == len(y_data):
+    if method_ == "discrete" and len(np.shape(x_data)) == 2 and len(x_data) == len(y_data):
         x_data = np.mean(t, axis=1)
     
     if len(np.shape(x_data)) == 1 and len(x_data) == len(y_data):
@@ -2147,6 +2149,7 @@ def fit_spiral_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter = 1000, swa
         
     #............................................Objective function
     def objective_function(params):
+    
         iphase_spiral, semimajor_spiral, b, omega, inclination_spiral, feature = params
 
         predicted_data = spiral(x_data, iphase_spiral, semimajor_spiral, b, omega, inclination_spiral, feature, units, method_,extended_binsize)
@@ -2249,7 +2252,9 @@ def fit_spiral_ls(x_data, y_data, y_err=0, units="keV",method_="extended",extend
 
     x_data, y_err_weight = define_x_y_sy(x_data,y_data, y_err)
    
-    if method_ == "discrete" and len(np.shape(x_data)) == 1 and len(x_data) == len(y_data):
+    t=x_data
+        
+    if method_ == "discrete" and len(np.shape(x_data)) == 2 and len(x_data) == len(y_data):
         x_data = np.mean(t, axis=1)
     
     if len(np.shape(x_data)) == 1 and len(x_data) == len(y_data):
@@ -2306,6 +2311,8 @@ def fit_spiral_ls(x_data, y_data, y_err=0, units="keV",method_="extended",extend
 # SPIRAL IN ORBIT #############################################################################
 def spiral_orbit(x_data, iphase_orbit, semimajor_orbit, orbitalperiod, eccentricity, periapsis, inclination_orbit, Rstar, Mstar1, Mstar2, iphase_spiral, semimajor_spiral, b, omega, inclination_spiral, feature, units, method_,extended_binsize):
 
+    t=x_data
+
     #...................................................
     feature_ = {
         "keV": kev_ams/feature,
@@ -2321,27 +2328,25 @@ def spiral_orbit(x_data, iphase_orbit, semimajor_orbit, orbitalperiod, eccentric
     
     shape_t = t.shape
     t_to_phase = t.reshape(-1)
-        
-    #...................................................
-    ph_from_t,_,W = orbital_time_to_phase_(t_to_phase ,iphase, semimajor, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2,  precision=0.01)
-        
-    phbins = ph_from_t.reshape(shape_t)
-        
-    size_phase_bin = np.diff(phbins)
-    minsizebin = min(size_phase_bin)
-    maxph = max(phbins[-1])
-        
-    phase = np.arange(0,maxph+10,minsizebin/10)
-    _,_,W = orbital_phase_to_time_(phase ,iphase, semimajor, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2,  precision=0.01)
-        
-    t_to_phase_puntual = np.mean(t , axis=1)
-    phase_puntual ,_, W_puntual = orbital_time_to_phase_(t_to_phase_puntual, iphase, semimajor, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2,  precision=0.01)
     
     #...................................................
     
     if method_=="extended":
+    
+        ph_from_t,_,W = orbital_time_to_phase_(t_to_phase ,iphase_orbit, semimajor_orbit, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2,  precision=0.01)
+        
+        phbins = ph_from_t.reshape(shape_t)
+            
+        size_phase_bin_orbit = np.diff(phbins)
+        minsizebin = min(size_phase_bin_orbit)
+        maxph = max(ph_from_t)
+            
+        phase = np.arange(0,maxph+10,minsizebin/10)
+        _,_,W = orbital_phase_to_time_(phase ,iphase_orbit, semimajor_orbit, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2,  precision=0.01)
+            
+        t_to_phase_puntual = np.mean(t , axis=1)
+        phase_puntual ,_, W_puntual = orbital_time_to_phase_(t_to_phase_puntual, iphase_orbit, semimajor_orbit, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2,  precision=0.01)
 
-    #................................................... MAIN ORBIT
 
         R = abar * (1-eccentricity ** 2)/(1+eccentricity * np.cos((phase-periapsis/360) * 2 * np.pi)) #R of ellipse
         vdop =  -R * Rstar * rsun_m * W * np.sin(2 * np.pi * phase ) * np.sin(2 * np.pi * inclination_orbit )
@@ -2390,7 +2395,8 @@ def spiral_orbit(x_data, iphase_orbit, semimajor_orbit, orbitalperiod, eccentric
         
     if method_=="discrete":
             #............................................................ DISCRETE MAIN ORBIT
-        phase_discrete_orbit =  (t-min(t)) / orbitalperiod_s  + iphase_orbit
+       
+        phase_discrete_orbit,_,W = orbital_time_to_phase_(t ,iphase_orbit, semimajor_orbit, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2,  precision=0.01)
 
         R_discrete_orbit = abar * (1-eccentricity ** 2)/(1+eccentricity * np.cos((phase_discrete_orbit-periapsis/360) * 2 * np.pi)) #R of ellipse
         vdop_discrete_orbit =  -R_discrete_orbit * Rstar * rsun_m * W * np.sin(2 * np.pi * phase_discrete_orbit) * np.sin(2 * np.pi * inclination_orbit)
@@ -2456,9 +2462,11 @@ def fit_spiral_in_orbit_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter = 
     parameter_names = ["iphase_orbit", "semimajor_orbit", "orbitalperiod", "eccentricity", "periapsis", "inclination", "Rstar", "Mstar1", "Mstar2", "iphase_spiral", "semimajor_spiral", "b", "omega", "inclination_spiral","feature"]
     x_data, y_err_weight = define_x_y_sy(x_data,y_data, y_err)
     
-    if method_ == "discrete" and len(np.shape(x_data)) == 1 and len(x_data) == len(y_data):
-       x_data = np.mean(t, axis=1)
-       
+    t=x_data
+        
+    if method_ == "discrete" and len(np.shape(x_data)) == 2 and len(x_data) == len(y_data):
+        x_data = np.mean(t, axis=1)
+    
     if len(np.shape(x_data)) == 1 and len(x_data) == len(y_data):
         method_ == "discrete"
         
@@ -2518,28 +2526,28 @@ def fit_spiral_in_orbit_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter = 
         t =  np.array([np.mean(i) for i in x_data])
         
         ph,_,_ = orbital_time_to_phase_(t ,
-        df_results_transposed.iphase.Value,
-        df_results_transposed.semimajor.Value,
+        df_results_transposed.iphase_orbit.Value,
+        df_results_transposed.semimajor_orbit.Value,
         df_results_transposed.orbitalperiod.Value,
         df_results_transposed.eccentricity.Value,
         df_results_transposed.periapsis.Value,
         df_results_transposed.Rstar.Value,
         max(df_results_transposed.Mstar2.Value, df_results_transposed.Mstar1.Value),
-        df_results_transposed.Mass3.Value + min(df_results_transposed.Mstar2.Value,df_results_transposed.Mstar1.Value),  precision=0.01)
+        min(df_results_transposed.Mstar2.Value,df_results_transposed.Mstar1.Value),  precision=0.01)
         
     if method_=="discrete":
 
         t = x_data
         
         ph,_,_ = orbital_time_to_phase_(t ,
-        df_results_transposed.iphase.Value,
-        df_results_transposed.semimajor.Value,
+        df_results_transposed.iphase_orbit.Value,
+        df_results_transposed.semimajor_orbit.Value,
         df_results_transposed.orbitalperiod.Value,
         df_results_transposed.eccentricity.Value,
         df_results_transposed.periapsis.Value,
         df_results_transposed.Rstar.Value,
         max(df_results_transposed.Mstar2.Value, df_results_transposed.Mstar1.Value),
-        df_results_transposed.Mass3.Value + min(df_results_transposed.Mstar2.Value,df_results_transposed.Mstar1.Value),  precision=0.01)
+        min(df_results_transposed.Mstar2.Value,df_results_transposed.Mstar1.Value),  precision=0.01)
        
         
     return df_results_transposed, ph, predicted_data, chi_squared
@@ -2581,7 +2589,9 @@ def fit_spiral_in_orbit_ls(x_data, y_data, y_err=0, units="keV",method_="extende
 
     x_data, y_err_weight = define_x_y_sy(x_data,y_data, y_err)
         
-    if method_ == "discrete" and len(np.shape(x_data)) == 1 and len(x_data) == len(y_data):
+    t=x_data
+        
+    if method_ == "discrete" and len(np.shape(x_data)) == 2 and len(x_data) == len(y_data):
         x_data = np.mean(t, axis=1)
     
     if len(np.shape(x_data)) == 1 and len(x_data) == len(y_data):
@@ -2621,28 +2631,28 @@ def fit_spiral_in_orbit_ls(x_data, y_data, y_err=0, units="keV",method_="extende
         t =  np.array([np.mean(i) for i in x_data])
         
         ph,_,_ = orbital_time_to_phase_(t ,
-        df_results_transposed.iphase.Value,
-        df_results_transposed.semimajor.Value,
+        df_results_transposed.iphase_orbit.Value,
+        df_results_transposed.semimajor_orbit.Value,
         df_results_transposed.orbitalperiod.Value,
         df_results_transposed.eccentricity.Value,
         df_results_transposed.periapsis.Value,
         df_results_transposed.Rstar.Value,
         max(df_results_transposed.Mstar2.Value, df_results_transposed.Mstar1.Value),
-        df_results_transposed.Mass3.Value + min(df_results_transposed.Mstar2.Value,df_results_transposed.Mstar1.Value),  precision=0.01)
+        min(df_results_transposed.Mstar2.Value,df_results_transposed.Mstar1.Value),  precision=0.01)
         
     if method_=="discrete":
 
         t = x_data
         
         ph,_,_ = orbital_time_to_phase_(t ,
-        df_results_transposed.iphase.Value,
-        df_results_transposed.semimajor.Value,
+        df_results_transposed.iphase_orbit.Value,
+        df_results_transposed.semimajor_orbit.Value,
         df_results_transposed.orbitalperiod.Value,
         df_results_transposed.eccentricity.Value,
         df_results_transposed.periapsis.Value,
         df_results_transposed.Rstar.Value,
         max(df_results_transposed.Mstar2.Value, df_results_transposed.Mstar1.Value),
-        df_results_transposed.Mass3.Value + min(df_results_transposed.Mstar2.Value,df_results_transposed.Mstar1.Value),  precision=0.01)
+        min(df_results_transposed.Mstar2.Value,df_results_transposed.Mstar1.Value),  precision=0.01)
        
     
     return df_results_transposed,  ph, predicted_data, r_squared
