@@ -8,8 +8,6 @@ We hope you have a good time with out code!
 ### Features
 To address these challenges, xraybinaryorbit offers an input system based on interactive forms. These forms, once loaded, are saved for future interactions. Each function is briefly described when loaded, helping to guide its execution.
 
-With the advent of new, high-resolution telescopes like Athena, the importance of accurately analyzing these modulations has increased significantly. xraybinaryorb provides a suite of functions that simplify this process, making it more accessible to researchers. Whether you're dealing with eclipses, Doppler shifts, or absorption variations, xraybinaryorbit offers the tools you need to effectively interpret and understand the intricate behaviors of X-ray binaries.
-
 The primary physics used for these packages rely on the Doppler effect, Kepler's laws, and the CAK model (Castor, Abbott, and Klein) as described in:
 
 Castor, J. I., Abbott, D. C., & Klein, R. I. (1975). Radiation-driven winds in Of stars. *Astrophysical Journal*, 195, 157-174.
