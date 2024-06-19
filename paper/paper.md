@@ -161,7 +161,7 @@ The study of orbital modulations in X-ray binaries is essential for understandin
 
 Although orbital modulations are widely known, they are complex to analyze and depend on several parameters and geometrical considerations. With this in mind, we collected all the functions we created through years of analyzing close X-ray binaries and formed a python package useful in almost every X-ray binary analysis, with the aim of facilitating its implementation for other astronomers.
 
-However, these functions are not solely reliant on future data from advanced telescopes. Many orbital modulations may already be latent within existing archives, waiting to be uncovered. Indeed, these functions have already been utilized with Chandra and XMM data in the published papers ([@2022MNRAS.512..304S],[@2021MNRAS.501.5892S]) and in others currently under referee process.
+However, these functions are not solely reliant on future data from advanced telescopes. Many orbital modulations may already be latent within existing archives, waiting to be uncovered. Indeed, these functions have already been utilized with Chandra and XMM data in the published papers ([@2022MNRAS512304S],[@2021MNRAS.501.5892S]) and in others currently under referee process.
 
 # Acknowledgements
 
