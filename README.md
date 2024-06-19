@@ -2,14 +2,11 @@
 
 xraybinaryorbit is a user-friendly Python package designed to facilitate the analysis of orbital modulations in X-ray binaries. 
 
-Although orbital modulations are widely known, they are complex to analyze and depend on several parameters and geometrical considerations. With this in mind, we collected all the functions we created through years of analyzing close X-ray binaries and formed a python package useful in almost every X-ray binary analysis, with the aim of facilitating its implementation for other astronomers. With the fact that these orbital modulations rely in several different parameters, here, we propose a user-friendly form method to improve the package usability.
-We hope you have a good time with out code!
+Although orbital modulations are widely known, they are complex to analyze and depend on several parameters and geometrical considerations. With this in mind, we collected all the functions we created through years of analyzing close X-ray binaries and formed a python package useful in almost every X-ray binary analysis, with the aim of facilitating its implementation for other astronomers. With the fact that these orbital modulations rely in several different parameters, here, we propose a user-friendly "form" method to improve the package usability. These forms, once loaded and submited, are saved for future interactions.
 
-### Features
-To address these challenges, xraybinaryorbit offers an input system based on interactive forms. These forms, once loaded, are saved for future interactions. Each function is briefly described when loaded, helping to guide its execution.
+Each function is briefly described when loaded, helping to guide its execution.
 
 The primary physics used for these packages rely on the Doppler effect, Kepler's laws, and the CAK model (Castor, Abbott, and Klein) as described in:
-
 Castor, J. I., Abbott, D. C., & Klein, R. I. (1975). Radiation-driven winds in Of stars. *Astrophysical Journal*, 195, 157-174.
 
 ### Available Functions
