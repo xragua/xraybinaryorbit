@@ -59,7 +59,7 @@ We will take this fact into consideration in all our functions and provide dedic
 
 ## CAK model:
 
-The CAK model, proposed by Castor, Abbott, and Klein in 1975 [@1975ApJ...195..157C], is a theoretical framework used to describe radiation-driven winds in massive stars. These stars have strong stellar winds driven by the interaction between their radiation and the surrounding material.
+The CAK model, proposed by Castor, Abbott, and Klein in 1975 [@1975ApJ195157C], is a theoretical framework used to describe radiation-driven winds in massive stars. These stars have strong stellar winds driven by the interaction between their radiation and the surrounding material.
 
 The CAK model provides a quantitative description of how the wind velocity, density, and ionization state vary with distance from the companion.
 
@@ -117,7 +117,7 @@ where r is the orbital radius, a is the semimajor axis, b is the distance to the
 
 ## Lomb-Scargle Periodogram:
 
-The Lomb-Scargle periodogram [@1982ApJ...263..835S] is a method used in astrophysics and other fields to find the dominant frequencies in unevenly sampled data. It is particularly useful for detecting periodic signals with variable amplitudes and non-sinusoidal shapes. The periodogram computes the power spectral density of a time series, identifying the periodicities that best fit the observed data points.
+The Lomb-Scargle periodogram [@1982ApJ263835S] is a method used in astrophysics and other fields to find the dominant frequencies in unevenly sampled data. It is particularly useful for detecting periodic signals with variable amplitudes and non-sinusoidal shapes. The periodogram computes the power spectral density of a time series, identifying the periodicities that best fit the observed data points.
 
 In the context of X-ray astronomy and other observational sciences, the Lomb-Scargle method allows researchers to analyze irregularly spaced observations and extract information about periodic variations in X-ray flux, pulsations, or other cyclical phenomena.
 
@@ -160,7 +160,7 @@ Within the Fitting functions, we use a particle swarm approach ([@pyswarms], [@1
 ![Some results obtained with the functions contained in this package.](joss.jpg){#sylt width="100%"}
 
 # Statement of Need
-like XIFU in Athena [@2016SPIE.9905E..2FB] and XRISM [@2022arXiv220205399X],
+like XIFU in Athena [@2016SPIE9905E2FB] and XRISM [@2022arXiv220205399X],
 Orbital modulations offer valuable insights into X-ray binary systems, although their application is not always straightforward due to the complexity of geometrical calculations and numerous involved parameters. Nearly all current studies on individual X-ray binaries can benefit significantly from the functions provided in this package. 
 
 To streamline usability, we have implemented a user-friendly form system that allows all parameters to be saved and easily loaded for future interactions, eliminating the need for users to input them repeatedly.
