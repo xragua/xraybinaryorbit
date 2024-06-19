@@ -1397,7 +1397,7 @@ def conic_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsi
     #..................................................
     if method_=="discrete":
         
-        phase_discrete ,_,W = orbital_time_to_phase_(t_to_phase ,iphase, semimajor, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2,  precision=0.01)
+        phase_discrete ,_,W = orbital_time_to_phase_(t ,iphase, semimajor, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2,  precision=0.01)
             
         R_puntual = abar * (1-eccentricity ** 2)/(1+eccentricity * np.cos((phase_discrete-periapsis/360) * 2 * np.pi)) #R of ellipse
 
@@ -1580,6 +1580,7 @@ def fit_orbit_ls(x_data, y_data, y_err=0, units="keV",method_="extended",extende
     parameter_names = ["iphase", "semimajor", "orbitalperiod", "eccentricity", "periapsis" ,"inclination", "Rstar", "Mstar1", "Mstar2","wind_vel" ,"feature"]
     
     t=x_data
+    
     x_data, y_err_weight = define_x_y_sy(x_data,y_data, y_err)
 
     if method_ == "discrete" and len(np.shape(x_data)) == 2 and len(x_data) == len(y_data):
@@ -1671,9 +1672,10 @@ def disc_in_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periap
     
     shape_t = t.shape
     t_to_phase = t.reshape(-1)
-    t_to_phase_puntual = np.mean(t, axis=1)
+    
     
     if method_ == "extended":
+        t_to_phase_puntual = np.mean(t, axis=1)
         # Main orbit phase calculations
         ph_from_t, _, W = orbital_time_to_phase_(t_to_phase, iphase, semimajor, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2, precision=0.01)
         phbins = ph_from_t.reshape(shape_t)
@@ -1734,7 +1736,7 @@ def disc_in_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periap
     
     if method_ == "discrete":
         # Discrete main orbit calculations
-        phase_discrete, _, W_discrete = orbital_time_to_phase_(t_to_phase, iphase, semimajor, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2, precision=0.01)
+        phase_discrete, _, W_discrete = orbital_time_to_phase_(t, iphase, semimajor, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2, precision=0.01)
         R_discrete = abar * (1 - eccentricity ** 2) / (1 + eccentricity * np.cos((phase_discrete - periapsis / 360) * 2 * np.pi))
         vdop_discrete = -R_discrete * Rstar * rsun_m * W_discrete * np.sin(2 * np.pi * phase_discrete) * np.sin(2 * np.pi * inclination / 360)
         vrad_discrete = wind_vel * 1000 * np.cos(2 * np.pi * phase_discrete) * np.sin(2 * np.pi * inclination / 360)
@@ -2034,7 +2036,7 @@ def fit_disc_ls(x_data, y_data, y_err=0, units="keV",method_="extended",extended
         max(df_results_transposed.Mstar2.Value, df_results_transposed.Mstar1.Value),
         df_results_transposed.Mass3.Value + min(df_results_transposed.Mstar2.Value,df_results_transposed.Mstar1.Value),  precision=0.01)
         
-    return df_results_transposed,  ph, predicted_data, r_squared
+    return df_results_transposed,  ph,ph2, predicted_data, r_squared
 
 # SPIRAL #############################################################################
 def spiral(x_data, iphase_spiral, semimajor_spiral, b, omega, inclination_spiral, feature, units, method_, extended_binsize):
@@ -2768,7 +2770,7 @@ def fit_nh_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=200, swarmsize=
     t = x_data
     x_data, y_err_weight = define_x_y_sy(x_data,y_data, y_err)
         
-    if method_ == "discrete" and len(np.shape(x_data)) == 1 and len(x_data) == len(y_data):
+    if method_ == "discrete" and len(np.shape(x_data)) == 2 and len(x_data) == len(y_data):
         x_data = np.mean(t, axis=1)
     
     if len(np.shape(x_data)) == 1 and len(x_data) == len(y_data):
