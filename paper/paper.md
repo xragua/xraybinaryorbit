@@ -34,16 +34,12 @@ bibliography: paper.bib
 
 # Summary
 
-
 X-ray astronomy is a young discipline, spanning no more than a few decades. The Earth's atmosphere is opaque to this type of radiation, so observations in this part of the spectrum had to wait until the beginning of the space era, with rocket launchers carrying X-ray telescopes to reveal the universe from a brand-new point of view.
 
 X-ray binary systems consist of two stars in close orbit around each other, where one of the stars is typically a compact object such as a neutron star or a black hole. The compact object accretes matter from its companion star, which can be a main sequence star, a giant star, or even another compact object. The X-ray radiation in these systems is generated through the accretion of matter from the companion's powerful stellar wind, typical of these early-type stars. Close binaries may become compact-object mergers and eventually sources of gravitational waves and/or short gamma-ray bursts. They will also provide insight into the behavior of matter under extreme gravitational and magnetic fields. Understanding these processes is fundamental to modern astrophysics and has driven numerous theoretical and observational studies.
 
-The study of orbital modulations in X-ray binaries is essential for understanding their physical properties and dynamics. Currently, these modulations are often overlooked, probably due to the limited resolution of existing instruments like Chandra and XMM, which makes it challenging to obtain adequate data unless the modulation is particularly prominent. The prominence of these modulations depends primarily on the system's properties and the source's brightness. However, upcoming telescopes such as Athena's X-IFU and XRISM, with their significantly higher resolution, will enhance the importance of these analyses. These advanced instruments are expected to provide deeper insights into the intricate dynamics of X-ray systems.
+The xraybinaryoorbit package helps to unveil X-Ray binary orbital dynamics based on key theories including the conservation of angular momentum in orbital mechanics, the CAK model for radiation-driven stellar winds, accretion luminosity, ionization parameters, and the Doppler effect. Additionally, it provides tools for the Lomb-Scargle periodogram to identify periodic signals in unevenly sampled data.
 
-Although orbital modulations are widely known, they are complex to analyze and depend on several parameters and geometrical considerations. With this in mind, we collected all the functions we created through years of analyzing close X-ray binaries and formed a python package useful in almost every X-ray binary analysis, with the aim of facilitating its implementation for other astronomers.
-
-Some timing analysis functions are also provided, as their evolution though an orbit can also proide insights into the system dynamics.
 
 # Science behind
 
@@ -160,12 +156,12 @@ Within the Fitting functions, we use a particle swarm approach ([@pyswarms], [@1
 ![Some results obtained with the functions contained in this package.](joss.jpg){#sylt width="100%"}
 
 # Statement of Need
-like XIFU in Athena [@2016SPIE9905E2FB] and XRISM [@2022arXiv220205399X],
-Orbital modulations offer valuable insights into X-ray binary systems, although their application is not always straightforward due to the complexity of geometrical calculations and numerous involved parameters. Nearly all current studies on individual X-ray binaries can benefit significantly from the functions provided in this package. 
 
-To streamline usability, we have implemented a user-friendly form system that allows all parameters to be saved and easily loaded for future interactions, eliminating the need for users to input them repeatedly.
+The study of orbital modulations in X-ray binaries is essential for understanding their physical properties and dynamics. Currently, these modulations are often overlooked, probably due to the limited resolution of existing instruments like Chandra and XMM, which makes it challenging to obtain adequate data unless the modulation is particularly prominent. The prominence of these modulations depends primarily on the system's properties and the source's brightness. However, upcoming telescopes such as Athena's X-IFU [@2016SPIE9905E2FB]  and XRISM [@2022arXiv220205399X], with their significantly higher resolution, will enhance the importance of these analyses. These advanced instruments are expected to provide deeper insights into the intricate dynamics of X-ray systems.
 
-The functions obtained in this package had had already been used in published papers ([@2022MNRAS.512..304S],[@2021MNRAS.501.5892S]) and in others currently under referee process.
+Although orbital modulations are widely known, they are complex to analyze and depend on several parameters and geometrical considerations. With this in mind, we collected all the functions we created through years of analyzing close X-ray binaries and formed a python package useful in almost every X-ray binary analysis, with the aim of facilitating its implementation for other astronomers.
+
+However, these functions are not solely reliant on future data from advanced telescopes. Many orbital modulations may already be latent within existing archives, waiting to be uncovered. Indeed, these functions have already been utilized with Chandra and XMM data in the published papers ([@2022MNRAS.512..304S],[@2021MNRAS.501.5892S]) and in others currently under referee process.
 
 # Acknowledgements
 
