@@ -93,7 +93,7 @@ In the context of X-ray binaries, the Doppler effect is evident in the pulsation
 - **Logarithmic Spiral**: gravitational capture of matter which will eventually be captured by the stellar object.
 
 ### Composed Models
-- **Conic Orbit in a Conic Orbit**: representing an accretion disc or ballistic movement around the compact object traveling around the companion.
+- **Disc in a Conic Orbit**: representing an accretion disc or ballistic movement around the compact object traveling around the companion.
 - **Logarithmic Spiral in a Conic Orbit**: gravitational capture of matter by the compact object traveling in a conic orbit around the companion.
 
 $$ r_{\text{main}} = \frac{b_{\text{main}} \cdot (1 - e_{\text{main}}^2)}{1 + e_{\text{main}} \cdot \cos(\phi_{\text{main}} - W_{\text{main}})} $$
