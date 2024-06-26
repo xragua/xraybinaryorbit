@@ -511,6 +511,104 @@ def orbital_time_to_phase_(t,iphase, semimajor, orbitalperiod, eccentricity, per
     W = w_interpolator(times_to_interpolate)
     
     return phase, t, W
+    
+    
+def fold_pulse_(t, c, sc, period, snr=None, rebin=None):
+    
+    phase = (t - min(t)) / period - np.floor((t - min(t)) / period)
+    idx_sort = np.argsort(phase)
+    
+    phase_sorted = phase[idx_sort]
+    c_sorted = c[idx_sort]
+    sc_sorted = sc[idx_sort]
+    
+    if snr:
+        pulse = rebin_snr_(phase_sorted, c_sorted, sc_sorted, snr)
+        return pulse
+        
+    if rebin:
+        pulse = rebin_bins_(phase_sorted, c_sorted, sc_sorted, rebin)
+        return pulse
+        
+    else:
+        print("Please provide a Minimum signal-to-noise ratio threshold (snr) or a bin time (rebin) to proceed.")
+
+
+def rebin_snr_(t, x, sy, snr_threshold):
+
+    
+    w=[]
+    c_bin=[]
+    t_bin=[]
+    sc_bin=[]
+
+    c_new=[]
+    t_new=[]
+    sc_new=[]
+    
+    mask = np.where(sy > 0)[0]
+    
+    t=t[mask]
+    x=x[mask]
+    sy=sy[mask]
+    
+    for i in range(len(x)-1):
+
+        w.append(pow(1/sy[i],2))
+        t_bin.append(t[i])
+        c_bin.append(x[i])
+        sc_bin.append(sy[i])
+        
+        sc_weight = pow(1/(sum(np.array(w))),0.5)
+        c_weight = sum(np.array(c_bin)*np.array(w))/sum(np.array(w))
+        
+        snr_now = sc_weight/c_weight
+
+        if (snr_now <= snr_threshold):
+
+            w = np.array(w)
+            c_bin = np.array(c_bin)
+            sc_bin = np.array(sc_bin)
+            t_bin = np.array(t_bin)
+
+            sc_new.append(pow(1/(sum(w)),0.5))
+            c_new.append(sum(c_bin*w)/sum(w))
+            t_new.append(sum(t_bin*w)/sum(w))
+
+            w=[]
+            c_bin=[]
+            t_bin=[]
+            sc_bin=[]
+     
+        
+    return t_new,c_new,sc_new
+
+#.................................................. Rebin by bins
+def rebin_bins_(t, x, sy, nbin):
+
+    c_new=[]
+    t_new=[]
+    sc_new=[]
+    
+    t, x, sy = preprocess_data(t, c, sc)
+    
+    for i in range(len(x)-nbin-1):
+
+        w = (pow(1/sy[i*nbin:(i+1)*nbin],2))
+        
+        if (sum(w) >0):
+        
+            t_bin = t[i*nbin:(i+1)*nbin]
+            c_bin = x[i*nbin:(i+1)*nbin]
+            sc_bin = sy[i*nbin:(i+1)*nbin]
+
+            #...............................
+
+            sc_new.append(pow(1/(sum(w)),0.5))
+            c_new.append(sum(c_bin*w)/sum(w))
+            t_new.append(sum(t_bin*w)/sum(w))
+
+    return t_new,c_new,sc_new
 ##########################################################################################
 ################################ THEORETICAL FUNCTIONS ###################################
 ##########################################################################################
@@ -3067,6 +3165,7 @@ def fold_pulse(t, c, sc, period, snr=None, rebin=None):
         print("Please provide a Minimum signal-to-noise ratio threshold (snr) or a bin time (rebin) to proceed.")
 
 
+
 def preprocess_data(t, x, sy):
     """ Preprocess the data by removing entries where sc <= 0, NaN, or inf. """
     mask = (sy > 0) & np.isfinite(sy)
@@ -3207,7 +3306,7 @@ def period_sliding_window(t, c, sc, window_sec, step_sec, max_period=None, min_p
                 c_ = np.array(c[idx])
                 sc_ = np.array(sc[idx])
 
-                ph_pulse, c_pulse, sc_pulse = fold_pulse(t_, c_, sc_, result.Period[i], snr=snr_pulse, rebin=None)
+                ph_pulse, c_pulse, sc_pulse = fold_pulse_(t_, c_, sc_, result.Period[i], snr=snr_pulse, rebin=None)
                 pulse_data = {'ph_pulse': ph_pulse, 'c_pulse': c_pulse, 'sc_pulse': sc_pulse}
 
                 pulses[i] = pulse_data
