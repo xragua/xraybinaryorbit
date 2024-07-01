@@ -1170,13 +1170,15 @@ def absorption_column_through_orbit_theoretical(resolution=0.01,show_plot=True):
          
 # Ionization parameter map ###############################################################
 
+ # Ionization parameter map ###############################################################
+
 def ionization_map_phase(size_in_Rstar=3, min_color=None, max_color=None, save_plot=False, name="ionization_map"):
 
     print(    """
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-    Generates a logarithmic ionization parameter map based on the stellar wind density
-    and the ionization parameters influenced by the source luminosity and distance to the compact object.
+    Generates a logarithmic ionization parameter map based on the stellar wind density, the luminosity and orbital parameters.
+    The uncolored area represents the X-ray shadow.
 
     Parameters:
     - size_in_Rstar (float, optional): Extent of the map from the stellar center in stellar radii. Default is 3.
@@ -1214,11 +1216,32 @@ def ionization_map_phase(size_in_Rstar=3, min_color=None, max_color=None, save_p
     Rorb_plot = (abar * (1 - eccentricity**2) / (1 + eccentricity * np.cos((th - periapsis / 360) * 2 * np.pi))) * Rstar_cm
     x = np.arange(1, size_in_Rstar, 0.01) * Rstar_cm
     v = vinf_cm_s * (1 - Rstar_cm / x)**beta
-    rho = M_dot_grams / (4 * np.pi * v * x**2)
+    ro = M_dot_grams / (4 * np.pi * v * x**2)
     
     # Calculate electron number density
     na = 6.02214076e23 / 1.00797
-    ne = rho * na
+    ne = ro * na
+    
+    #..............................................Angles for shadow
+
+    phase_ns = phase * 2 * np.pi
+    phase_ns_degrees = np.degrees(phase_ns)
+
+    alpha = np.arcsin(1/(Rorb/ Rstar_cm))
+    alpha_degrees = np.degrees(alpha)
+
+    alpha2 = np.arcsin(1/size_in_Rstar)
+    alpha_degrees2 = np.degrees(alpha2)
+
+    gamma_ = 180-(alpha_degrees2 + alpha_degrees)
+    rho_ = gamma_+phase_ns_degrees
+
+    rho = rho_*2*np.pi/360
+    gamma = gamma_*2*np.pi/360
+
+    phase_touch = (180-90-alpha_degrees)/360
+
+    #..............................................
     
     # Create a DataFrame to store chi results
     chi_result = pd.DataFrame(index=np.round(x / Rstar_cm, 3))
@@ -1234,6 +1257,7 @@ def ionization_map_phase(size_in_Rstar=3, min_color=None, max_color=None, save_p
     if not max_color:
         max_color = np.percentile(np.concatenate(chi_result.values), 90)
         print("max color coefficient is", round(max_color,2))  # Corrected print statement
+        
     if not min_color:
         min_color = np.percentile(np.concatenate(chi_result.values), 10)
         print("min color coefficient is", round(min_color,2))
@@ -1246,22 +1270,86 @@ def ionization_map_phase(size_in_Rstar=3, min_color=None, max_color=None, save_p
     
     # Calculate area between bounds and plot
     area_between_bounds = 0
-    for i in range(len(th)):
-        distance = np.sqrt(Rorb**2 + x**2 - 2 * Rorb * x * np.cos(2 * np.pi * (th[i] - phase)))
+    
+    #....................................................................................
+    th_ = np.arange(phase_touch+phase ,phase + gamma_/360, 0.001)
+    for i in range(len(th_)):
+
+        x_ = (Rorb/Rstar_cm) * np.sin(alpha_degrees * 2 * np.pi / 360) / np.sin((180 - (th_[i] - phase) * 360 - alpha_degrees) * 2 * np.pi / 360)
+            
+        if (x_ >= 1):
+                
+            x = np.arange(x_, size_in_Rstar, 0.01)*Rstar_cm
+            v = vinf_cm_s * (1 - Rstar_cm / x)**beta
+            ro = M_dot_grams / (4 * np.pi * v * x**2)
+            ne = ro * na
+        
+            distance = np.sqrt(Rorb**2 + x**2 - 2 * Rorb * x * np.cos(2 * np.pi * (th_[i] - phase)))
+            chi = luminosity / (ne * abs(distance)**2)
+            x_chi_select = x[(chi >= bound1) & (chi <= bound2)] / Rstar_cm
+            colors = cmap(norm(np.log(chi)))
+        
+
+            axs.scatter(np.tile(th_[i] * 2 * np.pi, len(x)), x / Rstar_cm, c=colors, cmap='rainbow')
+
+            if len(x_chi_select) > 1:
+                axs.scatter(np.tile(th_[i] * 2 * np.pi, len(x_chi_select)), x_chi_select, color="k", alpha=0.3)
+                area_between_bounds += np.sum(x_chi_select * (x[1] - x[0]) * (th_[1] - th_[0]) * 2 * np.pi)
+                    
+    #....................................................................................
+    th_ = np.arange(phase - gamma_/360 ,-phase_touch + phase, 0.001)
+    for i in range(len(th_)):
+            
+        x_ = (Rorb/Rstar_cm)*np.sin(alpha_degrees*2*np.pi/360)/(np.sin((180-(phase-th_[i])*360-alpha_degrees)*2*np.pi/360))
+            
+        if (x_ >= 1):
+                
+            x = np.arange(x_, size_in_Rstar, 0.01)*Rstar_cm
+            v = vinf_cm_s * (1 - Rstar_cm / x)**beta
+            ro = M_dot_grams / (4 * np.pi * v * x**2)
+            ne = ro * na
+        
+            distance = np.sqrt(Rorb**2 + x**2 - 2 * Rorb * x * np.cos(2 * np.pi * (th_[i] - phase)))
+            chi = luminosity / (ne * abs(distance)**2)
+            x_chi_select = x[(chi >= bound1) & (chi <= bound2)] / Rstar_cm
+            colors = cmap(norm(np.log(chi)))
+        
+
+            axs.scatter(np.tile(th_[i] * 2 * np.pi, len(x)), x / Rstar_cm, c=colors, cmap='rainbow')
+
+            if len(x_chi_select) > 1:
+                axs.scatter(np.tile(th_[i] * 2 * np.pi, len(x_chi_select)), x_chi_select, color="k", alpha=0.3)
+                area_between_bounds += np.sum(x_chi_select * (x[1] - x[0]) * (th_[1] - th_[0]) * 2 * np.pi)
+                    
+    #....................................................................................
+    th_ = np.arange(-phase_touch + phase ,phase_touch+phase, 0.001)
+    for i in range(len(th_)):
+
+        x = np.arange(1, size_in_Rstar,0.01)*Rstar_cm
+        v = vinf_cm_s * (1 - Rstar_cm / x)**beta
+        ro = M_dot_grams / (4 * np.pi * v * x**2)
+        ne = ro * na
+        
+        distance = np.sqrt(Rorb**2 + x**2 - 2 * Rorb * x * np.cos(2 * np.pi * (th_[i] - phase)))
         chi = luminosity / (ne * abs(distance)**2)
         x_chi_select = x[(chi >= bound1) & (chi <= bound2)] / Rstar_cm
         colors = cmap(norm(np.log(chi)))
         
-        axs.scatter(np.tile(th[i] * 2 * np.pi, len(x)), x / Rstar_cm, c=colors, cmap='rainbow')
+
+        axs.scatter(np.tile(th_[i] * 2 * np.pi, len(x)), x / Rstar_cm, c=colors, cmap='rainbow')
 
         if len(x_chi_select) > 1:
-            axs.scatter(np.tile(th[i] * 2 * np.pi, len(x_chi_select)), x_chi_select, color="k", alpha=0.3)
-            area_between_bounds += np.sum(x_chi_select * (x[1] - x[0]) * (th[1] - th[0]) * 2 * np.pi)
+            axs.scatter(np.tile(th_[i] * 2 * np.pi, len(x_chi_select)), x_chi_select, color="k", alpha=0.3)
+            area_between_bounds += np.sum(x_chi_select * (x[1] - x[0]) * (th_[1] - th_[0]) * 2 * np.pi)
     
     # Plot additional elements
     axs.plot(np.linspace(0, 2 * np.pi, 100), np.ones(100), color='black')
     axs.plot(th * 2 * np.pi, Rorb_plot / Rstar_cm, color='black', linestyle='--')
+    
     axs.plot(phase * 2 * np.pi, Rorb / Rstar_cm, color='black', marker='.')
+    
+    axs.plot([phase_ns, rho], [Rorb/ Rstar_cm, size_in_Rstar], 'k')
+    axs.plot([phase_ns, rho-2*gamma], [Rorb/ Rstar_cm, size_in_Rstar], 'k')
     
     axs.set_theta_direction(-1)
     axs.set_theta_offset(np.pi / 2)
@@ -1273,7 +1361,6 @@ def ionization_map_phase(size_in_Rstar=3, min_color=None, max_color=None, save_p
         plt.savefig(f"{name}.png")
     
     return chi_result, area_between_bounds/Rstar_cm
-    
 ###################################### ORBITAL PHASE TO TIME ##############################
 # Orbital phase to time aproximation (constant areolar velocity)
 # Orbital time to phase (constant areolar velocity and interpolation)
@@ -3147,6 +3234,7 @@ def fold_pulse(t, c, sc, period, snr=None, rebin=None):
     """)
     
     phase = (t - min(t)) / period - np.floor((t - min(t)) / period)
+
     idx_sort = np.argsort(phase)
     
     phase_sorted = phase[idx_sort]
@@ -3267,6 +3355,10 @@ def period_sliding_window(t, c, sc, window_sec, step_sec, max_period=None, min_p
         return df
 
     # Preprocess the data
+    t = np.asarray(t)
+    c = np.asarray(c)
+    sc = np.asarray(sc)
+    
     t, c, sc = preprocess_data(t, c, sc)
 
     # Collect the data
