@@ -1420,11 +1420,11 @@ def ionization_map_phase(size_in_Rstar=0, min_color=None, max_color=None, save_p
     x_bound3 = x_bound3[sorted_indices2]
     x_bound4 = x_bound4[sorted_indices2]
 
-    axs.plot(ph_lim ,x_bound1 ,"k")
-    axs.plot(ph_lim ,x_bound2,"k")
+    axs.plot(ph_lim ,x_bound1 ,"ko", markersize=1)
+    axs.plot(ph_lim ,x_bound2,"ko", markersize=1)
     
-    axs.plot(ph_lim2 ,x_bound3 ,"k")
-    axs.plot(ph_lim2 ,x_bound4,"k")
+    axs.plot(ph_lim2 ,x_bound3 ,"ko", markersize=1)
+    axs.plot(ph_lim2 ,x_bound4,"ko", markersize=1)
     
     dph_lim = np.diff(ph_lim)
     dph_lim2 = np.diff(ph_lim2)
