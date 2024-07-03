@@ -1170,9 +1170,8 @@ def absorption_column_through_orbit_theoretical(resolution=0.01,show_plot=True):
          
 # Ionization parameter map ###############################################################
 
- # Ionization parameter map ###############################################################
 
-def ionization_map_phase(size_in_Rstar=3, min_color=None, max_color=None, save_plot=False, name="ionization_map"):
+def ionization_map_phase(size_in_Rstar=0, min_color=None, max_color=None, save_plot=False, name="ionization_map"):
 
     print(    """
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -1181,7 +1180,7 @@ def ionization_map_phase(size_in_Rstar=3, min_color=None, max_color=None, save_p
     The uncolored area represents the X-ray shadow.
 
     Parameters:
-    - size_in_Rstar (float, optional): Extent of the map from the stellar center in stellar radii. Default is 3.
+    - size_in_Rstar (float, optional): Extent of the map from the stellar center in stellar radii. Default is 2 times the semimajor.
     - min_color (float, optional): Minimum color scale value for the ionization parameter. Default is None.
     - max_color (float, optional): Maximum color scale value for the ionization parameter. Default is None.
     - save_plot (bool, optional): Boolean to decide if the plot should be saved. Default is False.
@@ -1214,6 +1213,11 @@ def ionization_map_phase(size_in_Rstar=3, min_color=None, max_color=None, save_p
     # Orbital radius calculations
     Rorb = (abar * (1 - eccentricity**2) / (1 + eccentricity * np.cos((phase - periapsis / 360) * 2 * np.pi))) * Rstar_cm
     Rorb_plot = (abar * (1 - eccentricity**2) / (1 + eccentricity * np.cos((th - periapsis / 360) * 2 * np.pi))) * Rstar_cm
+    
+    if size_in_Rstar==0:
+        size_in_Rstar = 2*max(Rorb_plot/Rstar_cm)
+    
+    
     x = np.arange(1, size_in_Rstar, 0.01) * Rstar_cm
     v = vinf_cm_s * (1 - Rstar_cm / x)**beta
     ro = M_dot_grams / (4 * np.pi * v * x**2)
@@ -1271,6 +1275,12 @@ def ionization_map_phase(size_in_Rstar=3, min_color=None, max_color=None, save_p
     # Calculate area between bounds and plot
     area_between_bounds = 0
     
+    bound_limit_1=[]
+    bound_limit_2=[]
+    bound_limit_3=[]
+    bound_limit_4=[]
+    phase_limit=[]
+    phase_limit2=[]
     #....................................................................................
     th_ = np.arange(phase_touch+phase ,phase + gamma_/360, 0.001)
     for i in range(len(th_)):
@@ -1293,9 +1303,23 @@ def ionization_map_phase(size_in_Rstar=3, min_color=None, max_color=None, save_p
             axs.scatter(np.tile(th_[i] * 2 * np.pi, len(x)), x / Rstar_cm, c=colors, cmap='rainbow')
 
             if len(x_chi_select) > 1:
-                axs.scatter(np.tile(th_[i] * 2 * np.pi, len(x_chi_select)), x_chi_select, color="k", alpha=0.3)
-                area_between_bounds += np.sum(x_chi_select * (x[1] - x[0]) * (th_[1] - th_[0]) * 2 * np.pi)
+                
+                bound_limit_1.append(min(x_chi_select))
+                bound_limit_2.append(max(x_chi_select))
+                phase_limit.append(th_[i])
+                
+                if max(np.diff(x_chi_select))>0.02:
+                
+                    idx3 = np.argmax(np.diff(x_chi_select))
+                    idx4 = np.argmax(np.diff(x_chi_select))+1
                     
+                    bound_limit_3.append(x_chi_select[idx3])
+                    bound_limit_4.append(x_chi_select[idx4])
+                    phase_limit2.append(th_[i])
+                    
+                
+                
+
     #....................................................................................
     th_ = np.arange(phase - gamma_/360 ,-phase_touch + phase, 0.001)
     for i in range(len(th_)):
@@ -1313,13 +1337,26 @@ def ionization_map_phase(size_in_Rstar=3, min_color=None, max_color=None, save_p
             chi = luminosity / (ne * abs(distance)**2)
             x_chi_select = x[(chi >= bound1) & (chi <= bound2)] / Rstar_cm
             colors = cmap(norm(np.log(chi)))
-        
+            distance = luminosity/(ne*chi)**0.5
 
             axs.scatter(np.tile(th_[i] * 2 * np.pi, len(x)), x / Rstar_cm, c=colors, cmap='rainbow')
-
+            
+            
             if len(x_chi_select) > 1:
-                axs.scatter(np.tile(th_[i] * 2 * np.pi, len(x_chi_select)), x_chi_select, color="k", alpha=0.3)
-                area_between_bounds += np.sum(x_chi_select * (x[1] - x[0]) * (th_[1] - th_[0]) * 2 * np.pi)
+            
+                bound_limit_1.append(min(x_chi_select))
+                bound_limit_2.append(max(x_chi_select))
+                phase_limit.append(th_[i])
+                
+                if max(np.diff(x_chi_select))>0.02:
+                
+                    idx3 = np.argmax(np.diff(x_chi_select))
+                    idx4 = np.argmax(np.diff(x_chi_select))+1
+                    
+                    bound_limit_3.append(x_chi_select[idx3])
+                    bound_limit_4.append(x_chi_select[idx4])
+                    phase_limit2.append(th_[i])
+
                     
     #....................................................................................
     th_ = np.arange(-phase_touch + phase ,phase_touch+phase, 0.001)
@@ -1339,18 +1376,70 @@ def ionization_map_phase(size_in_Rstar=3, min_color=None, max_color=None, save_p
         axs.scatter(np.tile(th_[i] * 2 * np.pi, len(x)), x / Rstar_cm, c=colors, cmap='rainbow')
 
         if len(x_chi_select) > 1:
-            axs.scatter(np.tile(th_[i] * 2 * np.pi, len(x_chi_select)), x_chi_select, color="k", alpha=0.3)
-            area_between_bounds += np.sum(x_chi_select * (x[1] - x[0]) * (th_[1] - th_[0]) * 2 * np.pi)
+        
+            bound_limit_1.append(min(x_chi_select))
+            bound_limit_2.append(max(x_chi_select))
+            phase_limit.append(th_[i])
+
+            
+            if max(np.diff(x_chi_select))>0.02:
+                
+                idx3 = np.argmax(np.diff(x_chi_select))
+                idx4 = np.argmax(np.diff(x_chi_select))+1
+                    
+                bound_limit_3.append(x_chi_select[idx3])
+                bound_limit_4.append(x_chi_select[idx4])
+                phase_limit2.append(th_[i])
+
+
+
     
     # Plot additional elements
     axs.plot(np.linspace(0, 2 * np.pi, 100), np.ones(100), color='black')
-    axs.plot(th * 2 * np.pi, Rorb_plot / Rstar_cm, color='black', linestyle='--')
-    
+    axs.plot(th * 2 * np.pi, Rorb_plot / Rstar_cm, color='black', linestyle='--',alpha=0.3)
     axs.plot(phase * 2 * np.pi, Rorb / Rstar_cm, color='black', marker='.')
+
+    #Plot  and area between bounds
+    ph_lim=np.array(phase_limit)
+    ph_lim2=np.array(phase_limit2)
+    x_bound1 = np.array(bound_limit_1)
+    x_bound2 = np.array(bound_limit_2)
+    x_bound3 = np.array(bound_limit_3)
+    x_bound4 = np.array(bound_limit_4)
     
-    axs.plot([phase_ns, rho], [Rorb/ Rstar_cm, size_in_Rstar], 'k')
-    axs.plot([phase_ns, rho-2*gamma], [Rorb/ Rstar_cm, size_in_Rstar], 'k')
+    sorted_indices = np.argsort(ph_lim)
+
+    ph_lim = ph_lim[sorted_indices]*2*np.pi
+    x_bound1 = x_bound1[sorted_indices]
+    x_bound2 = x_bound2[sorted_indices]
     
+    
+    sorted_indices2 = np.argsort(ph_lim2)
+    
+    ph_lim2 = ph_lim2[sorted_indices2]*2*np.pi
+    x_bound3 = x_bound3[sorted_indices2]
+    x_bound4 = x_bound4[sorted_indices2]
+
+    axs.plot(ph_lim ,x_bound1 ,"k")
+    axs.plot(ph_lim ,x_bound2,"k")
+    
+    axs.plot(ph_lim2 ,x_bound3 ,"k")
+    axs.plot(ph_lim2 ,x_bound4,"k")
+    
+    dph_lim = np.diff(ph_lim)
+    dph_lim2 = np.diff(ph_lim2)
+
+    area1 = 0.5 * np.sum((x_bound1[:-1]**2 + x_bound1[1:]**2) * dph_lim)
+    area2 = 0.5 * np.sum((x_bound2[:-1]**2 + x_bound2[1:]**2) * dph_lim)
+    
+    area3 = 0.5 * np.sum((x_bound3[:-1]**2 + x_bound3[1:]**2) * dph_lim2)
+    area4 = 0.5 * np.sum((x_bound4[:-1]**2 + x_bound4[1:]**2) * dph_lim2)
+    
+    area_sec_1 = np.abs(area2-area1)
+    area_sec_2 = np.abs(area3-area4)
+    
+    area_between_bounds = np.abs(area_sec_1-area_sec_2)
+       #.......................
     axs.set_theta_direction(-1)
     axs.set_theta_offset(np.pi / 2)
     
@@ -1360,7 +1449,7 @@ def ionization_map_phase(size_in_Rstar=3, min_color=None, max_color=None, save_p
     if save_plot:
         plt.savefig(f"{name}.png")
     
-    return chi_result, area_between_bounds/Rstar_cm
+    return chi_result, area_between_bounds
 ###################################### ORBITAL PHASE TO TIME ##############################
 # Orbital phase to time aproximation (constant areolar velocity)
 # Orbital time to phase (constant areolar velocity and interpolation)
@@ -2862,6 +2951,7 @@ def nh_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis, 
             Rorb = (abar * (1 - eccentricity**2) / (1 + eccentricity * np.cos((phase - periapsis / 360) * 2 * np.pi))) * Rstar_cm  # in cm
 
             def integrand(z):
+            
                 alpha = np.arccos(np.cos(phase * 2 * np.pi) * np.cos(inclination * 2 * np.pi / 360))
                 x = np.sqrt(Rorb**2 + z**2 - 2 * Rorb * z * np.cos(alpha))
                 v = vinf_cm_s * (1 - Rstar_cm / x)**beta
@@ -2896,18 +2986,22 @@ def nh_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis, 
         size_phase_bin = np.diff(phbins)
         minsizebin = min(size_phase_bin)
         maxph = max(phbins[-1])
-        tphase = np.arange(0, maxph, minsizebin / 100)
+        tphase = np.arange(0, maxph, minsizebin / 3)
 
         nh_for_bin = nh_calc(tphase)
         nh_bin = []
 
         for i in range(len(phbins)):
+        
             if size_phase_bin[i] >= extended_binsize:
+            
                 nh_bin.append(np.mean(nh_for_bin[(tphase >= phbins[i, 0]) & (tphase <= phbins[i, 1])]))
+                
             else:
                 nh_bin.append(nh_calc(np.array([phase_punctual[i]]))[0])
 
     elif method_ == "discrete":
+
         
         phase_discrete, _, _ = orbital_time_to_phase_(t, iphase, semimajor, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2, precision=0.01)
         
@@ -2975,6 +3069,7 @@ def fit_nh_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=200, swarmsize=
     lower_bounds, upper_bounds = manage_bounds(parameter_names, "nh")
     best_params_list = []
     chi_list = []
+    
     for i in range(num_iterations):
         best_params, _ = pso(objective_function, lb=lower_bounds, ub=upper_bounds, maxiter = maxiter, swarmsize = swarmsize)
 
@@ -2984,6 +3079,7 @@ def fit_nh_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=200, swarmsize=
         chi_squared = chi_squared_weighted(y_data, y_err_weight,predicted_data)
 
         chi_list.append(chi_squared)
+        
 #.............................Get the results
     mean_params = np.mean (best_params_list, axis=0)
     std_params = np.std (best_params_list, axis=0)
@@ -3034,7 +3130,7 @@ def fit_nh_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=200, swarmsize=
         df_results_transposed.periapsis.Value,
         df_results_transposed.Rstar.Value,
         max(df_results_transposed.Mstar2.Value, df_results_transposed.Mstar1.Value),
-        dmin(df_results_transposed.Mstar2.Value,df_results_transposed.Mstar1.Value),  precision=0.01)
+        min(df_results_transposed.Mstar2.Value,df_results_transposed.Mstar1.Value),  precision=0.01)
        
         
     return df_results_transposed, ph, predicted_data, chi_squared
