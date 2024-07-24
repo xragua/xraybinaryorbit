@@ -20,6 +20,7 @@ from scipy.integrate import quad
 from matplotlib.colors import Normalize
 from matplotlib.cm import ScalarMappable
 import inspect
+import math
 
 warnings.filterwarnings("ignore")
 warnings.filterwarnings("ignore", category=RuntimeWarning)
@@ -164,6 +165,15 @@ def chi_squared_weighted(y_data, y_err, y_pred):
     y_pred = np.asarray(y_pred)
 
     chi_squared = np.sum(((y_data - y_pred) / y_err) ** 2)
+    return chi_squared
+    
+def chi_squared(y_data, y_pred):
+
+    y_data = np.asarray(y_data)
+    y_err = np.asarray(y_err)
+    y_pred = np.asarray(y_pred)
+
+    chi_squared = np.sum((y_data - y_pred) ** 2)
     return chi_squared
 
 #................................................... Easy way to manage values
@@ -505,7 +515,7 @@ def orbital_time_to_phase_(t,iphase, semimajor, orbitalperiod, eccentricity, per
     times_to_interpolate = t-min(t)
     
     phase_interpolator = interp1d(time, th, kind='cubic', fill_value="extrapolate")
-    phase = phase_interpolator(times_to_interpolate)+iphase
+    phase = phase_interpolator(times_to_interpolate)
     
     w_interpolator = interp1d(time, W_to_interpolate, kind='cubic', fill_value="extrapolate")
     W = w_interpolator(times_to_interpolate)
@@ -590,7 +600,7 @@ def rebin_bins_(t, x, sy, nbin):
     t_new=[]
     sc_new=[]
     
-    t, x, sy = preprocess_data(t, c, sc)
+    t, x, sy = preprocess_data(t, x, sy)
     
     for i in range(len(x)-nbin-1):
 
@@ -609,6 +619,7 @@ def rebin_bins_(t, x, sy, nbin):
             t_new.append(sum(t_bin*w)/sum(w))
 
     return t_new,c_new,sc_new
+
 ##########################################################################################
 ################################ THEORETICAL FUNCTIONS ###################################
 ##########################################################################################
@@ -1190,7 +1201,7 @@ def ionization_map_phase(size_in_Rstar=0, min_color=None, max_color=None, save_p
 
     Returns:
     - chi_result (pd.DataFrame): DataFrame containing the ionization parameter map.
-    - area (float): The calculated area between bounds.
+    - area (float): The calculated area between bounds in cm^2.
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------""")
 
@@ -1300,7 +1311,7 @@ def ionization_map_phase(size_in_Rstar=0, min_color=None, max_color=None, save_p
             colors = cmap(norm(np.log(chi)))
         
 
-            axs.scatter(np.tile(th_[i] * 2 * np.pi, len(x)), x / Rstar_cm, c=colors, cmap='rainbow')
+            axs.scatter(np.tile(th_[i] * 2 * np.pi, len(x)), x / Rstar_cm, c=colors, cmap='rainbow',alpha=0.3)
 
             if len(x_chi_select) > 1:
                 
@@ -1317,9 +1328,6 @@ def ionization_map_phase(size_in_Rstar=0, min_color=None, max_color=None, save_p
                     bound_limit_4.append(x_chi_select[idx4])
                     phase_limit2.append(th_[i])
                     
-                
-                
-
     #....................................................................................
     th_ = np.arange(phase - gamma_/360 ,-phase_touch + phase, 0.001)
     for i in range(len(th_)):
@@ -1339,7 +1347,7 @@ def ionization_map_phase(size_in_Rstar=0, min_color=None, max_color=None, save_p
             colors = cmap(norm(np.log(chi)))
             distance = luminosity/(ne*chi)**0.5
 
-            axs.scatter(np.tile(th_[i] * 2 * np.pi, len(x)), x / Rstar_cm, c=colors, cmap='rainbow')
+            axs.scatter(np.tile(th_[i] * 2 * np.pi, len(x)), x / Rstar_cm, c=colors, cmap='rainbow',alpha=0.1)
             
             
             if len(x_chi_select) > 1:
@@ -1373,7 +1381,7 @@ def ionization_map_phase(size_in_Rstar=0, min_color=None, max_color=None, save_p
         colors = cmap(norm(np.log(chi)))
         
 
-        axs.scatter(np.tile(th_[i] * 2 * np.pi, len(x)), x / Rstar_cm, c=colors, cmap='rainbow')
+        axs.scatter(np.tile(th_[i] * 2 * np.pi, len(x)), x / Rstar_cm, c=colors, cmap='rainbow',alpha=0.1)
 
         if len(x_chi_select) > 1:
         
@@ -1391,14 +1399,12 @@ def ionization_map_phase(size_in_Rstar=0, min_color=None, max_color=None, save_p
                 bound_limit_4.append(x_chi_select[idx4])
                 phase_limit2.append(th_[i])
 
-
-
     
     # Plot additional elements
     axs.plot(np.linspace(0, 2 * np.pi, 100), np.ones(100), color='black')
-    axs.plot(th * 2 * np.pi, Rorb_plot / Rstar_cm, color='black', linestyle='--',alpha=0.3)
+    axs.plot(th * 2 * np.pi, Rorb_plot / Rstar_cm, color='black', linestyle='--',alpha=0.1)
     axs.plot(phase * 2 * np.pi, Rorb / Rstar_cm, color='black', marker='.')
-
+    
     #Plot  and area between bounds
     ph_lim=np.array(phase_limit)
     ph_lim2=np.array(phase_limit2)
@@ -1412,7 +1418,6 @@ def ionization_map_phase(size_in_Rstar=0, min_color=None, max_color=None, save_p
     ph_lim = ph_lim[sorted_indices]*2*np.pi
     x_bound1 = x_bound1[sorted_indices]
     x_bound2 = x_bound2[sorted_indices]
-    
     
     sorted_indices2 = np.argsort(ph_lim2)
     
@@ -1429,14 +1434,14 @@ def ionization_map_phase(size_in_Rstar=0, min_color=None, max_color=None, save_p
     dph_lim = np.diff(ph_lim)
     dph_lim2 = np.diff(ph_lim2)
 
-    area1 = 0.5 * np.sum((x_bound1[:-1]**2 + x_bound1[1:]**2) * dph_lim)
-    area2 = 0.5 * np.sum((x_bound2[:-1]**2 + x_bound2[1:]**2) * dph_lim)
+    area1 = 0.5 * np.sum((x_bound1[:-1] * x_bound1[1:]) * np.sin(dph_lim))
+    area2 = 0.5 * np.sum((x_bound2[:-1] * x_bound2[1:]) * np.sin(dph_lim))
     
-    area3 = 0.5 * np.sum((x_bound3[:-1]**2 + x_bound3[1:]**2) * dph_lim2)
-    area4 = 0.5 * np.sum((x_bound4[:-1]**2 + x_bound4[1:]**2) * dph_lim2)
+    area3 = 0.5 * np.sum((x_bound3[:-1] * x_bound3[1:]) * np.sin(dph_lim2))
+    area4 = 0.5 * np.sum((x_bound4[:-1] * x_bound4[1:]) * np.sin(dph_lim2))
     
-    area_sec_1 = np.abs(area2-area1)
-    area_sec_2 = np.abs(area3-area4)
+    area_sec_1 = np.abs(area2-area1)*Rstar_cm**2
+    area_sec_2 = np.abs(area3-area4)*Rstar_cm**2
     
     area_between_bounds = np.abs(area_sec_1-area_sec_2)
        #.......................
@@ -1591,7 +1596,7 @@ def orbital_time_to_phase(t, precision=0.01):
     times_to_interpolate = t-min(t)
     
     phase_interpolator = interp1d(time, th, kind='cubic', fill_value="extrapolate")
-    phase = phase_interpolator(times_to_interpolate)+iphase
+    phase = phase_interpolator(times_to_interpolate)
     
     w_interpolator = interp1d(time, W_to_interpolate, kind='cubic', fill_value="extrapolate")
     W = w_interpolator(times_to_interpolate)
@@ -3055,30 +3060,33 @@ def fit_nh_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=200, swarmsize=
     if len(np.shape(x_data)) == 1 and len(x_data) == len(y_data):
         method_ == "discrete"
 #............................................Objective function
+
     def objective_function(params):
 
         iphase, semimajor, orbitalperiod, eccentricity, periapsis ,inclination, Rstar, Mstar1, Mstar2, Mdot, v_inf, beta = params
-
         predicted_data = nh_orbit(x_data,  iphase, semimajor, orbitalperiod, eccentricity, periapsis ,inclination, Rstar, Mstar1,
                                      Mstar2, Mdot, v_inf, beta, method_,extended_binsize)
 
         chi_squared = chi_squared_weighted(y_data, y_err_weight,predicted_data)
-
+         
         return chi_squared
 #............................................PS implementation
     lower_bounds, upper_bounds = manage_bounds(parameter_names, "nh")
     best_params_list = []
     chi_list = []
-    
+
     for i in range(num_iterations):
-        best_params, _ = pso(objective_function, lb=lower_bounds, ub=upper_bounds, maxiter = maxiter, swarmsize = swarmsize)
+    
+
+        best_params, _ = pso(objective_function, lb=lower_bounds, ub=upper_bounds, maxiter = maxiter, swarmsize = swarmsize, phig=2)
 
         best_params_list.append(best_params)
         predicted_data = nh_orbit(x_data, *best_params, method_,extended_binsize)
 
-        chi_squared = chi_squared_weighted(y_data, y_err_weight,predicted_data)
+        chi_squared = chi_squared_weighted(y_data, y_err_weight, predicted_data)
 
         chi_list.append(chi_squared)
+        #print(chi_squared)
         
 #.............................Get the results
     mean_params = np.mean (best_params_list, axis=0)
@@ -3286,7 +3294,7 @@ def rebin_bins(t, x, sy, nbin):
     t_new=[]
     sc_new=[]
     
-    t, x, sy = preprocess_data(t, c, sc)
+    t, x, sy = preprocess_data(t, x, sy)
     
     for i in range(len(x)-nbin-1):
 
