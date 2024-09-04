@@ -9,6 +9,8 @@ Each function is briefly described when loaded, helping to guide its execution.
 The primary physics used for these packages rely on the Doppler effect, Kepler's laws, and the CAK model (Castor, Abbott, and Klein) as described in:
 Castor, J. I., Abbott, D. C., & Klein, R. I. (1975). Radiation-driven winds in Of stars. *Astrophysical Journal*, 195, 157-174.
 
+This package requires the following Python libraries to function correctly: numpy, pandas, scipy, pyswarm, matplotlib, os, warnings, tkinter, astropy, and inspect. These dependencies cover numerical computations, data manipulation, scientific computing, optimization, visualization, GUI creation, time-series analysis, and interaction with the operating system. Ensure these packages are installed to run this package successfully.
+
 ### Available Functions
 
 #### Theoretical Functions
