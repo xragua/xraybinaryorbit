@@ -32,13 +32,14 @@ bibliography: paper.bib
 
 ---
 
+
 # Summary
 
 X-ray astronomy is a young discipline, spanning no more than a few decades. The Earth's atmosphere is opaque to this type of radiation, so observations in this part of the spectrum had to wait until the beginning of the space era, with rocket launchers carrying X-ray telescopes to reveal the universe from a brand-new point of view.
 
 X-ray binary systems consist of two stars in close orbit around each other, where one of the stars is typically a compact object such as a neutron star or a black hole. The compact object accretes matter from its companion star, which can be a main sequence star, a giant star, or even another compact object. The X-ray radiation in these systems is generated through the accretion of matter from the companion's powerful stellar wind, typical of these early-type stars. Close binaries may become compact-object mergers and eventually sources of gravitational waves and/or short gamma-ray bursts. They will also provide insight into the behavior of matter under extreme gravitational and magnetic fields. Understanding these processes is fundamental to modern astrophysics and has driven numerous theoretical and observational studies.
 
-The xraybinaryoorbit package helps to unveil X-Ray binary orbital dynamics based on key theories including the conservation of angular momentum in orbital mechanics, the CAK model for radiation-driven stellar winds, accretion luminosity, ionization parameters, and the Doppler effect. Additionally, it provides tools for the Lomb-Scargle periodogram to identify periodic signals in unevenly sampled data.
+The xraybinaryoorbit package helps to unveil X-Ray binary orbital dynamics based on key theories including the conservation of angular momentum in orbital mechanics, the CAK model for radiation-driven stellar winds, accretion luminosity, ionization parameters, and the Doppler effect. 
 
 
 # Science behind
@@ -88,20 +89,6 @@ In astronomy, the Doppler effect is used to analyze the motion of celestial obje
 
 In the context of X-ray binaries, the Doppler effect is evident in the pulsations of a neutron star (NS) orbiting its companion, allowing precise determination of orbital parameters like radius, mass, inclination, and eccentricity. Additionally, the Doppler effect influences emission line energies when the emitting plasma is in motion.
 
-### Simple Models
-- **Conic Orbit**: representing the movement of the compact object around the companion.
-- **Logarithmic Spiral**: gravitational capture of matter which will eventually be captured by the stellar object.
-
-### Composed Models
-- **Disc in a Conic Orbit**: representing an accretion disc or ballistic movement around the compact object traveling around the companion.
-- **Logarithmic Spiral in a Conic Orbit**: gravitational capture of matter by the compact object traveling in a conic orbit around the companion.
-
-$$ r_{\text{main}} = \frac{b_{\text{main}} \cdot (1 - e_{\text{main}}^2)}{1 + e_{\text{main}} \cdot \cos(\phi_{\text{main}} - W_{\text{main}})} $$
-
-$$ r_{\text{secondary}} = \frac{b_{\text{secondary}} \cdot (1 - e_{\text{secondary}}^2)}{1 + e_{\text{secondary}} \cdot \cos(\phi_{\text{secondary}} - W_{\text{secondary}})} $$
-
-$$ r_{\text{spiral}} = a_{\text{spiral}} \times \exp(b \cdot 2\pi \phi) $$
-
 The general equation for the Doppler velocity in terms of the orbital phase is:
 
 $$ v_{D} = (-r\omega \sin\phi \sin i) $$
@@ -109,47 +96,7 @@ $$ v_{D} = (-r\omega \sin\phi \sin i) $$
 $$ \lambda_{D} = \lambda_{\text{rest}}\left(1+\frac{v_{D}}{c}\right) $$
 
 where r is the orbital radius, a is the semimajor axis, b is the distance to the barycenter (the semimajor axis corrected by the reduced mass of the stellar system), e is the eccentricity, \phi is the orbital phase,  W is the angle to the periapsis, $\omega$ is the angular velocity, i is the inclination, and $\lambda_{\rm D}$ and $\lambda_{\rm rest}$ are the center of the emission line, Doppler shifted and at rest, respectively, in wavelength units.
- In the case of composed models, the Doppler effect will be the sum of the velocities involved in the system.
 
-## Lomb-Scargle Periodogram:
-
-The Lomb-Scargle periodogram [@1982ApJ263835S] is a method used in astrophysics and other fields to find the dominant frequencies in unevenly sampled data. It is particularly useful for detecting periodic signals with variable amplitudes and non-sinusoidal shapes. The periodogram computes the power spectral density of a time series, identifying the periodicities that best fit the observed data points.
-
-In the context of X-ray astronomy and other observational sciences, the Lomb-Scargle method allows researchers to analyze irregularly spaced observations and extract information about periodic variations in X-ray flux, pulsations, or other cyclical phenomena.
-
-# Functions and Methods
-
-The functions contained in this package are the following: 
-
-### Theoretical Functions
-- **doppler_orbit_theoretical**: Calculates the Doppler effect in the orbital motion.
-- **doppler_spiral_theoretical**: Models the Doppler effect in spiral structures.
-- **doppler_disc_theoretical**: Models the Doppler effect in accretion discs.
-- **doppler_spiral_in_orbit_theoretical**: Combines orbital and spiral Doppler effects.
-- **density_through_orbit_theoretical**: Computes wind density through the orbit.
-- **absorption_column_through_orbit_theoretical**: Calculates absorption column variations through the orbit.
-- **ionization_map_phase**: Maps ionization levels across orbital phases.
-- **orbital_phase_to_time**: Converts orbital phase to time.
-- **orbital_time_to_phase**: Converts orbital time to phase.
-
-### Fitting Functions
-- **fit_orbit_ps**: Fits orbital parameters using particle swarm optimization.
-- **fit_orbit_ls**: Fits orbital parameters using least squares.
-- **fit_disc_ps**: Fits disc contained in a main orbit parameters using particle swarm optimization.
-- **fit_disc_ls**: Fits disc contained in a main orbit parameters using least squares.
-- **fit_spiral_ps**: Fits spiral parameters using particle swarm optimization.
-- **fit_spiral_ls**: Fits spiral parameters using least squares.
-- **fit_spiral_in_orbit_ps**: Fits combined spiral orbit parameters using particle swarm optimization.
-- **fit_spiral_in_orbit_ls**: Fits combined spiral and orbit parameters using least squares
-- **fit_nh_ps**: Fits NH variations through an orbit using particle swarm optimization.
-
-### Timing Functions
-- **hr**: Calculates hardness ratio its error.
-- **cr**: Computes the color ratio and its error.
-- **rebin_snr**: Rebins data to achieve a specific signal-to-noise ratio.
-- **rebin_bins**: Rebins data into a specified bin size (in seconds).
-- **fold_pulse**: Folds pulse profiles over the orbital period.
-- **period_sliding_window**: Analyzes period changes using a sliding window method.
 
 Within the Fitting functions, we use a particle swarm approach ([@pyswarms], [@10.1162/EVCO_r_00180]) as a classical least squares algorithm does not always converge.
 
@@ -157,11 +104,11 @@ Within the Fitting functions, we use a particle swarm approach ([@pyswarms], [@1
 
 # Statement of Need
 
-The study of orbital modulations in X-ray binaries is essential for understanding their physical properties and dynamics. Currently, these modulations are often overlooked, probably due to the limited resolution of existing instruments like Chandra and XMM, which makes it challenging to obtain adequate data unless the modulation is particularly prominent. However, upcoming telescopes such as Athena's X-IFU [@2016SPIE9905E2FB]  and XRISM [@2022arXiv220205399X], with their significantly higher resolution, will enhance the importance of these analyses. These advanced instruments are expected to provide deeper insights into the intricate dynamics of X-ray systems.
+The study of orbital modulations in X-ray binaries is crucial for understanding their physical properties and dynamics. Upcoming telescopes, such as Athena's X-IFU [@2016SPIE9905E2FB] and XRISM [@2022arXiv220205399X], with their significantly higher resolution, are expected to greatly enhance these analyses, providing deeper insights into the intricate dynamics of X-ray systems.
 
-Although orbital modulations are widely known, they are complex to analyze and depend on several parameters and geometrical considerations. With this in mind, we collected all the functions we created through years of analyzing close X-ray binaries and formed a python package useful in almost every X-ray binary analysis, with the aim of facilitating its implementation for other astronomers. With the fact that these orbital modulations rely in several different parameters, here we propose a user-friendly form method to improve the package usability.
+However, it's not just the next-generation instruments that will advance our understanding. New analytical techniques and improved computing capacities will allow us to revisit and reanalyze existing data from current telescopes from a different point of view. This approach has already been successfully applied to data from Chandra and XMM, as demonstrated in recent studies [@2022MNRAS512304S; @2021MNRAS.501.5892S], and is also the focus of ongoing research currently under review.
 
-However, these functions are not solely reliant on future data from advanced telescopes. Many orbital modulations may already be latent within existing archives, waiting to be uncovered. Indeed, these functions have already been utilized with Chandra and XMM data in the published papers ([@2022MNRAS512304S],[@2021MNRAS.501.5892S]) and in others currently under referee process.
+
 
 # Acknowledgements
 
