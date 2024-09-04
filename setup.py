@@ -22,7 +22,7 @@ setup(
     classifiers=[
         'Development Status :: 1 - Beta',  # Current development status
         'Intended Audience :: Astronomers',  # Audience type
-        'Topic :: Software Development :: Build Tools',
+        'Topic :: X-ray astronomy orbital modulations:: Analysis Tools',
         'License :: OSI Approved :: MIT License',  # License
         'Programming Language :: Python :: 3',  # Supported Python versions
         'Programming Language :: Python :: 3.4',
