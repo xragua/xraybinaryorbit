@@ -20,7 +20,7 @@ setup(
         'astropy',
     ],
     classifiers=[
-        'Development Status :: 1 - Beta',  # Current development status
+        'Development Status :: v_01',  # Current development status
         'Intended Audience :: Astronomers',  # Audience type
         'Topic :: X-ray astronomy orbital modulations:: Analysis Tools',
         'License :: OSI Approved :: MIT License',  # License
