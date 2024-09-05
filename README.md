@@ -14,7 +14,7 @@ This package requires the following Python libraries to function correctly: nump
 ## Installation
 
 You can install the package directly from PyPI using `pip`:
-!pip install xraybinaryorbit
+pip install xraybinaryorbit
 
 ### Available Functions
 
