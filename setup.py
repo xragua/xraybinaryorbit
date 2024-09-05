@@ -9,7 +9,7 @@ setup(
     author='LAEX',  # Your name
     author_email='graciela.sanjurjo@ua.es',  # Your email address
     url='https://github.com/xragua/xraybinaryorbit/',  # URL of your GitHub repository
-    download_url='https://github.com/xragua/PKGS/archive/v_01.tar.gz',  # Download URL for the package
+    download_url='https://github.com/xragua/xraybinaryorbit/archive/refs/tags/one.tar.gz',  # Download URL for the package
     keywords=['astronomy', 'x-ray, 'binary','orbit'],  # Keywords describing your package
     install_requires=[  # List of dependencies
         'numpy',
