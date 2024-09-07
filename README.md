@@ -11,7 +11,7 @@ Castor, J. I., Abbott, D. C., & Klein, R. I. (1975). Radiation-driven winds in O
 
 This package requires the following Python libraries to function correctly: numpy, pandas, scipy, pyswarm, matplotlib, os, warnings, tkinter, astropy, and inspect. These dependencies cover numerical computations, data manipulation, scientific computing, optimization, visualization, GUI creation, time-series analysis, and interaction with the operating system. Ensure these packages are installed to run this package successfully.
 
-## Installation
+### Installation
 
 You can install the package directly from PyPI using `pip`:
 pip install xraybinaryorbit
