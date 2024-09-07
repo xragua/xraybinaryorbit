@@ -1,0 +1,12 @@
+LICENSE
+LICENSE.txt
+README.md
+setup.cfg
+setup.py
+xraybinaryorbit/__init__.py
+xraybinaryorbit/xraybinaryorbit.py
+xraybinaryorbit.egg-info/PKG-INFO
+xraybinaryorbit.egg-info/SOURCES.txt
+xraybinaryorbit.egg-info/dependency_links.txt
+xraybinaryorbit.egg-info/requires.txt
+xraybinaryorbit.egg-info/top_level.txt
