@@ -3,7 +3,7 @@ from distutils.core import setup
 setup(
     name='xraybinaryorbit',  # Your package name
     packages=['xraybinaryorbit'],  # The name of the package directory
-    version='0.2',  # Initial version
+    version='0.2.1',  # Initial version
     license='MIT',  # License type
     description='A package for x-ray binary orbital modulations.',  # Short description
     author='LAEX',  # Your name

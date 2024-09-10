@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: xraybinaryorbit
-Version: 0.2
+Version: 0.2.1
 Summary: A package for x-ray binary orbital modulations.
 Home-page: https://github.com/xragua/xraybinaryorbit/
 Download-URL: https://github.com/xragua/xraybinaryorbit/archive/refs/tags/one.tar.gz
