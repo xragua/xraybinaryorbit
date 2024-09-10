@@ -1184,7 +1184,7 @@ def absorption_column_through_orbit_theoretical(resolution=0.01,show_plot=True):
 
 def ionization_map_phase(size_in_Rstar=0, min_color=None, max_color=None, save_plot=False, name="ionization_map"):
 
-    print(    """
+"""
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     Generates a logarithmic ionization parameter map based on the stellar wind density, the luminosity and orbital parameters.
