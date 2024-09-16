@@ -1,6 +1,20 @@
+# Ignore Python bytecode files
 __pycache__/
 *.pyc
 *.pyo
-.DS_Store
+
+# Ignore build artifacts
 build/
 *.egg-info/
+
+# Ignore macOS system files
+.DS_Store
+
+# Ignore IDE and editor settings
+.vscode/
+.idea/
+
+# Ignore temporary files and logs
+*.log
+tmp/
+temp/
