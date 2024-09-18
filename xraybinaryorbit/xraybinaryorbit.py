@@ -633,7 +633,7 @@ def rebin_bins_(t, x, sy, nbin):
 
 # CONIC ORBIT #############################################################################
 def doppler_orbit_theoretical(t, units="keV", show_plot=False, precision_for_phase=0.01):
-    """
+    print("""
 
     Computes the Doppler variation expected from orbital movement given a time array in seconds.
 
@@ -648,8 +648,8 @@ def doppler_orbit_theoretical(t, units="keV", show_plot=False, precision_for_pha
     - x (array-like): Orbital phase array.
     - equation (array-like): Expected Doppler variation.
 
-    """
-    r_names=["iphase", "semimajor", "orbitalperiod", "eccentricity", "periapsis", "inclination", "Rstar", "Mstar1","Mstar2", "wind_vel", "feature"]
+    """)
+    parameter_names=["iphase", "semimajor", "orbitalperiod", "eccentricity", "periapsis", "inclination", "Rstar", "Mstar1","Mstar2", "wind_vel", "feature"]
     
     fixed_values = manage_parameters(parameter_names, "orbit")
     iphase, semimajor, orbitalperiod, eccentricity, periapsis, inclination, Rstar, Mstar1, Mstar2, wind_vel, feature = fixed_values
@@ -715,7 +715,7 @@ def doppler_orbit_theoretical(t, units="keV", show_plot=False, precision_for_pha
     
 # SPIRAL #########################################################################################
 def doppler_spiral_theoretical(t, units="keV", show_plot=False):
-    """
+    print("""
     Computes the Doppler variation expected from a spiral movement given a time array in seconds.
     
     A logarithmic spiral is a type of spiral that grows in size by a constant factor with each turn. Its equation in polar coordinates is
@@ -737,7 +737,7 @@ def doppler_spiral_theoretical(t, units="keV", show_plot=False):
     Returns:
     - x (array-like): Orbital phase array.
     - equation (array-like): Expected Doppler variation.
-    """
+    """)
 
 
     parameter_names=["iphase_spiral", "semimajor_spiral", "b", "omega", "inclination_spiral", "feature"]
@@ -802,7 +802,7 @@ def doppler_spiral_theoretical(t, units="keV", show_plot=False):
     
 # ORBIT IN ORBIT #####################################################################################
 def doppler_disc_theoretical(t, units="keV", show_plot=False):
-    """
+    print("""
     Computes the Doppler variation expected from an orbital movement in a main orbit,
     assuming a ballistic movement of plasma around a compact object or the movement of a mass
     entering an accretion disc.
@@ -818,7 +818,7 @@ def doppler_disc_theoretical(t, units="keV", show_plot=False):
     - x (array-like): Orbital phase array for the first orbit.
     - x2 (array-like): Orbital phase array for the second orbit.
     - equation (array-like): Expected Doppler variation.
-    """
+    """)
     parameter_names=["iphase", "semimajor", "orbitalperiod", "eccentricity", "periapsis", "inclination", "Rstar", "Mstar1", "Mstar2", "iphase2", "semimajor2", "orbitalperiod2", "eccentricity2", "periapsis2", "inclination2",  "Mass3","wind_vel", "feature"]
     
     fixed_values = manage_parameters(parameter_names, "disc")
@@ -900,7 +900,7 @@ def doppler_disc_theoretical(t, units="keV", show_plot=False):
     
 # SPIRAL IN ORBIT ####################################################################################
 def doppler_spiral_in_orbit_theoretical(t, units="keV", show_plot=False):
-    """
+    print("""
     This function requires a time array in seconds and returns the time, orbital phase, and Doppler variation
     expected under the assumption of an orbital movement with a logarithmic spiral component.
 
@@ -922,7 +922,7 @@ def doppler_spiral_in_orbit_theoretical(t, units="keV", show_plot=False):
     - θ is the angle from a reference direction (usually the positive x-axis)
     - a is the scale factor that determines how quickly the spiral grows
     - b is the rate of rotation, controlling the tightness or looseness of the spiral
-    """
+    """)
 
     parameter_names=["iphase", "semimajor", "orbitalperiod", "eccentricity", "periapsis", "inclination", "iphase_spiral", "semimajor_spiral", "b", "omega", "inclination_spiral", "Rstar", "Mstar1", "Mstar2", "wind_vel", "feature"]
     
@@ -1005,7 +1005,7 @@ def doppler_spiral_in_orbit_theoretical(t, units="keV", show_plot=False):
      
 # DENSITY IN THE ORBIT #############################################################################
 def density_through_orbit_theoretical(resolution=0.01, show_plot=False):
-    """
+    print("""
     This function helps visualize the density (gr/cm^2) encountered by a compact object along its orbit.
     It assumes a spherically distributed stellar wind based on the CAK model.
 
@@ -1024,7 +1024,7 @@ def density_through_orbit_theoretical(resolution=0.01, show_plot=False):
     - time (array-like): Time array.
     - phase (array-like): Orbital phase array.
     - density (array-like): Density through the orbit in gr/cm^2.
-    """
+    """)
     parameter_names = ["semimajor","orbitalperiod" ,"eccentricity", "periapsis", "Rstar","Mstar1","Mstar2","wind_infinite_velocity","Mass_loss_rate","beta" ]
     
     fixed_values = manage_parameters(parameter_names, "density_through_orbit")
@@ -1077,7 +1077,7 @@ def density_through_orbit_theoretical(resolution=0.01, show_plot=False):
 
 # ABSOPTION COLUMN #############################################################################
 def absorption_column_through_orbit_theoretical(resolution=0.01, show_plot=True):
-    """
+    print("""
     This function visualizes the column density (NH1, x 10^22 cm^-2) encountered by radiation emitted at each orbital phase as it travels towards an observer. It assumes a spherically distributed, neutral (unionized) stellar wind based on the CAK model.
 
     Parameters:
@@ -1091,7 +1091,7 @@ def absorption_column_through_orbit_theoretical(resolution=0.01, show_plot=True)
     - NH1 (array-like): Absorption column density (NH1, x 10^22 cm^-2) through the orbit.
     
     (Please, take into account that if the distance to the star is smaller than the stellar radius, the result will be 0).
-    """
+    """)
 
     parameter_names = ["semimajor","orbitalperiod" ,"eccentricity", "periapsis" ,"inclination", "Rstar","Mstar1","Mstar2","wind_infinite_velocity","Mass_loss_rate","beta" ]
     
@@ -1162,7 +1162,7 @@ def absorption_column_through_orbit_theoretical(resolution=0.01, show_plot=True)
 
 
 def ionization_map_phase(size_in_Rstar=0, min_color=None, max_color=None, save_plot=False, name="ionization_map"):
-    """
+    print("""
     Generates a logarithmic ionization parameter map based on the stellar wind density, the luminosity, and orbital parameters.
     The uncolored area represents the X-ray shadow.
 
@@ -1177,7 +1177,7 @@ def ionization_map_phase(size_in_Rstar=0, min_color=None, max_color=None, save_p
     Returns:
     - chi_result (pd.DataFrame): DataFrame containing the ionization parameter map.
     - area (float): The calculated area between bounds in cm^2.
-    """
+    """)
 
     parameter_names = [
         "phase", "semimajor", "eccentricity", "periapsis", "Rstar", "Mstar1", "Mstar2",
@@ -1437,7 +1437,7 @@ def ionization_map_phase(size_in_Rstar=0, min_color=None, max_color=None, save_p
 
 # PHASE TO TIME ###########################################################################
 def orbital_phase_to_time(ph, precision=0.01):
-    """
+    print("""
     Converts orbital phase array to time array for a compact object orbiting a companion star.
     The compact object moves faster at periastron than at apoastro. The increased orbital speed at
     periastron is primarily due to the conservation of angular momentum, which dictates that as the
@@ -1457,7 +1457,7 @@ def orbital_phase_to_time(ph, precision=0.01):
     - ph (array-like): Orbital phase array (same as input).
     - time (array-like): Time array corresponding to the orbital phase.
     - W (array-like): Angular velocity array corresponding to the orbital phase.
-    """
+    """)
 
 
     #.............................Load parameters
@@ -1509,7 +1509,7 @@ def orbital_phase_to_time(ph, precision=0.01):
     
     
 def orbital_time_to_phase(t, precision=0.01):
-    """
+    print("""
     Converts orbital time array to phase array for a compact object orbiting a companion star.
     The compact object moves faster at periastron than at apoastro. The increased orbital speed at
     periastron is primarily due to the conservation of angular momentum, which dictates that as the
@@ -1536,7 +1536,7 @@ def orbital_time_to_phase(t, precision=0.01):
     laws of planetary motion, which describe how objects sweep out equal areas in equal times and the
     gravitational force between two bodies, which strengthens as they approach each other and weakens
     as they move apart.
-    """
+    """)
 
 
     #.............................Load parameters
@@ -1689,7 +1689,7 @@ def conic_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsi
 
 def fit_orbit_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarmsize=100,
                  units="keV", method_="extended", extended_binsize=0.01):
-    """
+    print("""
     Fits observed orbital modulation data by estimating parameters such as phase, semi-major axis,
     orbital period, eccentricity, inclination, and periapsis.
 
@@ -1720,7 +1720,7 @@ def fit_orbit_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarms
     - ph (array-like): Array of phases corresponding to the predicted data.
     - predicted_data (array-like): Predicted data based on the best-fit parameters.
     - chi_squared (float): Chi-squared statistic weighted by the error, indicating the quality of the fit.
-    """
+    """)
 
 
     #............................................Data prep
@@ -1818,7 +1818,7 @@ def fit_orbit_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarms
     
 # LS FIT------------------------------------------------------------------------------------------------------
 def fit_orbit_ls(x_data, y_data, y_err=0, units="keV", method_="extended", extended_binsize=0.01):
-    """
+    print("""
     Fits orbital modulation data by estimating parameters such as phase, semi-major axis, orbital period,
     eccentricity, inclination, and periapsis.
 
@@ -1846,7 +1846,7 @@ def fit_orbit_ls(x_data, y_data, y_err=0, units="keV", method_="extended", exten
     - ph (array-like): Array of phases corresponding to the predicted data.
     - predicted_data (array-like): Predicted data based on the best-fit parameters.
     - chi_squared (float): Chi-squared statistic weighted by the error, indicating the quality of the fit.
-    """
+    """)
 
 
     #...........................................data prep
@@ -2040,7 +2040,7 @@ def disc_in_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periap
 # PS FIT------------------------------------------------------------------------------------------------------
 def fit_disc_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarmsize=100,
                 units="keV", method_="extended", extended_binsize=0.01):
-    """
+    print("""
     Fits orbital modulation data by estimating parameters such as phase, semi-major axis, orbital period,
     eccentricity, and inclination for the main orbit, as well as corresponding parameters for a secondary
     orbit (e.g., ballistic capture of matter around a compact object or an accretion disk).
@@ -2073,7 +2073,7 @@ def fit_disc_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarmsi
     - ph2 (array-like): Array of phases corresponding to the predicted data for the secondary orbit.
     - predicted_data (array-like): Predicted data based on the best-fit parameters.
     - chi_squared (float): Chi-squared statistic weighted by the error, indicating the quality of fit.
-    """
+    """)
 
 
     #............................................data prep
@@ -2191,7 +2191,7 @@ def fit_disc_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarmsi
 # lS FIT------------------------------------------------------------------------------------------------------
 
 def fit_disc_ls(x_data, y_data, y_err=0, units="keV", method_="extended", extended_binsize=0.01):
-    """
+    print("""
     Fits orbital modulation data by estimating parameters such as phase, semi-major axis, orbital period,
     eccentricity, and inclination for the main orbit, as well as corresponding parameters for a secondary
     orbit (e.g., ballistic capture of matter around a compact object or an accretion disk).
@@ -2220,7 +2220,7 @@ def fit_disc_ls(x_data, y_data, y_err=0, units="keV", method_="extended", extend
     - ph (array-like): Array of phases corresponding to the predicted data.
     - predicted_data (array-like): Predicted data based on the best-fit parameters.
     - chi_squared (float): Chi-squared statistic weighted by the error, indicating the quality of fit.
-    """
+    """)
 
 
     #............................................ data prep
@@ -2380,7 +2380,7 @@ def spiral(x_data, iphase_spiral, semimajor_spiral, b, omega, inclination_spiral
 # PS FIT------------------------------------------------------------------------------------------------------
 def fit_spiral_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarmsize=100,
                   units="keV", method_="extended", extended_binsize=0.01):
-    """
+    print("""
     Fits orbital modulation data by estimating parameters for a spiral orbit.
 
     The fitting process uses a particle swarm optimization (PSO) algorithm, which iteratively improves the
@@ -2410,7 +2410,7 @@ def fit_spiral_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarm
     - ph (array-like): Array of phases corresponding to the predicted data.
     - predicted_data (array-like): Predicted data based on the best-fit parameters.
     - chi_squared (float): Chi-squared statistic weighted by the error, indicating the quality of fit.
-    """
+    """)
 
     #............................................data prep
     parameter_names = ["iphase_spiral", "semimajor_spiral", "b", "omega", "inclination_spiral", "feature"]
@@ -2496,7 +2496,7 @@ def fit_spiral_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarm
 # LS FIT------------------------------------------------------------------------------------------------------
 def fit_spiral_ls(x_data, y_data, y_err=0, units="keV", method_="extended", extended_binsize=0.01):
     # ............................................ data prep
-    """
+    print("""
     Fits orbital modulation data by estimating parameters for a spiral orbit.
 
     The fitting process uses a traditional least squares (LS) method, provided for completeness due to the
@@ -2523,7 +2523,7 @@ def fit_spiral_ls(x_data, y_data, y_err=0, units="keV", method_="extended", exte
     - ph (array-like): Array of phases corresponding to the predicted data.
     - predicted_data (array-like): Predicted data based on the best-fit parameters.
     - chi_squared (float): Chi-squared statistic weighted by the error, indicating the quality of fit.
-    """
+    """)
 
 
     parameter_names = ["iphase_spiral", "semimajor_spiral", "b", "omega", "inclination_spiral", "feature"]
@@ -2707,7 +2707,7 @@ def spiral_orbit(x_data, iphase_orbit, semimajor_orbit, orbitalperiod, eccentric
 # PS FIT------------------------------------------------------------------------------------------------------
 def fit_spiral_in_orbit_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarmsize=100,
                            units="keV", method_="extended", extended_binsize=0.01):
-    """
+    print("""
     Fits orbital modulation data by estimating parameters for a spiral orbit contained within a main orbit.
 
     The fitting process uses a particle swarm optimization (PSO) algorithm, which iteratively improves the
@@ -2737,7 +2737,7 @@ def fit_spiral_in_orbit_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=10
     - ph (array-like): Array of phases corresponding to the predicted data.
     - predicted_data (array-like): Predicted data based on the best-fit parameters.
     - chi_squared (float): Chi-squared statistic weighted by the error, indicating the quality of fit.
-    """
+    """)
     #.............................Data prep
     parameter_names = ["iphase_orbit", "semimajor_orbit", "orbitalperiod", "eccentricity", "periapsis", "inclination", "Rstar", "Mstar1", "Mstar2", "iphase_spiral", "semimajor_spiral", "b", "omega", "inclination_spiral","feature"]
     x_data, y_err_weight = define_x_y_sy(x_data,y_data, y_err)
@@ -2834,7 +2834,7 @@ def fit_spiral_in_orbit_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=10
 
 # PS FIT------------------------------------------------------------------------------------------------------
 def fit_spiral_in_orbit_ls(x_data, y_data, y_err=0, units="keV", method_="extended", extended_binsize=0.01):
-    """
+    print("""
     Fits orbital modulation data by estimating parameters for a spiral orbit contained within a main orbit.
 
     The fitting process uses a traditional least squares (LS) method, provided for completeness due to the
@@ -2861,7 +2861,7 @@ def fit_spiral_in_orbit_ls(x_data, y_data, y_err=0, units="keV", method_="extend
     - ph (array-like): Array of phases corresponding to the predicted data.
     - predicted_data (array-like): Predicted data based on the best-fit parameters.
     - chi_squared (float): Chi-squared statistic weighted by the error, indicating the quality of fit.
-    """
+    """)
 
     #............................................Data prep
     parameter_names = ["iphase_orbit", "semimajor_orbit", "orbitalperiod", "eccentricity", "periapsis", "inclination", "Rstar", "Mstar1", "Mstar2", "iphase_spiral", "semimajor_spiral", "b", "omega", "inclination_spiral"]
@@ -3015,7 +3015,7 @@ def nh_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis, 
 # PS FIT------------------------------------------------------------------------------------------------------
 def fit_nh_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=200, swarmsize=20,
               method_="extended", extended_binsize=0.01):
-    """
+    print("""
     Fits the column density (NH1, x 10^22 cm^-2) encountered by radiation emitted at each orbital phase
     as it travels towards an observer. Assumes a spherically distributed, neutral (unionized) stellar wind
     based on the CAK model.
@@ -3047,7 +3047,7 @@ def fit_nh_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=200, swarmsize=
     - ph (array-like): Array of phases corresponding to the predicted data.
     - predicted_data (array-like): Predicted data based on the best-fit parameters.
     - chi_squared (float): Chi-squared statistic weighted by the error, indicating the quality of fit.
-    """
+    """)
 
 #............................................Data prep.
     advise()
@@ -3152,7 +3152,7 @@ def fit_nh_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=200, swarmsize=
 #HELPER FUNCTIONS--------------------------------------------------------------------------
 #.................................................. Hardness ratio
 def hr(x, y, ex, ey):
-    """
+    print("""
 
     Calculates hardness ratio and errors.
     
@@ -3168,7 +3168,7 @@ def hr(x, y, ex, ey):
     -Hardness ratio.
     -Error in the hardness ratio.
 
-    """
+    """)
 
     f_value = (x - y) / (x + y)
     df_dx = 2 * y / (x + y)**2
@@ -3180,7 +3180,7 @@ def hr(x, y, ex, ey):
 
 #.................................................. Color ratio
 def cr(x, y, ex, ey):
-    """
+    print("""
 
     Calculates color ratio and errors.
     
@@ -3196,7 +3196,7 @@ def cr(x, y, ex, ey):
     -Hardness ratio.
     -Error in the hardness ratio.
 
-    """
+    """)
 
     f_value = x / y
     df_dx = 1 / y
@@ -3209,7 +3209,7 @@ def cr(x, y, ex, ey):
 
 #.................................................. Rebin signal to noise
 def rebin_snr(t, x, sy, snr_threshold):
-    """
+    print("""
 
     Calculates a rebinned signal-to-noise lightcurve
 
@@ -3223,7 +3223,7 @@ def rebin_snr(t, x, sy, snr_threshold):
     -Time array
     -Rebined lightcurve
     -Errors
-    """
+    """)
     
     w=[]
     c_bin=[]
@@ -3274,7 +3274,7 @@ def rebin_snr(t, x, sy, snr_threshold):
 #.................................................. Rebin by bins
 def rebin_bins(t, x, sy, nbin):
 
-    """
+    print("""
 
     Calculates a rebinned lightcurve
 
@@ -3289,7 +3289,7 @@ def rebin_bins(t, x, sy, nbin):
     -Rebined lightcurve
     -Errors
 
-    """
+    """)
 
     c_new=[]
     t_new=[]
@@ -3316,7 +3316,7 @@ def rebin_bins(t, x, sy, nbin):
     return t_new,c_new,sc_new
 #.................................................. Periods sliding window
 def fold_pulse(t, c, sc, period, snr=None, rebin=None):
-    """
+    print("""
     Folds a lightcurve data array based on a given period and optionally rebins it.
 
     Parameters:
@@ -3336,7 +3336,7 @@ def fold_pulse(t, c, sc, period, snr=None, rebin=None):
       
     Notes:
     - Either `snr` or `rebin` must be specified to proceed with the function.
-    """
+    """)
     
     phase = (t - min(t)) / period - np.floor((t - min(t)) / period)
 
@@ -3372,7 +3372,7 @@ def preprocess_data(t, x, sy):
 
 def period_sliding_window(t, c, sc, window_sec, step_sec, max_period=None, min_period=None, false_alarm_threshold=0.1, rel_high_for_error=0.9, folded_pulses=False, snr_pulse=0.2, nbin_pulse=None):
 
-    """
+    print("""
     Performs period analysis using a sliding window approach on a lightcurve dataset.
 
     Parameters:
@@ -3398,60 +3398,57 @@ def period_sliding_window(t, c, sc, window_sec, step_sec, max_period=None, min_p
     - The function performs Lomb-Scargle periodogram analysis within each sliding window of the specified size.
     - It filters the periods based on false alarm probability and sorts them by power.
     - If `folded_pulses` is True, it folds the lightcurve for each identified period using `fold_pulse` and stores the results.
-    """
+    """)
 
     def preprocess_data(t, c, sc):
-    
         """ Preprocess the data by removing entries where sc <= 0, NaN, or inf. """
         mask = (sc > 0) & np.isfinite(sc)
         return t[mask], c[mask], sc[mask]
 
     def lb_period_freq(t, c, sc, step, window, max_period, min_period, false_alarm_threshold):
-        if max_period:
-            min_freq = 1 / max_period
-        else:
-            min_freq = None
+        min_freq = 1 / max_period if max_period else None
+        max_freq = 1 / min_period if min_period else None
 
-        if min_period:
-            max_freq = 1 / min_period
-        else:
-            max_freq = None
-
-        freq, power = LombScargle(t, c, sc).autopower(maximum_frequency=max_freq, minimum_frequency=min_freq,samples_per_peak=1000)
-        
+        # Lomb-Scargle periodogram
+        freq, power = LombScargle(t, c, sc).autopower(maximum_frequency=max_freq, minimum_frequency=min_freq, samples_per_peak=1000)
         ls = LombScargle(t, c, sc)
-        pos = find_peaks(power)[0]
-
+        
+        pos = find_peaks(power)[0]  # Peak positions
         df_list = []
 
         if len(pos) > 0:
+            # False alarm probability for the peaks
             fa_prob = ls.false_alarm_probability(power[pos])
             index_fa = fa_prob < false_alarm_threshold
             peaks_indices = pos[index_fa]
 
             if len(peaks_indices) > 0:
-                peaks_values = power[peaks_indices]
+                
+                # Calculate widths and errors for the peaks
                 results_widths = peak_widths(power, peaks_indices, rel_height=rel_high_for_error)
+               
+                # Loop through each peak and store data
+                for i, index in enumerate(peaks_indices):
+                    # Approximate frequency error as half the width of the peak in frequency
+                    freq_error = max(np.diff(freq[int(results_widths[2][i])-3:int(results_widths[2][i])+3]))*3
+        
+                    power_error = results_widths[1][i]  # Width corresponds to the peak
+                    snr=power[index]/np.median(power)
 
-                freq_error = results_widths[0][0] / (2 * np.sqrt(2 * np.log(2)))  # Assuming Gaussian approximation
-                power_error = results_widths[1][0]
-
-                k = 0
-
-                for index in peaks_indices:
                     df_list.append({
                         'min_time': min(t),
                         'max_time': max(t),
                         'Frequency': freq[index],
                         'Period': 1 / freq[index],
                         'Power': power[index],
-                        'Freq:Error': freq_error,
-                        'Period_Error': 1 / freq_error,
-                        'Power_Error': power_error,
-                        'False_alarm': fa_prob[index_fa][k]
+                        'Freq_Error': freq_error,  # Properly indexed freq_error
+                        'Period_Error': (freq_error / freq[index]**2)**(1/2),  # Error in period
+                        'Power_Error': power_error,  # Corresponding power error
+                        'False_alarm': fa_prob[index_fa][i],  # False alarm probability
+                        'snr': snr
                     })
-                    k += 1
 
+        # Return DataFrame with results
         df = pd.DataFrame(df_list).reset_index(drop=True)
 
         if len(df) > 1:
@@ -3466,14 +3463,12 @@ def period_sliding_window(t, c, sc, window_sec, step_sec, max_period=None, min_p
     
     t, c, sc = preprocess_data(t, c, sc)
 
-    # Collect the data
+    # Collect results using sliding window
     periods = {}
-
     for i in range(0, len(t) - window_sec - 1, step_sec):
-    
         t_window = t[i:i + window_sec]
         c_window = c[i:i + window_sec]
-        sc_window = sc[i:i + window_sec] + 1e-9  # Small value to avoid division by zero
+        sc_window = sc[i:i + window_sec] + 1e-9  # Avoid division by zero
 
         if len(t_window) == 0:
             continue
@@ -3489,23 +3484,19 @@ def period_sliding_window(t, c, sc, window_sec, step_sec, max_period=None, min_p
     else:
         result = None
 
+    # Fold pulses if requested
     pulses = {}
+    if folded_pulses and result is not None:
+        for i in range(len(result)):
+            idx = (t >= result.min_time[i]) & (t <= result.max_time[i])
 
-    if folded_pulses:
-    
-        if result is not None:
-        
-            for i in range(len(result)):
-            
-                idx = (t >= result.min_time[i]) & (t <= result.max_time[i])
+            t_ = np.array(t[idx])
+            c_ = np.array(c[idx])
+            sc_ = np.array(sc[idx])
 
-                t_ = np.array(t[idx])
-                c_ = np.array(c[idx])
-                sc_ = np.array(sc[idx])
+            ph_pulse, c_pulse, sc_pulse = fold_pulse_(t_, c_, sc_, result.Period[i], snr=snr_pulse, rebin=nbin_pulse)
+            pulse_data = {'ph_pulse': ph_pulse, 'c_pulse': c_pulse, 'sc_pulse': sc_pulse}
 
-                ph_pulse, c_pulse, sc_pulse = fold_pulse_(t_, c_, sc_, result.Period[i], snr=snr_pulse, rebin=None)
-                pulse_data = {'ph_pulse': ph_pulse, 'c_pulse': c_pulse, 'sc_pulse': sc_pulse}
-
-                pulses[i] = pulse_data
+            pulses[i] = pulse_data
 
     return result, pulses
