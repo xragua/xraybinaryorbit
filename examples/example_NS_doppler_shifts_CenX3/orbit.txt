@@ -1,0 +1,2 @@
+iphase,semimajor,orbitalperiod,eccentricity,periapsis,inclination,Rstar,Mstar1,Mstar2,wind_vel,feature
+nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan

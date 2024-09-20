@@ -29,6 +29,7 @@ warnings.filterwarnings("ignore", message="divide by zero encountered in divide"
 #UNITS MESSAGE
 ##########################################################################################
 print("""
+
 HELLO, nice to see you! :)
 
 PLEASE READ THIS, IT'S VERY IMPORTANT:
@@ -176,6 +177,10 @@ def chi_squared(y_data, y_pred):
     chi_squared = np.sum((y_data - y_pred) ** 2)
     return chi_squared
 
+#................................................... scale data for plotting purposes
+def scale_(x,y):
+    x_new= ((max(y)-min(y))/(max(x)-min(x)))*(x-max(x))+max(y)
+    return x_new
 #................................................... Easy way to manage values
 def copy_fields(source_file, destination_file, params2=None):
     # Read the content of the source file
@@ -3395,6 +3400,7 @@ def period_sliding_window(t, c, sc, window_sec, step_sec, max_period=None, min_p
     - pulses: Dictionary containing folded pulse data for each identified period if `folded_pulses` is True.
 
     Notes:
+    - For each window the script will return a list of all peaks found in the periodogram.
     - The function performs Lomb-Scargle periodogram analysis within each sliding window of the specified size.
     - It filters the periods based on false alarm probability and sorts them by power.
     - If `folded_pulses` is True, it folds the lightcurve for each identified period using `fold_pulse` and stores the results.
@@ -3406,6 +3412,7 @@ def period_sliding_window(t, c, sc, window_sec, step_sec, max_period=None, min_p
         return t[mask], c[mask], sc[mask]
 
     def lb_period_freq(t, c, sc, step, window, max_period, min_period, false_alarm_threshold):
+    
         min_freq = 1 / max_period if max_period else None
         max_freq = 1 / min_period if min_period else None
 
@@ -3429,8 +3436,8 @@ def period_sliding_window(t, c, sc, window_sec, step_sec, max_period=None, min_p
                
                 # Loop through each peak and store data
                 for i, index in enumerate(peaks_indices):
-                    # Approximate frequency error as half the width of the peak in frequency
-                    freq_error = max(np.diff(freq[int(results_widths[2][i])-3:int(results_widths[2][i])+3]))*3
+          
+                    freq_error = max(np.diff(freq[int(max(results_widths[2][i]-10,0)):int(results_widths[2][i])+10]))*3
         
                     power_error = results_widths[1][i]  # Width corresponds to the peak
                     snr=power[index]/np.median(power)
@@ -3465,6 +3472,15 @@ def period_sliding_window(t, c, sc, window_sec, step_sec, max_period=None, min_p
 
     # Collect results using sliding window
     periods = {}
+    
+    
+    min_period_ = 2 * np.mean(np.diff(t))
+    
+    if (min_period_ >= min_period):
+
+        print(f"\033[91mWarning: The minimum period given is too low to be accurately captured with the current sampling rate. According to Nyquist-Shannon Sampling Theorem, the minimum period allowed to be identified is {min_period_:.4f} seconds.\033[0m")
+
+    
     for i in range(0, len(t) - window_sec - 1, step_sec):
         t_window = t[i:i + window_sec]
         c_window = c[i:i + window_sec]
