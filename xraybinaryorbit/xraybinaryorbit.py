@@ -638,22 +638,38 @@ def rebin_bins_(t, x, sy, nbin):
 
 # CONIC ORBIT #############################################################################
 def doppler_orbit_theoretical(t, units="keV", show_plot=False, precision_for_phase=0.01):
-    print("""
-
+    """
     Computes the Doppler variation expected from orbital movement given a time array in seconds.
 
-    Parameters:
-    - t (array-like): Time array in seconds.
-    - units (str, optional): Units for the output. Default is "keV". Can be "keV", "s", or "angstrom".
-    - show_plot (bool, optional): If True, a plot of the orbit and Doppler evolution is shown and saved. Default is False.
-    - precision_for_phase (float, optional): Precision for phase calculation. Default is 0.01.
+    Parameters
+    ----------
+    t : array-like
+        Time array in seconds.
+    units : str, optional
+        Units for the output Doppler variation. Default is "keV". Options include:
+        - "keV": Doppler variation in keV.
+        - "s": Doppler variation in seconds.
+        - "angstrom": Doppler variation in angstroms.
+    show_plot : bool, optional
+        If True, displays and saves a plot of the orbit and Doppler evolution. Default is False.
+    precision_for_phase : float, optional
+        Precision for the phase calculation. Default is 0.01.
 
-    Returns:
-    - t (array-like): Input time array.
-    - x (array-like): Orbital phase array.
-    - equation (array-like): Expected Doppler variation.
+    Returns
+    -------
+    t : array-like
+        The input time array.
+    x : array-like
+        Orbital phase array corresponding to the input time array.
+    equation : array-like
+        Expected Doppler variation computed for the given orbital movement.
 
-    """)
+    Notes
+    -----
+    This function calculates the theoretical Doppler variation from orbital motion, with the option to visualize
+    the orbital path and its corresponding Doppler shift.
+    """
+
     parameter_names=["iphase", "semimajor", "orbitalperiod", "eccentricity", "periapsis", "inclination", "Rstar", "Mstar1","Mstar2", "wind_vel", "feature"]
     
     fixed_values = manage_parameters(parameter_names, "orbit")
@@ -720,29 +736,44 @@ def doppler_orbit_theoretical(t, units="keV", show_plot=False, precision_for_pha
     
 # SPIRAL #########################################################################################
 def doppler_spiral_theoretical(t, units="keV", show_plot=False):
-    print("""
-    Computes the Doppler variation expected from a spiral movement given a time array in seconds.
-    
-    A logarithmic spiral is a type of spiral that grows in size by a constant factor with each turn. Its equation in polar coordinates is
-    r = a * e^(b * θ), where:
-
-    r is the distance from the origin (radius)
-    omega is the angle from a reference direction (usually the positive x-axis)
-    a is the scale factor that determines how quickly the spiral grows
-    b is the rate of rotation, controlling the tightness or looseness of the spiral
-
+    """
     Computes the Doppler variation expected from a spiral movement given a time array in seconds.
 
-    Parameters:
-    - t (array-like): Time array in seconds.
-    - units (str, optional): Units for the output. Default is "keV". Can be "keV", "s", or "angstrom".
-    - show_plot (bool, optional): If True, a plot of the spiral and Doppler evolution is shown and saved. Default is False.
-    - A form will appear to input the necessary orbital parameters. These parameters will be saved in a .txt file in the current directory and automatically loaded in subsequent runs. This avoids the need to re-enter all parameters; you can modify only those that require adjustment.
+    A logarithmic spiral is a type of spiral that grows by a constant factor with each turn. The spiral equation
+    in polar coordinates is r = a * e^(b * θ), where:
     
-    Returns:
-    - x (array-like): Orbital phase array.
-    - equation (array-like): Expected Doppler variation.
-    """)
+    - r is the distance from the origin (radius)
+    - θ is the angle from a reference direction (usually the positive x-axis)
+    - a is the scale factor determining how quickly the spiral grows
+    - b is the rate of rotation controlling the tightness or looseness of the spiral
+
+    Parameters
+    ----------
+    t : array-like
+        Time array in seconds.
+    units : str, optional
+        Units for the output Doppler variation. Default is "keV". Options include:
+        - "keV": Doppler variation in keV.
+        - "s": Doppler variation in seconds.
+        - "angstrom": Doppler variation in angstroms.
+    show_plot : bool, optional
+        If True, displays and saves a plot of the spiral and Doppler evolution. Default is False.
+
+    Notes
+    -----
+    A form will appear to input the necessary orbital parameters. These parameters are saved in a .txt file
+    in the current directory and automatically loaded in subsequent runs, avoiding the need to re-enter parameters.
+    You can modify only those parameters that require adjustment.
+
+    Returns
+    -------
+    x : array-like
+        Orbital phase array corresponding to the input time array.
+    equation : array-like
+        Expected Doppler variation computed for the given spiral movement.
+
+    """
+
 
 
     parameter_names=["iphase_spiral", "semimajor_spiral", "b", "omega", "inclination_spiral", "feature"]
@@ -807,23 +838,41 @@ def doppler_spiral_theoretical(t, units="keV", show_plot=False):
     
 # ORBIT IN ORBIT #####################################################################################
 def doppler_disc_theoretical(t, units="keV", show_plot=False):
-    print("""
-    Computes the Doppler variation expected from an orbital movement in a main orbit,
-    assuming a ballistic movement of plasma around a compact object or the movement of a mass
-    entering an accretion disc.
+    """
+    Computes the Doppler variation expected from orbital movement in a main orbit, assuming a ballistic
+    movement of plasma around a compact object or the movement of a mass entering an accretion disc.
 
-    Parameters:
-    - t (array-like): Time array in seconds.
-    - units (str, optional): Units for the output. Default is "keV". Can be "keV", "s", or "angstrom".
-    - show_plot (bool, optional): If True, a plot of the disc and Doppler evolution is shown and saved. Default is False.
-    - A form will appear to input the necessary orbital parameters. These parameters will be saved in a .txt file in the current directory and automatically loaded in subsequent runs. This avoids the need to re-enter all parameters; you can modify only those that require adjustment.
+    Parameters
+    ----------
+    t : array-like
+        Time array in seconds.
+    units : str, optional
+        Units for the output Doppler variation. Default is "keV". Options include:
+        - "keV": Doppler variation in keV.
+        - "s": Doppler variation in seconds.
+        - "angstrom": Doppler variation in angstroms.
+    show_plot : bool, optional
+        If True, displays and saves a plot of the disc and Doppler evolution. Default is False.
 
-    Returns:
-    - t (array-like): Time array.
-    - x (array-like): Orbital phase array for the first orbit.
-    - x2 (array-like): Orbital phase array for the second orbit.
-    - equation (array-like): Expected Doppler variation.
-    """)
+    Notes
+    -----
+    A form will appear to input the necessary orbital parameters. These parameters are saved in a .txt file
+    in the current directory and automatically loaded in subsequent runs. This avoids the need to re-enter parameters,
+    and allows modification of only those parameters that require adjustment.
+
+    Returns
+    -------
+    t : array-like
+        The input time array.
+    x : array-like
+        Orbital phase array for the first orbit.
+    x2 : array-like
+        Orbital phase array for the second orbit.
+    equation : array-like
+        Expected Doppler variation computed for the given orbital and disc movement.
+    
+    """
+
     parameter_names=["iphase", "semimajor", "orbitalperiod", "eccentricity", "periapsis", "inclination", "Rstar", "Mstar1", "Mstar2", "iphase2", "semimajor2", "orbitalperiod2", "eccentricity2", "periapsis2", "inclination2",  "Mass3","wind_vel", "feature"]
     
     fixed_values = manage_parameters(parameter_names, "disc")
@@ -905,29 +954,46 @@ def doppler_disc_theoretical(t, units="keV", show_plot=False):
     
 # SPIRAL IN ORBIT ####################################################################################
 def doppler_spiral_in_orbit_theoretical(t, units="keV", show_plot=False):
-    print("""
-    This function requires a time array in seconds and returns the time, orbital phase, and Doppler variation
-    expected under the assumption of an orbital movement with a logarithmic spiral component.
+    """
+    Computes the Doppler variation expected from an orbital movement with a logarithmic spiral component,
+    given a time array in seconds.
 
-    Parameters:
-    - t (array-like): Time array in seconds.
-    - units (str, optional): Units for the output. Default is "keV". Can be "keV", "s", or "angstrom".
-    - show_plot (bool, optional): If True, a plot of the spiral and Doppler evolution is shown and saved.
-                                  Default is False.
-    - A form will appear to input the necessary orbital parameters. These parameters will be saved in a .txt file in the current directory and automatically loaded in subsequent runs. This avoids the need to re-enter all parameters; you can modify only those that require adjustment.
+    Parameters
+    ----------
+    t : array-like
+        Time array in seconds.
+    units : str, optional
+        Units for the output Doppler variation. Default is "keV". Options include:
+        - "keV": Doppler variation in keV.
+        - "s": Doppler variation in seconds.
+        - "angstrom": Doppler variation in angstroms.
+    show_plot : bool, optional
+        If True, displays and saves a plot of the spiral and Doppler evolution. Default is False.
 
-    Returns:
-    - x (array-like): Orbital phase array.
-    - equation (array-like): Expected Doppler variation.
+    Notes
+    -----
+    A form will appear to input the necessary orbital parameters. These parameters are saved in a .txt file
+    in the current directory and automatically loaded in subsequent runs, avoiding the need to re-enter
+    all parameters. Only those parameters that require adjustment need to be modified.
 
-    Description:
-    A logarithmic spiral grows in size by a constant factor with each turn, with the polar coordinates equation:
+    Returns
+    -------
+    x : array-like
+        Orbital phase array corresponding to the input time array.
+    equation : array-like
+        Expected Doppler variation computed for the given orbital movement with the spiral component.
+
+    Description
+    -----------
+    The logarithmic spiral grows in size by a constant factor with each turn. The spiral is described by
+    the polar coordinates equation:
     r = a * e^(b * θ), where:
     - r is the distance from the origin (radius)
     - θ is the angle from a reference direction (usually the positive x-axis)
-    - a is the scale factor that determines how quickly the spiral grows
-    - b is the rate of rotation, controlling the tightness or looseness of the spiral
-    """)
+    - a is the scale factor that determines how quickly the spiral grows.
+    - b is the rate of rotation, controlling the tightness or looseness of the spiral.
+    """
+
 
     parameter_names=["iphase", "semimajor", "orbitalperiod", "eccentricity", "periapsis", "inclination", "iphase_spiral", "semimajor_spiral", "b", "omega", "inclination_spiral", "Rstar", "Mstar1", "Mstar2", "wind_vel", "feature"]
     
@@ -1010,26 +1076,35 @@ def doppler_spiral_in_orbit_theoretical(t, units="keV", show_plot=False):
      
 # DENSITY IN THE ORBIT #############################################################################
 def density_through_orbit_theoretical(resolution=0.01, show_plot=False):
-    print("""
-    This function helps visualize the density (gr/cm^2) encountered by a compact object along its orbit.
-    It assumes a spherically distributed stellar wind based on the CAK model.
+    """
+    Visualizes the density (gr/cm^2) encountered by a compact object along its orbit, assuming a spherically
+    distributed stellar wind based on the CAK (Castor-Abbott-Klein) model.
 
-    The function returns a time array, an orbital phase array, and the density experienced by the compact
-    object as it moves through its orbit.
+    Parameters
+    ----------
+    resolution : float, optional
+        Resolution for the phase array. Default is 0.01.
+    show_plot : bool, optional
+        If True, displays and saves a plot of the density through the orbit. The plot is saved as
+        "density_through_the_orbit.png." Default is False.
 
-    If "show_plot=True," a plot of the density through the orbit will be saved under the name
-    "density_through_the_orbit.png."
+    Notes
+    -----
+    A form will appear to input the necessary orbital parameters. These parameters are saved in a .txt file
+    in the current directory and automatically loaded in subsequent runs. This avoids the need to re-enter parameters,
+    allowing modification of only those that require adjustment.
 
-    Parameters:
-    - resolution (float, optional): Resolution for the phase array. Default is 0.01.
-    - show_plot (bool, optional): If True, plots the density through the orbit. Default is False.
-    - A form will appear to input the necessary orbital parameters. These parameters will be saved in a .txt file in the current directory and automatically loaded in subsequent runs. This avoids the need to re-enter all parameters; you can modify only those that require adjustment.
+    Returns
+    -------
+    time : array-like
+        The time array corresponding to the orbital movement.
+    phase : array-like
+        The orbital phase array.
+    density : array-like
+        The density encountered by the compact object through the orbit, measured in gr/cm^2.
 
-    Returns:
-    - time (array-like): Time array.
-    - phase (array-like): Orbital phase array.
-    - density (array-like): Density through the orbit in gr/cm^2.
-    """)
+    """
+
     parameter_names = ["semimajor","orbitalperiod" ,"eccentricity", "periapsis", "Rstar","Mstar1","Mstar2","wind_infinite_velocity","Mass_loss_rate","beta" ]
     
     fixed_values = manage_parameters(parameter_names, "density_through_orbit")
@@ -1082,21 +1157,40 @@ def density_through_orbit_theoretical(resolution=0.01, show_plot=False):
 
 # ABSOPTION COLUMN #############################################################################
 def absorption_column_through_orbit_theoretical(resolution=0.01, show_plot=True):
-    print("""
-    This function visualizes the column density (NH1, x 10^22 cm^-2) encountered by radiation emitted at each orbital phase as it travels towards an observer. It assumes a spherically distributed, neutral (unionized) stellar wind based on the CAK model.
+    """
+    Visualizes the column density (NH1, x 10^22 cm^-2) encountered by radiation emitted at each orbital
+    phase as it travels towards an observer. Assumes a spherically distributed, neutral (unionized)
+    stellar wind based on the CAK (Castor-Abbott-Klein) model.
 
-    Parameters:
-    - resolution (float, optional): Resolution for the phase array. Default is 0.01.
-    - show_plot (bool, optional): If True, plots the absorption column density through the orbit. Default is False.
-    - A form will appear to input the necessary orbital parameters. These parameters will be saved in a .txt file in the current directory and automatically loaded in subsequent runs. This avoids the need to re-enter all parameters; you can modify only those that require adjustment.
+    Parameters
+    ----------
+    resolution : float, optional
+        Resolution for the phase array. Default is 0.01.
+    show_plot : bool, optional
+        If True, displays and saves a plot of the absorption column density through the orbit.
+        Default is False.
 
-    Returns:
-    - time (array-like): Time array.
-    - phase (array-like): Orbital phase array.
-    - NH1 (array-like): Absorption column density (NH1, x 10^22 cm^-2) through the orbit.
+    Notes
+    -----
+    A form will appear to input the necessary orbital parameters. These parameters are saved in a .txt file
+    in the current directory and automatically loaded in subsequent runs. This avoids the need to re-enter
+    parameters, allowing modification of only those that require adjustment.
+
+    Returns
+    -------
+    time : array-like
+        Time array corresponding to the orbital movement.
+    phase : array-like
+        Orbital phase array.
+    NH1 : array-like
+        Absorption column density (NH1, x 10^22 cm^-2) through the orbit.
+
+    Notes
+    -----
+    If the distance to the star is smaller than the stellar radius, the result will be 0.
     
-    (Please, take into account that if the distance to the star is smaller than the stellar radius, the result will be 0).
-    """)
+    """
+
 
     parameter_names = ["semimajor","orbitalperiod" ,"eccentricity", "periapsis" ,"inclination", "Rstar","Mstar1","Mstar2","wind_infinite_velocity","Mass_loss_rate","beta" ]
     
@@ -1167,22 +1261,37 @@ def absorption_column_through_orbit_theoretical(resolution=0.01, show_plot=True)
 
 
 def ionization_map_phase(size_in_Rstar=0, min_color=None, max_color=None, save_plot=False, name="ionization_map"):
-    print("""
-    Generates a logarithmic ionization parameter map based on the stellar wind density, the luminosity, and orbital parameters.
-    The uncolored area represents the X-ray shadow.
+    """
+    Generates a logarithmic ionization parameter map based on the stellar wind density, luminosity, and
+    orbital parameters. The uncolored area in the map represents the X-ray shadow.
 
-    Parameters:
-    - size_in_Rstar (float, optional): Extent of the map from the stellar center in stellar radii. Default is 2 times the semimajor.
-    - min_color (float, optional): Minimum color scale value for the ionization parameter. Default is None.
-    - max_color (float, optional): Maximum color scale value for the ionization parameter. Default is None.
-    - save_plot (bool, optional): Boolean to decide if the plot should be saved. Default is False.
-    - name (str, optional): Name of the file to save the plot. Default is "ionization_map".
-    - A form will appear to input the necessary orbital parameters. These parameters will be saved in a .txt file in the current directory and automatically loaded in subsequent runs. This avoids the need to re-enter all parameters; you can modify only those that require adjustment.
-    
-    Returns:
-    - chi_result (pd.DataFrame): DataFrame containing the ionization parameter map.
-    - area (float): The calculated area between bounds in cm^2.
-    """)
+    Parameters
+    ----------
+    size_in_Rstar : float, optional
+        Extent of the map from the stellar center in stellar radii. Default is 2 times the semimajor axis.
+    min_color : float, optional
+        Minimum value for the color scale of the ionization parameter. Default is None.
+    max_color : float, optional
+        Maximum value for the color scale of the ionization parameter. Default is None.
+    save_plot : bool, optional
+        If True, saves the generated plot. Default is False.
+    name : str, optional
+        Name of the file to save the plot. Default is "ionization_map".
+
+    Notes
+    -----
+    A form will appear to input the necessary orbital parameters. These parameters are saved in a .txt file
+    in the current directory and automatically loaded in subsequent runs. This avoids the need to re-enter parameters,
+    allowing modification of only those that require adjustment.
+
+    Returns
+    -------
+    chi_result : pd.DataFrame
+        DataFrame containing the ionization parameter map.
+    area : float
+        The calculated area between bounds in cm^2.
+    """
+
 
     parameter_names = [
         "phase", "semimajor", "eccentricity", "periapsis", "Rstar", "Mstar1", "Mstar2",
@@ -1442,27 +1551,38 @@ def ionization_map_phase(size_in_Rstar=0, min_color=None, max_color=None, save_p
 
 # PHASE TO TIME ###########################################################################
 def orbital_phase_to_time(ph, precision=0.01):
-    print("""
-    Converts orbital phase array to time array for a compact object orbiting a companion star.
-    The compact object moves faster at periastron than at apoastro. The increased orbital speed at
-    periastron is primarily due to the conservation of angular momentum, which dictates that as the
-    compact object moves closer to the central star, it must travel faster to maintain the total angular
-    momentum of the system. This relationship is further influenced by Kepler’s laws of planetary motion,
-    which describe how objects sweep out equal areas in equal times and the gravitational force between two
-    bodies, which strengthens as they approach each other and weakens as they move apart.
+    """
+    Converts an orbital phase array to a time array for a compact object orbiting a companion star.
+    The compact object moves faster at periastron than at apoastro due to the conservation of angular momentum
+    and Kepler's laws of planetary motion.
 
-    Parameters:
-    - ph (array-like): Orbital phase array.
-    - precision (float, optional): Resolution for the phase array. Default is 0.01.
-      A form will appear to input the necessary orbital parameters. These parameters will be saved in a
-      .txt file in the current directory and automatically loaded in subsequent runs. This avoids the need
-      to re-enter all parameters; you can modify only those that require adjustment.
+    The increased orbital speed at periastron occurs because, as the compact object moves closer to the central star,
+    it must travel faster to maintain the total angular momentum of the system. This behavior follows Kepler's second
+    law, which states that objects sweep out equal areas in equal times, and the gravitational force strengthens
+    as the bodies approach and weakens as they move apart.
 
-    Returns:
-    - ph (array-like): Orbital phase array (same as input).
-    - time (array-like): Time array corresponding to the orbital phase.
-    - W (array-like): Angular velocity array corresponding to the orbital phase.
-    """)
+    Parameters
+    ----------
+    ph : array-like
+        Orbital phase array.
+    precision : float, optional
+        Resolution for the phase array. Default is 0.01.
+
+    Notes
+    -----
+    A form will appear to input the necessary orbital parameters. These parameters are saved in a .txt file
+    in the current directory and automatically loaded in subsequent runs. This avoids the need to re-enter parameters,
+    allowing modification of only those that require adjustment.
+
+    Returns
+    -------
+    ph : array-like
+        The input orbital phase array.
+    time : array-like
+        Time array corresponding to the orbital phase.
+    W : array-like
+        Angular velocity array corresponding to the orbital phase.
+    """
 
 
     #.............................Load parameters
@@ -1514,34 +1634,39 @@ def orbital_phase_to_time(ph, precision=0.01):
     
     
 def orbital_time_to_phase(t, precision=0.01):
-    print("""
-    Converts orbital time array to phase array for a compact object orbiting a companion star.
-    The compact object moves faster at periastron than at apoastro. The increased orbital speed at
-    periastron is primarily due to the conservation of angular momentum, which dictates that as the
-    compact object moves closer to the central star, it must travel faster to maintain the total angular
-    momentum of the system. This relationship is further influenced by Kepler’s laws of planetary motion,
-    which describe how objects sweep out equal areas in equal times and the gravitational force between two
-    bodies, which strengthens as they approach each other and weakens as they move apart.
+    """
+    Converts an orbital time array to a phase array for a compact object orbiting a companion star.
+    The compact object moves faster at periastron than at apoastro due to the conservation of angular momentum
+    and Kepler's laws of planetary motion.
 
-    Parameters:
-    - t (array-like): Orbital time array.
-    - precision (float, optional): Resolution for the phase array. Default is 0.01.
-      A form will appear to input the necessary orbital parameters. These parameters will be saved in a
-      .txt file in the current directory and automatically loaded in subsequent runs. This avoids the need
-      to re-enter all parameters; you can modify only those that require adjustment.
+    The increased orbital speed at periastron occurs because, as the compact object moves closer to the central star,
+    it must travel faster to maintain the total angular momentum of the system. This behavior follows Kepler's second
+    law, which states that objects sweep out equal areas in equal times, and the gravitational force strengthens
+    as the bodies approach and weakens as they move apart.
 
-    Returns:
-    - ph (array-like): Orbital phase array corresponding to the input time.
-    - time (array-like): Time array corresponding to the orbital phase.
-    - W (array-like): Angular velocity array corresponding to the orbital phase.
+    Parameters
+    ----------
+    t : array-like
+        Orbital time array.
+    precision : float, optional
+        Resolution for the phase array. Default is 0.01.
 
-    The increased orbital speed at periastron is primarily due to the conservation of angular momentum,
-    which dictates that as the compact object moves closer to the central star, it must travel faster to
-    maintain the total angular momentum of the system. This relationship is further influenced by Kepler’s
-    laws of planetary motion, which describe how objects sweep out equal areas in equal times and the
-    gravitational force between two bodies, which strengthens as they approach each other and weakens
-    as they move apart.
-    """)
+    Notes
+    -----
+    A form will appear to input the necessary orbital parameters. These parameters are saved in a .txt file
+    in the current directory and automatically loaded in subsequent runs. This avoids the need to re-enter parameters,
+    allowing modification of only those that require adjustment.
+
+    Returns
+    -------
+    ph : array-like
+        Orbital phase array corresponding to the input time array.
+    time : array-like
+        Time array corresponding to the orbital phase.
+    W : array-like
+        Angular velocity array corresponding to the orbital phase.
+
+    """
 
 
     #.............................Load parameters
@@ -1694,38 +1819,57 @@ def conic_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsi
 
 def fit_orbit_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarmsize=100,
                  units="keV", method_="extended", extended_binsize=0.01):
-    print("""
+    """
     Fits observed orbital modulation data by estimating parameters such as phase, semi-major axis,
-    orbital period, eccentricity, inclination, and periapsis.
+    orbital period, eccentricity, inclination, and periapsis using particle swarm optimization (PSO).
 
-    The fitting process utilizes a particle swarm optimization (PSO) algorithm, which iteratively improves
-    parameter estimates by minimizing the chi-squared difference between observed and predicted data.
+    The fitting process employs PSO to iteratively improve parameter estimates by minimizing the
+    chi-squared difference between observed and predicted data.
 
     The function supports two fitting methods:
+    
     - "discrete": Suitable for discrete data points (e.g., spectra with small orbital phase ranges; faster).
     - "extended": Suitable for data with varying or extended bin sizes, typical with current instrument
       resolutions (e.g., XMM-Newton and Chandra) and short X-ray binary (XRB) orbits.
 
-    Parameters:
-    - x_data (array-like): Time bins of the observed data.
-    - y_data (array-like): Observed data points corresponding to each time bin.
-    - y_err (array-like, optional): Error associated with each observed data point (default is 0).
-    - num_iterations (int, optional): Number of iterations for PSO optimization (default is 3).
-    - maxiter (int, optional): Maximum number of iterations for each PSO run (default is 1000).
-    - swarmsize (int, optional): Number of particles in the PSO swarm (default is 100).
-    - units (str, optional): Units of the observed data (default is "keV").
-    - method_ (str, optional): Fitting method to use, either "discrete" or "extended" (default is "extended").
-    - extended_binsize (float, optional): Bin size for the extended method (default is 0.01).
-      A form will appear to input the necessary bounds for the orbital parameters. These parameters will be
-      saved in a .txt file in the current directory and automatically loaded in subsequent runs. This avoids
-      the need to re-enter all parameters; you can modify only those that require adjustment.
+    Parameters
+    ----------
+    x_data : array-like
+        Time bins of the observed data.
+    y_data : array-like
+        Observed data points corresponding to each time bin.
+    y_err : array-like, optional
+        Error associated with each observed data point. Default is 0.
+    num_iterations : int, optional
+        Number of iterations for PSO optimization. Default is 3.
+    maxiter : int, optional
+        Maximum number of iterations for each PSO run. Default is 1000.
+    swarmsize : int, optional
+        Number of particles in the PSO swarm. Default is 100.
+    units : str, optional
+        Units of the observed data. Default is "keV".
+    method_ : str, optional
+        Fitting method to use, either "discrete" or "extended". Default is "extended".
+    extended_binsize : float, optional
+        Bin size for the extended method. Default is 0.01.
 
-    Returns:
-    - DataFrame: Contains the best-fit parameters and their standard deviations.
-    - ph (array-like): Array of phases corresponding to the predicted data.
-    - predicted_data (array-like): Predicted data based on the best-fit parameters.
-    - chi_squared (float): Chi-squared statistic weighted by the error, indicating the quality of the fit.
-    """)
+    Notes
+    -----
+    A form will appear to input the necessary bounds for the orbital parameters. These parameters are saved in
+    a .txt file in the current directory and automatically loaded in subsequent runs. This avoids the need to
+    re-enter parameters, allowing modification of only those that require adjustment.
+
+    Returns
+    -------
+    DataFrame : pd.DataFrame
+        Contains the best-fit parameters and their standard deviations.
+    ph : array-like
+        Array of phases corresponding to the predicted data.
+    predicted_data : array-like
+        Predicted data based on the best-fit parameters.
+    chi_squared : float
+        Chi-squared statistic weighted by the error, indicating the quality of the fit.
+    """
 
 
     #............................................Data prep
@@ -1823,35 +1967,51 @@ def fit_orbit_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarms
     
 # LS FIT------------------------------------------------------------------------------------------------------
 def fit_orbit_ls(x_data, y_data, y_err=0, units="keV", method_="extended", extended_binsize=0.01):
-    print("""
+    """
     Fits orbital modulation data by estimating parameters such as phase, semi-major axis, orbital period,
-    eccentricity, inclination, and periapsis.
+    eccentricity, inclination, and periapsis using a traditional Least Squares (LS) method.
 
-    The fitting process utilizes a traditional Least Squares (LS) method, which fits the observed data by
-    minimizing the squared differences between observed and predicted values.
+    The LS method fits the observed data by minimizing the squared differences between observed and predicted values.
 
-    The function can handle two fitting methods:
+    The function supports two fitting methods:
+    
     - "discrete": Suitable for discrete data points (e.g., spectra with small orbital phase ranges; faster).
     - "extended": Suitable for data with varying or extended bin sizes, typical with current instrument
       resolutions (e.g., XMM-Newton and Chandra) and short X-ray binary (XRB) orbits.
 
-    Parameters:
-    - x_data (array-like): Time bins of the observed data.
-    - y_data (array-like): Observed data points corresponding to each time bin.
-    - y_err (array-like, optional): Error associated with each observed data point (default is 0).
-    - units (str, optional): Units of the observed data (default is "keV").
-    - method_ (str, optional): Fitting method to use, either "discrete" or "extended" (default is "extended").
-    - extended_binsize (float, optional): Bin size for the extended method (default is 0.01).
-      A form will appear to input the necessary bounds for the orbital parameters. These parameters will be
-      saved in a .txt file in the current directory and automatically loaded in subsequent runs. This avoids
-      the need to re-enter all parameters; you can modify only those that require adjustment.
+    Parameters
+    ----------
+    x_data : array-like
+        Time bins of the observed data.
+    y_data : array-like
+        Observed data points corresponding to each time bin.
+    y_err : array-like, optional
+        Error associated with each observed data point. Default is 0.
+    units : str, optional
+        Units of the observed data. Default is "keV".
+    method_ : str, optional
+        Fitting method to use, either "discrete" or "extended". Default is "extended".
+    extended_binsize : float, optional
+        Bin size for the extended method. Default is 0.01.
 
-    Returns:
-    - DataFrame: Contains the best-fit parameters and their errors.
-    - ph (array-like): Array of phases corresponding to the predicted data.
-    - predicted_data (array-like): Predicted data based on the best-fit parameters.
-    - chi_squared (float): Chi-squared statistic weighted by the error, indicating the quality of the fit.
-    """)
+    Notes
+    -----
+    A form will appear to input the necessary bounds for the orbital parameters. These parameters are saved in
+    a .txt file in the current directory and automatically loaded in subsequent runs. This avoids the need to
+    re-enter parameters, allowing modification of only those that require adjustment.
+
+    Returns
+    -------
+    DataFrame : pd.DataFrame
+        Contains the best-fit parameters and their errors.
+    ph : array-like
+        Array of phases corresponding to the predicted data.
+    predicted_data : array-like
+        Predicted data based on the best-fit parameters.
+    chi_squared : float
+        Chi-squared statistic weighted by the error, indicating the quality of the fit.
+    """
+
 
 
     #...........................................data prep
@@ -2045,7 +2205,7 @@ def disc_in_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periap
 # PS FIT------------------------------------------------------------------------------------------------------
 def fit_disc_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarmsize=100,
                 units="keV", method_="extended", extended_binsize=0.01):
-    print("""
+    """
     Fits orbital modulation data by estimating parameters such as phase, semi-major axis, orbital period,
     eccentricity, and inclination for the main orbit, as well as corresponding parameters for a secondary
     orbit (e.g., ballistic capture of matter around a compact object or an accretion disk).
@@ -2053,32 +2213,53 @@ def fit_disc_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarmsi
     The fitting process uses a particle swarm optimization (PSO) algorithm, which iteratively improves
     parameter estimates by minimizing the chi-squared difference between observed and predicted data.
 
-    The function can handle two fitting methods:
+    The function supports two fitting methods:
+    
     - "discrete": Suitable for discrete data points (e.g., spectra with small orbital phase ranges; faster).
     - "extended": Suitable for data with varying or extended bin sizes, typical with current instrument
       resolutions (e.g., XMM-Newton and Chandra) and short X-ray binary (XRB) orbits.
 
-    Parameters:
-    - x_data (array-like): Time bins of the observed data.
-    - y_data (array-like): Observed data points corresponding to each time bin.
-    - y_err (array-like, optional): Error associated with each observed data point (default is 0).
-    - num_iterations (int, optional): Number of iterations for the PSO algorithm (default is 3).
-    - maxiter (int, optional): Maximum number of iterations for each PSO run (default is 1000).
-    - swarmsize (int, optional): Number of particles in the PSO swarm (default is 100).
-    - units (str, optional): Units of the observed data (default is "keV").
-    - method_ (str, optional): Fitting method to use, either "discrete" or "extended" (default is "extended").
-    - extended_binsize (float, optional): Bin size for the extended method (default is 0.01).
-      A form will appear to input the necessary bounds for the orbital parameters. These parameters will be
-      saved in a .txt file in the current directory and automatically loaded in subsequent runs. This avoids
-      the need to re-enter all parameters; you can modify only those that require adjustment.
+    Parameters
+    ----------
+    x_data : array-like
+        Time bins of the observed data.
+    y_data : array-like
+        Observed data points corresponding to each time bin.
+    y_err : array-like, optional
+        Error associated with each observed data point. Default is 0.
+    num_iterations : int, optional
+        Number of iterations for the PSO algorithm. Default is 3.
+    maxiter : int, optional
+        Maximum number of iterations for each PSO run. Default is 1000.
+    swarmsize : int, optional
+        Number of particles in the PSO swarm. Default is 100.
+    units : str, optional
+        Units of the observed data. Default is "keV".
+    method_ : str, optional
+        Fitting method to use, either "discrete" or "extended". Default is "extended".
+    extended_binsize : float, optional
+        Bin size for the extended method. Default is 0.01.
 
-    Returns:
-    - DataFrame: Contains the best-fit parameters and their standard deviations.
-    - ph (array-like): Array of phases corresponding to the predicted data for the main orbit.
-    - ph2 (array-like): Array of phases corresponding to the predicted data for the secondary orbit.
-    - predicted_data (array-like): Predicted data based on the best-fit parameters.
-    - chi_squared (float): Chi-squared statistic weighted by the error, indicating the quality of fit.
-    """)
+    Notes
+    -----
+    A form will appear to input the necessary bounds for the orbital parameters. These parameters are saved in
+    a .txt file in the current directory and automatically loaded in subsequent runs. This avoids the need to
+    re-enter parameters, allowing modification of only those that require adjustment.
+
+    Returns
+    -------
+    DataFrame : pd.DataFrame
+        Contains the best-fit parameters and their standard deviations.
+    ph : array-like
+        Array of phases corresponding to the predicted data for the main orbit.
+    ph2 : array-like
+        Array of phases corresponding to the predicted data for the secondary orbit.
+    predicted_data : array-like
+        Predicted data based on the best-fit parameters.
+    chi_squared : float
+        Chi-squared statistic weighted by the error, indicating the quality of fit.
+    """
+
 
 
     #............................................data prep
@@ -2196,7 +2377,7 @@ def fit_disc_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarmsi
 # lS FIT------------------------------------------------------------------------------------------------------
 
 def fit_disc_ls(x_data, y_data, y_err=0, units="keV", method_="extended", extended_binsize=0.01):
-    print("""
+    """
     Fits orbital modulation data by estimating parameters such as phase, semi-major axis, orbital period,
     eccentricity, and inclination for the main orbit, as well as corresponding parameters for a secondary
     orbit (e.g., ballistic capture of matter around a compact object or an accretion disk).
@@ -2204,28 +2385,45 @@ def fit_disc_ls(x_data, y_data, y_err=0, units="keV", method_="extended", extend
     The fitting process uses a traditional least squares (LS) method, provided here for completeness despite
     its potential limitations due to the model's complexity.
 
-    The function can handle two fitting methods:
+    The function supports two fitting methods:
+    
     - "discrete": Suitable for discrete data points (e.g., spectra with small orbital phase ranges; faster).
     - "extended": Suitable for data with varying or extended bin sizes, typical with current instrument
       resolutions (e.g., XMM-Newton and Chandra) and short X-ray binary (XRB) orbits.
 
-    Parameters:
-    - x_data (array-like): Time bins of the observed data.
-    - y_data (array-like): Observed data points corresponding to each time bin.
-    - y_err (array-like, optional): Error associated with each observed data point (default is 0).
-    - units (str, optional): Units of the observed data (default is "keV").
-    - method_ (str, optional): Fitting method to use, either "discrete" or "extended" (default is "extended").
-    - extended_binsize (float, optional): Bin size for the extended method (default is 0.01).
-      A form will appear to input the necessary bounds for the orbital parameters. These parameters will be
-      saved in a .txt file in the current directory and automatically loaded in subsequent runs. This avoids
-      the need to re-enter all parameters; you can modify only those that require adjustment.
+    Parameters
+    ----------
+    x_data : array-like
+        Time bins of the observed data.
+    y_data : array-like
+        Observed data points corresponding to each time bin.
+    y_err : array-like, optional
+        Error associated with each observed data point. Default is 0.
+    units : str, optional
+        Units of the observed data. Default is "keV".
+    method_ : str, optional
+        Fitting method to use, either "discrete" or "extended". Default is "extended".
+    extended_binsize : float, optional
+        Bin size for the extended method. Default is 0.01.
 
-    Returns:
-    - DataFrame: Contains the best-fit parameters and their errors.
-    - ph (array-like): Array of phases corresponding to the predicted data.
-    - predicted_data (array-like): Predicted data based on the best-fit parameters.
-    - chi_squared (float): Chi-squared statistic weighted by the error, indicating the quality of fit.
-    """)
+    Notes
+    -----
+    A form will appear to input the necessary bounds for the orbital parameters. These parameters are saved in
+    a .txt file in the current directory and automatically loaded in subsequent runs. This avoids the need to
+    re-enter parameters, allowing modification of only those that require adjustment.
+
+    Returns
+    -------
+    DataFrame : pd.DataFrame
+        Contains the best-fit parameters and their errors.
+    ph : array-like
+        Array of phases corresponding to the predicted data.
+    predicted_data : array-like
+        Predicted data based on the best-fit parameters.
+    chi_squared : float
+        Chi-squared statistic weighted by the error, indicating the quality of fit.
+    """
+
 
 
     #............................................ data prep
@@ -2385,37 +2583,57 @@ def spiral(x_data, iphase_spiral, semimajor_spiral, b, omega, inclination_spiral
 # PS FIT------------------------------------------------------------------------------------------------------
 def fit_spiral_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarmsize=100,
                   units="keV", method_="extended", extended_binsize=0.01):
-    print("""
-    Fits orbital modulation data by estimating parameters for a spiral orbit.
+    """
+    Fits orbital modulation data by estimating parameters for a spiral orbit using particle swarm optimization (PSO).
 
-    The fitting process uses a particle swarm optimization (PSO) algorithm, which iteratively improves the
-    parameter estimates by minimizing the chi-squared difference between the observed and predicted data.
+    The fitting process uses a PSO algorithm, which iteratively improves parameter estimates by minimizing the
+    chi-squared difference between the observed and predicted data.
 
-    The function can handle two fitting methods:
+    The function supports two fitting methods:
+    
     - "discrete": Suitable for discrete data points (e.g., spectra with small orbital phase ranges; faster).
     - "extended": Suitable for data with varying or extended bin sizes, typical with current instrument
       resolutions (e.g., XMM-Newton and Chandra) and short X-ray binary (XRB) orbits.
 
-    Parameters:
-    - x_data (array-like): Time bins of the observed data.
-    - y_data (array-like): Observed data points corresponding to each time bin.
-    - y_err (array-like, optional): Error associated with each observed data point (default is 0).
-    - num_iterations (int, optional): Number of PSO iterations to perform (default is 3).
-    - maxiter (int, optional): Maximum number of iterations for PSO (default is 1000).
-    - swarmsize (int, optional): Number of particles in the swarm for PSO (default is 100).
-    - units (str, optional): Units of the observed data (default is "keV").
-    - method_ (str, optional): Fitting method to use, either "discrete" or "extended" (default is "extended").
-    - extended_binsize (float, optional): Bin size for the extended method (default is 0.01).
-      A form will appear to input the necessary bounds for the orbital parameters. These parameters will be
-      saved in a .txt file in the current directory and automatically loaded in subsequent runs. This avoids
-      the need to re-enter all parameters; you can modify only those that require adjustment.
+    Parameters
+    ----------
+    x_data : array-like
+        Time bins of the observed data.
+    y_data : array-like
+        Observed data points corresponding to each time bin.
+    y_err : array-like, optional
+        Error associated with each observed data point. Default is 0.
+    num_iterations : int, optional
+        Number of PSO iterations to perform. Default is 3.
+    maxiter : int, optional
+        Maximum number of iterations for PSO. Default is 1000.
+    swarmsize : int, optional
+        Number of particles in the swarm for PSO. Default is 100.
+    units : str, optional
+        Units of the observed data. Default is "keV".
+    method_ : str, optional
+        Fitting method to use, either "discrete" or "extended". Default is "extended".
+    extended_binsize : float, optional
+        Bin size for the extended method. Default is 0.01.
 
-    Returns:
-    - DataFrame: Contains the best-fit parameters and their standard deviations.
-    - ph (array-like): Array of phases corresponding to the predicted data.
-    - predicted_data (array-like): Predicted data based on the best-fit parameters.
-    - chi_squared (float): Chi-squared statistic weighted by the error, indicating the quality of fit.
-    """)
+    Notes
+    -----
+    A form will appear to input the necessary bounds for the orbital parameters. These parameters are saved in
+    a .txt file in the current directory and automatically loaded in subsequent runs. This avoids the need to
+    re-enter parameters, allowing modification of only those that require adjustment.
+
+    Returns
+    -------
+    DataFrame : pd.DataFrame
+        Contains the best-fit parameters and their standard deviations.
+    ph : array-like
+        Array of phases corresponding to the predicted data.
+    predicted_data : array-like
+        Predicted data based on the best-fit parameters.
+    chi_squared : float
+        Chi-squared statistic weighted by the error, indicating the quality of fit.
+    """
+
 
     #............................................data prep
     parameter_names = ["iphase_spiral", "semimajor_spiral", "b", "omega", "inclination_spiral", "feature"]
@@ -2500,35 +2718,49 @@ def fit_spiral_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarm
     
 # LS FIT------------------------------------------------------------------------------------------------------
 def fit_spiral_ls(x_data, y_data, y_err=0, units="keV", method_="extended", extended_binsize=0.01):
-    # ............................................ data prep
-    print("""
-    Fits orbital modulation data by estimating parameters for a spiral orbit.
+    """
+    Fits orbital modulation data by estimating parameters for a spiral orbit using a traditional least squares (LS) method.
+    Although provided for completeness, the LS method may have limitations due to the complexity of the model.
 
-    The fitting process uses a traditional least squares (LS) method, provided for completeness due to the
-    complexity of the model.
-
-    The function can handle two fitting methods:
+    The function supports two fitting methods:
+    
     - "discrete": Suitable for discrete data points (e.g., spectra with small orbital phase ranges; faster).
     - "extended": Suitable for data with varying or extended bin sizes, typical with current instrument
       resolutions (e.g., XMM-Newton and Chandra) and short X-ray binary (XRB) orbits.
 
-    Parameters:
-    - x_data (array-like): Time bins of the observed data.
-    - y_data (array-like): Observed data points corresponding to each time bin.
-    - y_err (array-like, optional): Error associated with each observed data point (default is 0).
-    - units (str, optional): Units of the observed data (default is "keV").
-    - method_ (str, optional): Fitting method to use, either "discrete" or "extended" (default is "extended").
-    - extended_binsize (float, optional): Bin size for the extended method (default is 0.01).
-      A form will appear to input the necessary bounds for the orbital parameters. These parameters will be
-      saved in a .txt file in the current directory and automatically loaded in subsequent runs. This avoids
-      the need to re-enter all parameters; you can modify only those that require adjustment.
+    Parameters
+    ----------
+    x_data : array-like
+        Time bins of the observed data.
+    y_data : array-like
+        Observed data points corresponding to each time bin.
+    y_err : array-like, optional
+        Error associated with each observed data point. Default is 0.
+    units : str, optional
+        Units of the observed data. Default is "keV".
+    method_ : str, optional
+        Fitting method to use, either "discrete" or "extended". Default is "extended".
+    extended_binsize : float, optional
+        Bin size for the extended method. Default is 0.01.
 
-    Returns:
-    - DataFrame: Contains the best-fit parameters and their errors.
-    - ph (array-like): Array of phases corresponding to the predicted data.
-    - predicted_data (array-like): Predicted data based on the best-fit parameters.
-    - chi_squared (float): Chi-squared statistic weighted by the error, indicating the quality of fit.
-    """)
+    Notes
+    -----
+    A form will appear to input the necessary bounds for the orbital parameters. These parameters are saved in
+    a .txt file in the current directory and automatically loaded in subsequent runs. This avoids the need to
+    re-enter parameters, allowing modification of only those that require adjustment.
+
+    Returns
+    -------
+    DataFrame : pd.DataFrame
+        Contains the best-fit parameters and their errors.
+    ph : array-like
+        Array of phases corresponding to the predicted data.
+    predicted_data : array-like
+        Predicted data based on the best-fit parameters.
+    chi_squared : float
+        Chi-squared statistic weighted by the error, indicating the quality of fit.
+    """
+
 
 
     parameter_names = ["iphase_spiral", "semimajor_spiral", "b", "omega", "inclination_spiral", "feature"]
@@ -2712,37 +2944,58 @@ def spiral_orbit(x_data, iphase_orbit, semimajor_orbit, orbitalperiod, eccentric
 # PS FIT------------------------------------------------------------------------------------------------------
 def fit_spiral_in_orbit_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarmsize=100,
                            units="keV", method_="extended", extended_binsize=0.01):
-    print("""
-    Fits orbital modulation data by estimating parameters for a spiral orbit contained within a main orbit.
+    """
+    Fits orbital modulation data by estimating parameters for a spiral orbit contained within a main orbit using
+    particle swarm optimization (PSO).
 
-    The fitting process uses a particle swarm optimization (PSO) algorithm, which iteratively improves the
-    parameter estimates by minimizing the chi-squared difference between the observed and predicted data.
+    The fitting process uses a PSO algorithm to iteratively improve parameter estimates by minimizing the
+    chi-squared difference between the observed and predicted data.
 
-    The function can handle two fitting methods:
+    The function supports two fitting methods:
+    
     - "discrete": Suitable for discrete data points (e.g., spectra with small orbital phase ranges; faster).
     - "extended": Suitable for data with varying or extended bin sizes, typical with current instrument
       resolutions (e.g., XMM-Newton and Chandra) and short X-ray binary (XRB) orbits.
 
-    Parameters:
-    - x_data (array-like): Time bins of the observed data.
-    - y_data (array-like): Observed data points corresponding to each time bin.
-    - y_err (array-like, optional): Error associated with each observed data point (default is 0).
-    - num_iterations (int, optional): Number of PSO iterations to perform (default is 3).
-    - maxiter (int, optional): Maximum number of iterations for PSO (default is 1000).
-    - swarmsize (int, optional): Number of particles in the swarm for PSO (default is 100).
-    - units (str, optional): Units of the observed data (default is "keV").
-    - method_ (str, optional): Fitting method to use, either "discrete" or "extended" (default is "extended").
-    - extended_binsize (float, optional): Bin size for the extended method (default is 0.01).
-      A form will appear to input the necessary bounds for the orbital parameters. These parameters will be
-      saved in a .txt file in the current directory and automatically loaded in subsequent runs. This avoids
-      the need to re-enter all parameters; you can modify only those that require adjustment.
+    Parameters
+    ----------
+    x_data : array-like
+        Time bins of the observed data.
+    y_data : array-like
+        Observed data points corresponding to each time bin.
+    y_err : array-like, optional
+        Error associated with each observed data point. Default is 0.
+    num_iterations : int, optional
+        Number of PSO iterations to perform. Default is 3.
+    maxiter : int, optional
+        Maximum number of iterations for PSO. Default is 1000.
+    swarmsize : int, optional
+        Number of particles in the PSO swarm. Default is 100.
+    units : str, optional
+        Units of the observed data. Default is "keV".
+    method_ : str, optional
+        Fitting method to use, either "discrete" or "extended". Default is "extended".
+    extended_binsize : float, optional
+        Bin size for the extended method. Default is 0.01.
 
-    Returns:
-    - DataFrame: Contains the best-fit parameters and their errors.
-    - ph (array-like): Array of phases corresponding to the predicted data.
-    - predicted_data (array-like): Predicted data based on the best-fit parameters.
-    - chi_squared (float): Chi-squared statistic weighted by the error, indicating the quality of fit.
-    """)
+    Notes
+    -----
+    A form will appear to input the necessary bounds for the orbital parameters. These parameters are saved in
+    a .txt file in the current directory and automatically loaded in subsequent runs. This avoids the need to
+    re-enter parameters, allowing modification of only those that require adjustment.
+
+    Returns
+    -------
+    DataFrame : pd.DataFrame
+        Contains the best-fit parameters and their errors.
+    ph : array-like
+        Array of phases corresponding to the predicted data.
+    predicted_data : array-like
+        Predicted data based on the best-fit parameters.
+    chi_squared : float
+        Chi-squared statistic weighted by the error, indicating the quality of fit.
+    """
+
     #.............................Data prep
     parameter_names = ["iphase_orbit", "semimajor_orbit", "orbitalperiod", "eccentricity", "periapsis", "inclination", "Rstar", "Mstar1", "Mstar2", "iphase_spiral", "semimajor_spiral", "b", "omega", "inclination_spiral","feature"]
     x_data, y_err_weight = define_x_y_sy(x_data,y_data, y_err)
@@ -2839,34 +3092,50 @@ def fit_spiral_in_orbit_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=10
 
 # PS FIT------------------------------------------------------------------------------------------------------
 def fit_spiral_in_orbit_ls(x_data, y_data, y_err=0, units="keV", method_="extended", extended_binsize=0.01):
-    print("""
-    Fits orbital modulation data by estimating parameters for a spiral orbit contained within a main orbit.
+    """
+    Fits orbital modulation data by estimating parameters for a spiral orbit contained within a main orbit using
+    a traditional least squares (LS) method. Although the LS method may be limited due to the complexity of the model,
+    it is provided for completeness.
 
-    The fitting process uses a traditional least squares (LS) method, provided for completeness due to the
-    complexity of the model.
-
-    The function can handle two fitting methods:
+    The function supports two fitting methods:
+    
     - "discrete": Suitable for discrete data points (e.g., spectra with small orbital phase ranges; faster).
     - "extended": Suitable for data with varying or extended bin sizes, typical with current instrument
       resolutions (e.g., XMM-Newton and Chandra) and short X-ray binary (XRB) orbits.
 
-    Parameters:
-    - x_data (array-like): Time bins of the observed data.
-    - y_data (array-like): Observed data points corresponding to each time bin.
-    - y_err (array-like, optional): Error associated with each observed data point (default is 0).
-    - units (str, optional): Units of the observed data (default is "keV").
-    - method_ (str, optional): Fitting method to use, either "discrete" or "extended" (default is "extended").
-    - extended_binsize (float, optional): Bin size for the extended method (default is 0.01).
-      A form will appear to input the necessary bounds for the orbital parameters. These parameters will be
-      saved in a .txt file in the current directory and automatically loaded in subsequent runs. This avoids
-      the need to re-enter all parameters; you can modify only those that require adjustment.
+    Parameters
+    ----------
+    x_data : array-like
+        Time bins of the observed data.
+    y_data : array-like
+        Observed data points corresponding to each time bin.
+    y_err : array-like, optional
+        Error associated with each observed data point. Default is 0.
+    units : str, optional
+        Units of the observed data. Default is "keV".
+    method_ : str, optional
+        Fitting method to use, either "discrete" or "extended". Default is "extended".
+    extended_binsize : float, optional
+        Bin size for the extended method. Default is 0.01.
 
-    Returns:
-    - DataFrame: Contains the best-fit parameters and their errors.
-    - ph (array-like): Array of phases corresponding to the predicted data.
-    - predicted_data (array-like): Predicted data based on the best-fit parameters.
-    - chi_squared (float): Chi-squared statistic weighted by the error, indicating the quality of fit.
-    """)
+    Notes
+    -----
+    A form will appear to input the necessary bounds for the orbital parameters. These parameters are saved in
+    a .txt file in the current directory and automatically loaded in subsequent runs. This avoids the need to
+    re-enter parameters, allowing modification of only those that require adjustment.
+
+    Returns
+    -------
+    DataFrame : pd.DataFrame
+        Contains the best-fit parameters and their errors.
+    ph : array-like
+        Array of phases corresponding to the predicted data.
+    predicted_data : array-like
+        Predicted data based on the best-fit parameters.
+    chi_squared : float
+        Chi-squared statistic weighted by the error, indicating the quality of fit.
+    """
+
 
     #............................................Data prep
     parameter_names = ["iphase_orbit", "semimajor_orbit", "orbitalperiod", "eccentricity", "periapsis", "inclination", "Rstar", "Mstar1", "Mstar2", "iphase_spiral", "semimajor_spiral", "b", "omega", "inclination_spiral"]
@@ -3020,39 +3289,57 @@ def nh_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis, 
 # PS FIT------------------------------------------------------------------------------------------------------
 def fit_nh_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=200, swarmsize=20,
               method_="extended", extended_binsize=0.01):
-    print("""
-    Fits the column density (NH1, x 10^22 cm^-2) encountered by radiation emitted at each orbital phase
-    as it travels towards an observer. Assumes a spherically distributed, neutral (unionized) stellar wind
-    based on the CAK model.
+    """
+    Fits the column density (NH1, x 10^22 cm^-2) encountered by radiation emitted at each orbital phase as
+    it travels towards an observer, assuming a spherically distributed, neutral (unionized) stellar wind based
+    on the CAK model.
 
     The fitting process uses a particle swarm optimization (PSO) algorithm to minimize the chi-squared
     difference between observed and predicted data points.
 
     The function supports two fitting methods:
+    
     - "discrete": Suitable for discrete data points (e.g., spectra with small orbital phase ranges; faster).
     - "extended": Suitable for data with varying or extended bin sizes, typical for current instrument
       resolutions (e.g., XMM-Newton and Chandra) and short X-ray binary (XRB) orbits.
 
-    Parameters:
-    - x_data (array-like): Time bins of the observed data.
-    - y_data (array-like): Observed data points corresponding to each time bin.
-    - y_err (array-like, optional): Error associated with each observed data point (default is 0).
-    - num_iterations (int, optional): Number of iterations for the PSO algorithm (default is 3).
-    - maxiter (int, optional): Maximum number of iterations for each PSO run (default is 200).
-    - swarmsize (int, optional): Number of particles in the PSO swarm (default is 20).
-    - method_ (str, optional): Fitting method to use, either "discrete" or "extended" (default is "extended").
-    - extended_binsize (float, optional): Bin size for the extended method (default is 0.01).
-      A form will appear to input the necessary bounds for the orbital parameters. These parameters will be
-      saved in a .txt file in the current directory and automatically loaded in subsequent runs. This avoids
-      the need to re-enter all parameters; you can modify only those that require adjustment.
+    Parameters
+    ----------
+    x_data : array-like
+        Time bins of the observed data.
+    y_data : array-like
+        Observed data points corresponding to each time bin.
+    y_err : array-like, optional
+        Error associated with each observed data point. Default is 0.
+    num_iterations : int, optional
+        Number of iterations for the PSO algorithm. Default is 3.
+    maxiter : int, optional
+        Maximum number of iterations for each PSO run. Default is 200.
+    swarmsize : int, optional
+        Number of particles in the PSO swarm. Default is 20.
+    method_ : str, optional
+        Fitting method to use, either "discrete" or "extended". Default is "extended".
+    extended_binsize : float, optional
+        Bin size for the extended method. Default is 0.01.
 
-    Returns:
-    - df_results_transposed (DataFrame): Transposed DataFrame of the best-fit parameters and their standard
-      deviations.
-    - ph (array-like): Array of phases corresponding to the predicted data.
-    - predicted_data (array-like): Predicted data based on the best-fit parameters.
-    - chi_squared (float): Chi-squared statistic weighted by the error, indicating the quality of fit.
-    """)
+    Notes
+    -----
+    A form will appear to input the necessary bounds for the orbital parameters. These parameters are saved in
+    a .txt file in the current directory and automatically loaded in subsequent runs. This avoids the need to
+    re-enter parameters, allowing modification of only those that require adjustment.
+
+    Returns
+    -------
+    df_results_transposed : pd.DataFrame
+        Transposed DataFrame of the best-fit parameters and their standard deviations.
+    ph : array-like
+        Array of phases corresponding to the predicted data.
+    predicted_data : array-like
+        Predicted data based on the best-fit parameters.
+    chi_squared : float
+        Chi-squared statistic weighted by the error, indicating the quality of fit.
+    """
+
 
 #............................................Data prep.
     advise()
@@ -3157,23 +3444,36 @@ def fit_nh_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=200, swarmsize=
 #HELPER FUNCTIONS--------------------------------------------------------------------------
 #.................................................. Hardness ratio
 def hr(x, y, ex, ey):
-    print("""
+    """
+    Calculates the hardness ratio and its associated errors.
 
-    Calculates hardness ratio and errors.
+    The hardness ratio (HR) is calculated using the formula:
     
-    hr = (h - l) / (h + l)
+    HR = (h - l) / (h + l)
 
-    Parameters:
-    -Count rate or flux in a hard band.
-    -Count rate or flux in a soft band.
-    -Errors in the hard band
-    -Errors in the soft band
+    where:
+    - h is the count rate or flux in the hard band.
+    - l is the count rate or flux in the soft band.
 
-    Returns:
-    -Hardness ratio.
-    -Error in the hardness ratio.
+    Parameters
+    ----------
+    x : float or array-like
+        Count rate or flux in the hard band.
+    y : float or array-like
+        Count rate or flux in the soft band.
+    ex : float or array-like
+        Errors associated with the hard band.
+    ey : float or array-like
+        Errors associated with the soft band.
 
-    """)
+    Returns
+    -------
+    hr : float or array-like
+        The calculated hardness ratio.
+    hr_error : float or array-like
+        The error in the hardness ratio.
+    """
+
 
     f_value = (x - y) / (x + y)
     df_dx = 2 * y / (x + y)**2
@@ -3185,23 +3485,36 @@ def hr(x, y, ex, ey):
 
 #.................................................. Color ratio
 def cr(x, y, ex, ey):
-    print("""
+    """
+    Calculates the color ratio and its associated errors.
 
-    Calculates color ratio and errors.
+    The color ratio (CR) is calculated using the formula:
     
-    cr = h / l
+    CR = h / l
 
-    Parameters:
-    -Count rate or flux in a hard band.
-    -Count rate or flux in a soft band.
-    -Errors in the hard band
-    -Errors in the soft band
+    where:
+    - h is the count rate or flux in the hard band.
+    - l is the count rate or flux in the soft band.
 
-    Returns:
-    -Hardness ratio.
-    -Error in the hardness ratio.
+    Parameters
+    ----------
+    x : float or array-like
+        Count rate or flux in the hard band.
+    y : float or array-like
+        Count rate or flux in the soft band.
+    ex : float or array-like
+        Errors associated with the hard band.
+    ey : float or array-like
+        Errors associated with the soft band.
 
-    """)
+    Returns
+    -------
+    cr : float or array-like
+        The calculated color ratio.
+    cr_error : float or array-like
+        The error in the color ratio.
+    """
+
 
     f_value = x / y
     df_dx = 1 / y
@@ -3214,21 +3527,30 @@ def cr(x, y, ex, ey):
 
 #.................................................. Rebin signal to noise
 def rebin_snr(t, x, sy, snr_threshold):
-    print("""
+    """
+    Calculates a rebinned signal-to-noise ratio (SNR) lightcurve.
 
-    Calculates a rebinned signal-to-noise lightcurve
+    Parameters
+    ----------
+    t : array-like
+        Time array.
+    x : array-like
+        Count rate or flux array.
+    sy : array-like
+        Error array associated with the count rate or flux.
+    snr_threshold : float
+        Minimum required signal-to-noise ratio (typically between 0.2 and 0.05).
 
-    Parameters:
-    -Time array
-    -Count rate or flux
-    -Errors
-    -Minumun required signal to noise ratio (tipically 0.2-0.05)
+    Returns
+    -------
+    t_rebinned : array-like
+        Rebinned time array.
+    x_rebinned : array-like
+        Rebinned lightcurve.
+    sy_rebinned : array-like
+        Rebinned errors.
+    """
 
-    Returns:
-    -Time array
-    -Rebined lightcurve
-    -Errors
-    """)
     
     w=[]
     c_bin=[]
@@ -3278,23 +3600,30 @@ def rebin_snr(t, x, sy, snr_threshold):
 
 #.................................................. Rebin by bins
 def rebin_bins(t, x, sy, nbin):
+    """
+    Calculates a rebinned lightcurve using a specified number of time bins.
 
-    print("""
+    Parameters
+    ----------
+    t : array-like
+        Time array.
+    x : array-like
+        Count rate or flux array.
+    sy : array-like
+        Error array associated with the count rate or flux.
+    nbin : int
+        Number of time bins for rebinning (requires a larger time bin compared to the original one).
 
-    Calculates a rebinned lightcurve
+    Returns
+    -------
+    t_rebinned : array-like
+        Rebinned time array.
+    x_rebinned : array-like
+        Rebinned lightcurve.
+    sy_rebinned : array-like
+        Rebinned errors.
+    """
 
-    Parameters:
-    -Time array
-    -Count rate or flux
-    -Errors
-    -Time bin (equires a larger time bin compared to the one we currently have).
-
-    Returns:
-    -Time array
-    -Rebined lightcurve
-    -Errors
-
-    """)
 
     c_new=[]
     t_new=[]
@@ -3321,27 +3650,51 @@ def rebin_bins(t, x, sy, nbin):
     return t_new,c_new,sc_new
 #.................................................. Periods sliding window
 def fold_pulse(t, c, sc, period, snr=None, rebin=None):
-    print("""
-    Folds a lightcurve data array based on a given period and optionally rebins it.
+    """
+    Folds a lightcurve data array based on a given period and optionally rebins it using either signal-to-noise
+    ratio (SNR) or uniform time binning.
 
-    Parameters:
-    - t: Time array of the lightcurve.
-    - c: Count rate or flux array corresponding to the time array.
-    - sc: Errors (standard deviation) associated with the count rate or flux.
-    - period: Period to fold the lightcurve, in the same units as 't'.
+    Parameters
+    ----------
+    t : array-like
+        Time array of the lightcurve.
+    c : array-like
+        Count rate or flux array corresponding to the time array.
+    sc : array-like
+        Errors (standard deviation) associated with the count rate or flux.
+    period : float
+        Period to fold the lightcurve, in the same units as the time array `t`.
 
-    Optional Parameters (one at least should be specified):
-    - snr: Minimum signal-to-noise ratio threshold. If provided, applies signal-to-noise rebinning using `rebin_snr`.
-    - rebin: Number of bins to rebin the folded lightcurve. If provided, applies uniform time binning using `rebin_bins`.
+    Optional Parameters
+    -------------------
+    snr : float, optional
+        Minimum signal-to-noise ratio threshold. If provided, applies signal-to-noise rebinning using `rebin_snr`.
+    rebin : int, optional
+        Number of bins to rebin the folded lightcurve. If provided, applies uniform time binning using `rebin_bins`.
 
-    Returns:
-    - Depending on the optional parameters:
-      - If `snr` is specified: Time array, rebinned folded lightcurve, rebinned errors after signal-to-noise ratio rebinning.
-      - If `rebin` is specified: Time array, rebinned folded lightcurve, rebinned errors after uniform time binning.
-      
-    Notes:
-    - Either `snr` or `rebin` must be specified to proceed with the function.
-    """)
+    Returns
+    -------
+    If `snr` is specified:
+        t_rebinned : array-like
+            Rebinned time array after signal-to-noise ratio rebinning.
+        c_rebinned : array-like
+            Rebinned folded lightcurve.
+        sc_rebinned : array-like
+            Rebinned errors after signal-to-noise ratio rebinning.
+
+    If `rebin` is specified:
+        t_rebinned : array-like
+            Rebinned time array after uniform time binning.
+        c_rebinned : array-like
+            Rebinned folded lightcurve.
+        sc_rebinned : array-like
+            Rebinned errors after uniform time binning.
+
+    Notes
+    -----
+    Either `snr` or `rebin` must be specified to proceed with the function.
+    """
+
     
     phase = (t - min(t)) / period - np.floor((t - min(t)) / period)
 
@@ -3375,36 +3728,61 @@ def preprocess_data(t, x, sy):
 #.................................................. Periods sliding window
 
 
-def period_sliding_window(t, c, sc, window_sec, step_sec, max_period=None, min_period=None, false_alarm_threshold=0.1, rel_high_for_error=0.9, folded_pulses=False, snr_pulse=0.2, nbin_pulse=None):
-
-    print("""
+def period_sliding_window(t, c, sc, window_sec, step_sec, max_period=None, min_period=None, false_alarm_threshold=0.1,
+                          rel_high_for_error=0.9, folded_pulses=False, snr_pulse=0.2, nbin_pulse=None):
+    """
     Performs period analysis using a sliding window approach on a lightcurve dataset.
 
-    Parameters:
-    - t: Time array of the lightcurve.
-    - c: Count rate or flux array corresponding to the time array.
-    - sc: Errors (standard deviation) associated with the count rate or flux.
-    - window_sec: Size of the sliding window in seconds for period analysis.
-    - step_sec: Step size in seconds between consecutive windows.
-    - max_period: Maximum period to consider in the periodogram analysis (optional).
-    - min_period: Minimum period to consider in the periodogram analysis (optional).
-    - false_alarm_threshold: Threshold value for false alarm probability in Lomb-Scargle periodogram.
-    - rel_high_for_error: Relative height for error estimation in peak_widths function.
-    - folded_pulses: If True, folds the lightcurve using `fold_pulse` for each identified period.
-    - snr_pulse: Minimum signal-to-noise ratio threshold for folding using `fold_pulse`.
-    - nbin_pulse: Number of bins for uniform time binning in folding using `fold_pulse`.
+    Parameters
+    ----------
+    t : array-like
+        Time array of the lightcurve.
+    c : array-like
+        Count rate or flux array corresponding to the time array.
+    sc : array-like
+        Errors (standard deviation) associated with the count rate or flux.
+    window_sec : float
+        Size of the sliding window in seconds for period analysis.
+    step_sec : float
+        Step size in seconds between consecutive windows.
+    max_period : float, optional
+        Maximum period to consider in the periodogram analysis. Default is None.
+    min_period : float, optional
+        Minimum period to consider in the periodogram analysis. Default is None.
+    false_alarm_threshold : float, optional
+        Threshold value for false alarm probability in Lomb-Scargle periodogram. Default is 0.1.
+    rel_high_for_error : float, optional
+        Relative height for error estimation in the `peak_widths` function. Default is 0.9.
+    folded_pulses : bool, optional
+        If True, folds the lightcurve using `fold_pulse` for each identified period. Default is False.
+    snr_pulse : float, optional
+        Minimum signal-to-noise ratio threshold for folding using `fold_pulse`. Default is 0.2.
+    nbin_pulse : int, optional
+        Number of bins for uniform time binning in folding using `fold_pulse`. Default is None.
 
-    Returns:
-    - result: DataFrame containing the results of the period analysis, including periods, frequencies, powers,
-              errors in period, errors in power, false alarm probabilities, and time range.
-    - pulses: Dictionary containing folded pulse data for each identified period if `folded_pulses` is True.
+    Returns
+    -------
+    result : DataFrame
+        DataFrame containing the results of the period analysis, including:
+        - periods,
+        - frequencies,
+        - powers,
+        - errors in period,
+        - errors in power,
+        - false alarm probabilities,
+        - time range.
+    pulses : dict, optional
+        Dictionary containing folded pulse data for each identified period if `folded_pulses` is True.
 
-    Notes:
-    - For each window the script will return a list of all peaks found in the periodogram.
+    Notes
+    -----
+    - For each window, the function returns a list of all peaks found in the periodogram.
     - The function performs Lomb-Scargle periodogram analysis within each sliding window of the specified size.
-    - It filters the periods based on false alarm probability and sorts them by power.
-    - If `folded_pulses` is True, it folds the lightcurve for each identified period using `fold_pulse` and stores the results.
-    """)
+    - It filters periods based on false alarm probability and sorts them by power.
+    - If `folded_pulses` is True, it folds the lightcurve for each identified period using `fold_pulse`
+      and stores the results.
+    """
+
 
     def preprocess_data(t, c, sc):
         """ Preprocess the data by removing entries where sc <= 0, NaN, or inf. """
