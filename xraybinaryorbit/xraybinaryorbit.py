@@ -69,10 +69,8 @@ na = 6.02214076*10**23/1.00797
 
 #Helper functions
 ##########################################################################################
-def advise():
+def _advise():
     print("Nice! we are working on getting your parameters. It will take a while... please, grab a cup of coffe, go for a walk, go on some vacations... we might finish by Chistmast, unless is Christmast now, if thats the case, by Easter.")
-
-
 
 def list_functions():
     print("""
@@ -109,80 +107,291 @@ def list_functions():
     - period_sliding_window
     """)
 ##########################################################################################
-def gaussian(x, mean, sigma):
-    return np.exp(-(x - mean)**2 / (2 * sigma**2)) / (sigma * np.sqrt(2 * np.pi))
-#...................................................  Prepare timebins for fitting functions
-def time_pairs(edges):
+def _gaussian(x, mean, sigma):
+    """
+    Compute the Gaussian (normal) distribution for the given input.
 
+    This function evaluates the Gaussian (normal) distribution for a given
+    point `x`, with a specified mean and standard deviation (sigma).
+
+    Parameters
+    ----------
+    x : float or array-like
+        The point(s) at which to evaluate the Gaussian function.
+    mean : float
+        The mean (center) of the Gaussian distribution.
+    sigma : float
+        The standard deviation (width) of the Gaussian distribution.
+
+    Returns
+    -------
+    float or array-like
+        The value of the Gaussian function at `x`, based on the specified mean and sigma.
+    
+    Notes
+    -----
+    The Gaussian function is given by:
+    .. math::
+        f(x) = \\frac{1}{\\sigma \\sqrt{2 \\pi}} \\exp \\left(-\\frac{(x - \\mu)^2}{2 \\sigma^2}\\right)
+    where `mu` is the mean and `sigma` is the standard deviation.
+
+    """
+    
+    return np.exp(-(x - mean)**2 / (2 * sigma**2)) / (sigma * np.sqrt(2 * np.pi))
+
+#...................................................  Prepare timebins for fitting functions
+def _time_pairs(edges):
+    """
+    Create consecutive pairs of values from the input edges array.
+
+    This function takes an array of edges (e.g., time bin edges) and creates
+    consecutive pairs of adjacent elements. The result is a list of tuples, where
+    each tuple contains two consecutive values from the edges array.
+
+    Parameters
+    ----------
+    edges : array-like
+        A list or array of values representing the edges. These could be time bin
+        edges or any other set of ordered values.
+
+    Returns
+    -------
+    pairs_ : list of tuples
+        A list of consecutive pairs of the form (edge[i], edge[i+1]) from the input `edges`.
+    """
     edge_pairs = [(edges[i], edges[i + 1]) for i in range(len(edges) - 1)]
-    pairs_=[]
+    pairs_ = []
 
     for pair in edge_pairs:
         pairs_.append(pair)
 
     return pairs_
+
 #...................................................PCHIP (Piecewise Cubic Hermite Interpolating Polynomial) is a method used for interpolation, particularly for interpolating data points with unevenly spaced independent variable (x) values.
-def interpolate_pchip(tmin,tmax,tinterval,t,y, sy):
+def _interpolate_pchip(tmin, tmax, tinterval, t, y, sy):
+    """
+    Interpolate data using Piecewise Cubic Hermite Interpolating Polynomial (PCHIP).
+
+    This function uses the PCHIP method to interpolate both the data and its associated
+    uncertainties (errors) over a new range of time values. PCHIP is ideal for maintaining
+    the shape of data and avoiding oscillations that other interpolation methods may introduce.
+
+    Parameters
+    ----------
+    tmin : float
+        The minimum value of the new time grid for interpolation.
+    tmax : float
+        The maximum value of the new time grid for interpolation.
+    tinterval : float
+        The interval between consecutive time points in the new time grid.
+    t : array-like
+        The original time data points at which the data `y` and its uncertainties `sy` are defined.
+    y : array-like
+        The data values corresponding to the time points `t`.
+    sy : array-like
+        The uncertainties (errors) associated with the data points `y`.
+
+    Returns
+    -------
+    t_new : array-like
+        The new time points from `tmin` to `tmax` with step size `tinterval`.
+    new_data : array-like
+        The interpolated data values at the new time points `t_new`.
+    snew_data : array-like
+        The interpolated uncertainty values at the new time points `t_new`.
+
+    """
     
-    t_new = np.arange(tmin,tmax,tinterval)
+    t_new = np.arange(tmin, tmax, tinterval)
     
+    # Interpolate the data using PCHIP
     cs = PchipInterpolator(t, y)
     scs = PchipInterpolator(t, sy)
+    
     new_data = cs(t_new)
     snew_data = scs(t_new)
     
     return t_new, new_data, snew_data
 
+
 #.......................................................
 #..................................................... Properly prepare imput for fitting functions
-def define_x_y_sy(x_data, y_data, y_err):
-    
+def _define_x_y_sy(x_data, y_data, y_err):
+    """
+    Prepare and validate x, y, and error data for model fitting.
+
+    This function processes the input data by ensuring that `x_data`, `y_data`,
+    and `y_err` are properly formatted as NumPy arrays. It also calculates error weights
+    (`y_err_weight`) based on the provided uncertainties. If no uncertainties are provided,
+    a default weight of 1 is assigned. Additionally, the function handles time binning
+    when `x_data` has one more element than `y_data`.
+
+    Parameters
+    ----------
+    x_data : array-like
+        The independent variable data (e.g., time or position data).
+    y_data : array-like
+        The dependent variable data (e.g., observed values).
+    y_err : array-like
+        The uncertainties (errors) associated with `y_data`. Can be a 1D array of errors
+        or a 2D array (e.g., lower and upper bounds).
+
+    Returns
+    -------
+    x_data : array-like
+        The processed independent variable data, possibly as time bin pairs.
+    y_err_weight : array-like
+        The calculated or default error weights for the fitting process.
+    """
     x_data = np.array(x_data)
     y_data = np.array(y_data)
     y_err = np.array(y_err)
     
-    if np.sum(y_err) !=0 :
-    
+    # If uncertainties are provided, calculate the error weights
+    if np.sum(y_err) != 0:
         if len(y_err.shape) == 2:
-        
-            y_err_weight = np.array(y_err[1] + y_err[0])
-            
+            y_err_weight = np.array(y_err[1] + y_err[0])  # Sum upper and lower bounds if 2D
         elif len(y_err.shape) == 1:
-        
-            y_err_weight = np.array(y_err)
-            
-    if np.sum(y_err) ==0 :
+            y_err_weight = np.array(y_err)  # Use errors directly if 1D
+    
+    # If no uncertainties are provided, set all weights to 1
+    if np.sum(y_err) == 0:
         y_err_weight = np.ones(len(y_data))
-            
+    
+    # If `x_data` has one more element than `y_data`, assume it's time bin edges and create pairs
     if len(y_data) + 1 == len(x_data) and len(x_data.shape) == 1:
-        x_data = time_pairs(x_data)
+        x_data = _time_pairs(x_data)
         
     return x_data, y_err_weight
+
 #................................................... Weighted to the error chi squared
-def chi_squared_weighted(y_data, y_err, y_pred):
+def _chi_squared_weighted(y_data, y_err, y_pred):
+    """
+    Compute the weighted chi-squared statistic.
 
+    This function calculates the chi-squared statistic, which is a measure of
+    the goodness of fit between observed data (`y_data`) and predicted data
+    (`y_pred`), weighted by the uncertainties (`y_err`). The lower the chi-squared
+    value, the better the fit of the model to the data.
+
+    Parameters
+    ----------
+    y_data : array-like
+        The observed data (dependent variable).
+    y_err : array-like
+        The uncertainties (errors) associated with the observed data.
+    y_pred : array-like
+        The predicted data (from a model or fit).
+
+    Returns
+    -------
+    chi_squared : float
+        The weighted chi-squared statistic, which quantifies how well the predicted
+        data matches the observed data, taking into account the uncertainties.
+    """
     y_data = np.asarray(y_data)
     y_err = np.asarray(y_err)
     y_pred = np.asarray(y_pred)
 
+    # Calculate the weighted chi-squared statistic
     chi_squared = np.sum(((y_data - y_pred) / y_err) ** 2)
-    return chi_squared
     
-def chi_squared(y_data, y_pred):
+    return chi_squared
+
+    
+def _chi_squared(y_data, y_pred):
+    """
+    Compute the unweighted chi-squared statistic.
+
+    This function calculates the chi-squared statistic, which is a measure of
+    the goodness of fit between observed data (`y_data`) and predicted data
+    (`y_pred`) without taking into account any uncertainties. This is a simpler
+    version of the chi-squared test where all uncertainties are assumed to be equal.
+
+    Parameters
+    ----------
+    y_data : array-like
+        The observed data (dependent variable).
+    y_pred : array-like
+        The predicted data (from a model or fit).
+
+    Returns
+    -------
+    chi_squared : float
+        The unweighted chi-squared statistic, which quantifies how well the predicted
+        data matches the observed data.
+    """
 
     y_data = np.asarray(y_data)
-    y_err = np.asarray(y_err)
     y_pred = np.asarray(y_pred)
 
+    # Calculate the unweighted chi-squared statistic
     chi_squared = np.sum((y_data - y_pred) ** 2)
+    
     return chi_squared
+
 
 #................................................... scale data for plotting purposes
-def scale_(x,y):
-    x_new= ((max(y)-min(y))/(max(x)-min(x)))*(x-max(x))+max(y)
+def scale(x, y):
+    """
+    Scale the `x` data to match the range of the `y` data. The purpose is facilitate creation of plots.
+
+    This function scales the values in the `x` array to match the range of the `y` array.
+    It linearly transforms the `x` values such that they span the same range as `y`.
+
+    Parameters
+    ----------
+    x : array-like
+        The input data to be scaled.
+    y : array-like
+        The data whose range is used for scaling `x`.
+
+    Returns
+    -------
+    x_new : array-like
+        The scaled version of `x`, with values transformed to the range of `y`.
+    """
+
+    x_new = ((max(y) - min(y)) / (max(x) - min(x))) * (x - max(x)) + max(y)
     return x_new
+
 #................................................... Easy way to manage values
-def copy_fields(source_file, destination_file, params2=None):
+def _copy_fields(source_file, destination_file, params2=None):
+    """
+    Copy and update fields from a source file to a destination file, matching parameter names and updating values accordingly.
+
+    This function reads parameters and values from a `source_file`, compares them with the parameters in a `destination_file`,
+    and updates the destination file with values from the source where the parameter names match. If the destination file
+    does not exist, it can be created using `params2`, and machine parameters are loaded from the `source_file`.
+
+    Parameters
+    ----------
+    source_file : str
+        The path to the source file, which contains the original parameter names and values.
+    destination_file : str
+        The path to the destination file where the updated parameter values will be written.
+    params2 : list of str, optional
+        A list of parameter names to use when creating the destination file if it does not already exist.
+        If not provided, and the destination file is missing, a ValueError is raised.
+
+    Raises
+    ------
+    ValueError
+        If the destination file does not exist and `params2` is not provided, or if `params2` is empty.
+
+    Notes
+    -----
+    - The first row of the files is expected to contain comma-separated parameter names.
+    - The second row is expected to contain corresponding values, with 'nan' used to represent missing values.
+    - Only fields that match between the source and destination files will be updated.
+    - If the destination file does not exist, and `params2` is provided, the file will be created with
+      those parameters and initialized with `nan` values before being updated with source data.
+
+    Returns
+    -------
+    None
+        The function writes the updated parameters and values back to the `destination_file`.
+    """
     # Read the content of the source file
     with open(source_file, "r") as source:
         source_lines = source.readlines()
@@ -225,7 +434,36 @@ def copy_fields(source_file, destination_file, params2=None):
         destination.write(",".join(map(str, dest_fixed_values)) + "\n")
 
     
-def load_values_to_interface(param_list, fixed_values, name):
+def _load_values_to_interface(param_list, fixed_values, name):
+    """
+    Create a graphical user interface (GUI) for inputting and updating a list of parameter values.
+
+    This function opens a Tkinter-based GUI form where users can input or modify values for a given list of parameters.
+    The form pre-populates with the previous values (`fixed_values`), and upon submission, performs validation checks
+    on specific parameters. If the validation passes, the new values are saved and the form is closed.
+
+    Parameters
+    ----------
+    param_list : list of str
+        A list of parameter names to display in the form as input fields.
+    fixed_values : list of float
+        A list of initial values corresponding to the parameters in `param_list`, used to pre-fill the input fields.
+    name : str
+        The name of the form or window, used as the title of the Tkinter window.
+
+    Raises
+    ------
+    ValueError : If the input values do not meet the validation criteria for specific parameters.
+        - 'eccentricity' must be between 0 and 0.999999.
+        - 'semimajor', 'Mstar1', 'Mstar2', and 'Rstar' must all be positive.
+
+    Returns
+    -------
+    None
+        The function updates the `fixed_values_list` global variable with the new user-input values.
+    """
+
+
     global fixed_values_list
     fixed_values_list = fixed_values
 
@@ -273,7 +511,32 @@ def load_values_to_interface(param_list, fixed_values, name):
     root.mainloop()
     
 
-def manage_parameters(param_list, name):
+def _manage_parameters(param_list, name):
+    """
+    Manage parameter values by loading from a file, displaying a user input form for modification,
+    and saving the updated values back to the file.
+
+    This function first attempts to load previously saved parameter values from a file named `name.txt`.
+    If the file is not found, it initializes the values to `NaN`. After loading the values,
+    it displays a graphical user interface (GUI) using the `_load_values_to_interface` function
+    to allow the user to update the parameter values. Finally, it saves the updated values back to the same file.
+
+    Parameters
+    ----------
+    param_list : list of str
+        A list of parameter names to be managed and saved. This list is used both in the GUI form
+        and for saving the names to the output file.
+    name : str
+        The base name for the text file where the parameters will be saved and loaded from.
+        The file is expected to be named `{name}.txt`.
+
+    Returns
+    -------
+    fixed_values_list : list of float
+        A list of the final parameter values, either loaded from the file or updated through user input.
+    """
+
+
     global fixed_values_list
 
     # Load previous fixed values if available
@@ -284,7 +547,7 @@ def manage_parameters(param_list, name):
     except FileNotFoundError:
         fixed_values_list = [np.nan] * len(param_list)
 
-    load_values_to_interface(param_list, fixed_values_list, name)
+    _load_values_to_interface(param_list, fixed_values_list, name)
 
     # Save fixed values to file
     with open(f"{name}.txt", "w") as file:
@@ -296,7 +559,32 @@ def manage_parameters(param_list, name):
 
 #................................................... Easy way to manage bounds in fitting functions
 
-def load_bounds_to_interface(param_list, lower_bounds, upper_bounds, name):
+def _load_bounds_to_interface(param_list, lower_bounds, upper_bounds, name):
+    """
+    Create a graphical user interface (GUI) for inputting and updating lower and upper bounds for a list of parameters.
+
+    This function displays a Tkinter-based GUI where users can enter or modify both the lower and upper bounds for
+    a given list of parameters. It pre-populates the input fields with the previously provided `lower_bounds` and
+    `upper_bounds` values. Upon submission, the new bounds are saved and the GUI is closed.
+
+    Parameters
+    ----------
+    param_list : list of str
+        A list of parameter names for which the bounds are to be set.
+    lower_bounds : list of float
+        The initial lower bounds for the parameters, used to pre-fill the corresponding input fields.
+    upper_bounds : list of float
+        The initial upper bounds for the parameters, used to pre-fill the corresponding input fields.
+    name : str
+        The name for the form, used as the title of the Tkinter window.
+
+    Returns
+    -------
+    None
+        The function updates the global variables `lower_bounds_list` and `upper_bounds_list` with the new values
+        entered by the user.
+    """
+    
     global lower_bounds_list, upper_bounds_list
     
     lower_bounds_list = lower_bounds
@@ -333,11 +621,28 @@ def load_bounds_to_interface(param_list, lower_bounds, upper_bounds, name):
     submit_button.grid(row=len(param_list), columnspan=4)
 
     root.mainloop()
+    
+def _load_bounds_to_interface(param_list, lower_bounds, upper_bounds, name):
+    """
+    Create a graphical user interface (GUI) for inputting and validating lower and upper bounds for parameters.
+
+    This function opens a Tkinter-based GUI form where users can enter or modify both the lower and upper bounds
+    for a given list of parameters. The form pre-populates with the previous bounds (`lower_bounds`, `upper_bounds`).
+
+    Parameters
+    ----------
+    param_list : list of str
+        A list of parameter names to display in the form as input fields for setting lower and upper bounds.
+    lower_bounds : list of float
+        A list of initial lower bound values corresponding to the parameters in `param_list`.
+    upper_bounds : list of float
+        A list of initial upper bound values corresponding to the parameters in `param_list`.
+    name : str
+        The name of the form or window, used as the title of the Tkinter window.
+
+    """
 
 
-
-
-def load_bounds_to_interface(param_list, lower_bounds, upper_bounds, name):
     global lower_bounds_list, upper_bounds_list
     
     lower_bounds_list = lower_bounds
@@ -408,7 +713,34 @@ def load_bounds_to_interface(param_list, lower_bounds, upper_bounds, name):
     root.mainloop()
     
 #........................................................................................
-def manage_bounds(param_list, name):
+def _manage_bounds(param_list, name):
+    """
+    Manage parameter bounds by loading from a file, displaying a user input form for modification, and saving
+    the updated bounds back to the file.
+
+    This function first attempts to load previously saved lower and upper bounds for parameters from a file named
+    `bounds_{name}.txt`. If the file is not found, it initializes the bounds to `NaN`. The user can modify these bounds
+    through a graphical user interface (GUI) provided by `_load_bounds_to_interface`. After modification, the bounds are
+    saved back to the same file.
+
+    Parameters
+    ----------
+    param_list : list of str
+        A list of parameter names to be managed and saved. This list is used both in the GUI form
+        and for saving the parameter names to the output file.
+    name : str
+        The base name for the bounds file where the parameters will be saved and loaded from.
+        The file is expected to be named `bounds_{name}.txt`.
+
+    Returns
+    -------
+    lower_bounds : list of float
+        The final list of valid lower bounds (i.e., where both lower and upper bounds are not `NaN`).
+    upper_bounds : list of float
+        The final list of valid upper bounds (i.e., where both lower and upper bounds are not `NaN`).
+    """
+
+
     global lower_bounds_list, upper_bounds_list
 
     # Load previous bounds if available
@@ -423,7 +755,7 @@ def manage_bounds(param_list, name):
         lower_bounds_list = [np.nan] * len(param_list)
         upper_bounds_list = [np.nan] * len(param_list)
 
-    load_bounds_to_interface(param_names, lower_bounds_list, upper_bounds_list, name)
+    _load_bounds_to_interface(param_names, lower_bounds_list, upper_bounds_list, name)
 
     # Save bounds to file
     with open("bounds_"+str(name)+".txt", "w") as file:
@@ -435,9 +767,51 @@ def manage_bounds(param_list, name):
     upper_bounds = [upper_bounds_list[i] for i in range(len(upper_bounds_list)) if not np.isnan(lower_bounds_list[i]) and not np.isnan(upper_bounds_list[i])]
     
     return lower_bounds, upper_bounds
-#........................................................................................
-# PHASE TO TIME ###########################################################################
-def orbital_phase_to_time_(ph, iphase, semimajor, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2 ,precision=0.01):
+    
+    
+def _orbital_phase_to_time(ph, iphase, semimajor, orbitalperiod, eccentricity, periapsis,
+                           Rstar, Mstar1, Mstar2, precision=0.01):
+    """
+    Converts an orbital phase array to a time array for a compact object orbiting a companion star.
+
+    The compact object moves faster at periastron than at apoastro due to the conservation of angular momentum
+    and Kepler's second law of planetary motion. This law states that the object sweeps out equal areas in
+    equal times, requiring higher velocity when the object is closer to the star (periapsis).
+
+    Parameters
+    ----------
+    ph : array-like
+        Orbital phase array, representing the phase of the object in its orbit.
+    iphase : float
+        The initial orbital phase.
+    semimajor : float
+        Semi-major axis of the orbit.
+    orbitalperiod : float
+        Orbital period of the compact object around the companion star.
+    eccentricity : float
+        Orbital eccentricity, describing how elongated the orbit is.
+    periapsis : float
+        Argument of periapsis, representing the orientation of the elliptical orbit.
+    Rstar : float
+        Radius of the companion star.
+    Mstar1 : float
+        Mass of the compact object.
+    Mstar2 : float
+        Mass of the companion star.
+    precision : float, optional
+        Resolution for the phase array. Default is 0.01.
+
+    Returns
+    -------
+    ph : array-like
+        The input orbital phase array.
+    time : array-like
+        Time array corresponding to the orbital phase.
+    W : array-like
+        Angular velocity array corresponding to the orbital phase, accounting for changes due to eccentricity.
+
+    """
+
     #.............................Load parameters
     if len(ph)>1:
         th_ = np.arange(-precision+iphase, max(ph)+iphase, precision)
@@ -479,8 +853,46 @@ def orbital_phase_to_time_(ph, iphase, semimajor, orbitalperiod, eccentricity, p
     return ph, time, W
 # TIME TO PHASE ###########################################################################
 
-def orbital_time_to_phase_(t,iphase, semimajor, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2, precision=0.01):
-    
+def _orbital_time_to_phase(t, iphase, semimajor, orbitalperiod, eccentricity, periapsis,
+                           Rstar, Mstar1, Mstar2, precision=0.01):
+    """
+    Converts an orbital time array to a phase array for a compact object orbiting a companion star.
+
+    The compact object moves faster at periastron than at apoastro due to the conservation of angular momentum
+    and Kepler's second law of planetary motion. According to this law, objects sweep out equal areas in equal times,
+    resulting in faster motion when closer to the star (at periapsis).
+
+    Parameters
+    ----------
+    t : array-like
+        Orbital time array.
+    iphase : float
+        Initial orbital phase.
+    semimajor : float
+        Semi-major axis of the orbit.
+    orbitalperiod : float
+        Orbital period of the compact object.
+    eccentricity : float
+        Orbital eccentricity, representing the elongation of the orbit.
+    periapsis : float
+        Argument of periapsis, describing the orientation of the elliptical orbit.
+    Rstar : float
+        Radius of the companion star.
+    Mstar1 : float
+        Mass of the compact object.
+    Mstar2 : float
+        Mass of the companion star.
+    precision : float, optional
+        Resolution for the phase array. Default is 0.01.
+
+    Returns
+    -------
+    ph : array-like
+        Orbital phase array corresponding to the input time array.
+    W : array-like
+        Angular velocity array corresponding to the orbital phase, adjusted for the varying speed due to orbital eccentricity.
+
+    """
     #.............................Load parameters
     orbital_period_s = 24*60*60*orbitalperiod
         
@@ -526,104 +938,6 @@ def orbital_time_to_phase_(t,iphase, semimajor, orbitalperiod, eccentricity, per
     W = w_interpolator(times_to_interpolate)
     
     return phase, t, W
-    
-    
-def fold_pulse_(t, c, sc, period, snr=None, rebin=None):
-    
-    phase = (t - min(t)) / period - np.floor((t - min(t)) / period)
-    idx_sort = np.argsort(phase)
-    
-    phase_sorted = phase[idx_sort]
-    c_sorted = c[idx_sort]
-    sc_sorted = sc[idx_sort]
-    
-    if snr:
-        pulse = rebin_snr_(phase_sorted, c_sorted, sc_sorted, snr)
-        return pulse
-        
-    if rebin:
-        pulse = rebin_bins_(phase_sorted, c_sorted, sc_sorted, rebin)
-        return pulse
-        
-    else:
-        print("Please provide a Minimum signal-to-noise ratio threshold (snr) or a bin time (rebin) to proceed.")
-
-
-def rebin_snr_(t, x, sy, snr_threshold):
-
-    
-    w=[]
-    c_bin=[]
-    t_bin=[]
-    sc_bin=[]
-
-    c_new=[]
-    t_new=[]
-    sc_new=[]
-    
-    mask = np.where(sy > 0)[0]
-    
-    t=t[mask]
-    x=x[mask]
-    sy=sy[mask]
-    
-    for i in range(len(x)-1):
-
-        w.append(pow(1/sy[i],2))
-        t_bin.append(t[i])
-        c_bin.append(x[i])
-        sc_bin.append(sy[i])
-        
-        sc_weight = pow(1/(sum(np.array(w))),0.5)
-        c_weight = sum(np.array(c_bin)*np.array(w))/sum(np.array(w))
-        
-        snr_now = sc_weight/c_weight
-
-        if (snr_now <= snr_threshold):
-
-            w = np.array(w)
-            c_bin = np.array(c_bin)
-            sc_bin = np.array(sc_bin)
-            t_bin = np.array(t_bin)
-
-            sc_new.append(pow(1/(sum(w)),0.5))
-            c_new.append(sum(c_bin*w)/sum(w))
-            t_new.append(sum(t_bin*w)/sum(w))
-
-            w=[]
-            c_bin=[]
-            t_bin=[]
-            sc_bin=[]
-     
-        
-    return t_new,c_new,sc_new
-
-#.................................................. Rebin by bins
-def rebin_bins_(t, x, sy, nbin):
-
-    c_new=[]
-    t_new=[]
-    sc_new=[]
-    
-    t, x, sy = preprocess_data(t, x, sy)
-    
-    for i in range(len(x)-nbin-1):
-
-        w = (pow(1/sy[i*nbin:(i+1)*nbin],2))
-        
-        if (sum(w) >0):
-        
-            t_bin = t[i*nbin:(i+1)*nbin]
-            c_bin = x[i*nbin:(i+1)*nbin]
-            sc_bin = sy[i*nbin:(i+1)*nbin]
-
-            #...............................
-
-            sc_new.append(pow(1/(sum(w)),0.5))
-            c_new.append(sum(c_bin*w)/sum(w))
-            t_new.append(sum(t_bin*w)/sum(w))
-
-    return t_new,c_new,sc_new
 
 ##########################################################################################
 ################################ THEORETICAL FUNCTIONS ###################################
@@ -654,6 +968,12 @@ def doppler_orbit_theoretical(t, units="keV", show_plot=False, precision_for_pha
         If True, displays and saves a plot of the orbit and Doppler evolution. Default is False.
     precision_for_phase : float, optional
         Precision for the phase calculation. Default is 0.01.
+        
+     Notes
+    -----
+    A form will appear to input the necessary orbital parameters. These parameters are saved in a .txt file
+    in the current directory and automatically loaded in subsequent runs, avoiding the need to re-enter parameters.
+    You can modify only those parameters that require adjustment.
 
     Returns
     -------
@@ -663,76 +983,75 @@ def doppler_orbit_theoretical(t, units="keV", show_plot=False, precision_for_pha
         Orbital phase array corresponding to the input time array.
     equation : array-like
         Expected Doppler variation computed for the given orbital movement.
-
-    Notes
-    -----
-    This function calculates the theoretical Doppler variation from orbital motion, with the option to visualize
-    the orbital path and its corresponding Doppler shift.
     """
 
-    parameter_names=["iphase", "semimajor", "orbitalperiod", "eccentricity", "periapsis", "inclination", "Rstar", "Mstar1","Mstar2", "wind_vel", "feature"]
+    parameter_names = ["iphase", "semimajor", "orbitalperiod", "eccentricity", "periapsis", "inclination", "Rstar", "Mstar1", "Mstar2", "wind_vel", "feature"]
     
-    fixed_values = manage_parameters(parameter_names, "orbit")
+    fixed_values = _manage_parameters(parameter_names, "orbit")
     iphase, semimajor, orbitalperiod, eccentricity, periapsis, inclination, Rstar, Mstar1, Mstar2, wind_vel, feature = fixed_values
+    
     #...................................................
     feature_ = {
-        "keV": kev_ams/feature,
+        "keV": kev_ams / feature,
         "s": feature,  # No conversion needed for seconds
-        "amstrong": feature  # No conversion needed for lambda
+        "angstrom": feature  # No conversion needed for lambda
     }
+
+    # Raise KeyError if the unit is invalid
+    if units not in feature_:
+        raise KeyError(f"Invalid unit: {units}. Valid units are 'keV', 's', or 'angstrom'.")
     
-    feature = feature_.get(units, 1)
-        
-    t0 = min(t)
+    feature = feature_[units]
+    
     #...................................................
     
-    abar = semimajor* max(Mstar1,Mstar2)/(Mstar1+Mstar2)
+    t0 = min(t)
+    
+    abar = semimajor * max(Mstar1, Mstar2) / (Mstar1 + Mstar2)
     orbitalperiod_s = orbitalperiod * 24 * 60 * 60
     
-    x,_,W = orbital_time_to_phase_(t ,0, semimajor, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2, precision=0.01)
+    x, _, W = _orbital_time_to_phase(t, 0, semimajor, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2, precision=0.01)
+    
+    R = abar * (1 - eccentricity ** 2) / (1 + eccentricity * np.cos((x - periapsis / 360) * 2 * np.pi))  # R of ellipse
 
-    R = abar * (1-eccentricity ** 2)/(1+eccentricity * np.cos((x-periapsis/360) * 2 * np.pi)) #R of ellipse
-
-    v_dop =  - R * Rstar * rsun_m * W * np.sin(2 * np.pi * x ) * np.sin(2 * np.pi * inclination /360)
-    v_rad =  wind_vel*1000 * np.cos(2 * np.pi * x ) * np.sin(2 * np.pi * inclination /360)
+    v_dop = -R * Rstar * rsun_m * W * np.sin(2 * np.pi * x) * np.sin(2 * np.pi * inclination / 360)
+    v_rad = wind_vel * 1000 * np.cos(2 * np.pi * x) * np.sin(2 * np.pi * inclination / 360)
 
     vdop = v_dop + v_rad
 
     equation_ = {
-        "keV": kev_ams/(feature * (c + vdop) / c),
+        "keV": kev_ams / (feature * (c + vdop) / c),
         "s": (feature * (c + vdop) / c),  # No conversion needed for seconds
-        "amstrong": (feature * (c + vdop) / c)  # No conversion needed for lambda
+        "angstrom": (feature * (c + vdop) / c)  # No conversion needed for lambda
     }
-    equation = equation_.get(units, 1)
+
+    equation = equation_[units]
     
     #...................................................
     
     if show_plot:
-    
         fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(15, 5))
         
-        ax1.errorbar(t, equation,  label='Data', color='b')
+        ax1.errorbar(t, equation, label='Data', color='b')
         ax1.set_xlabel("Time")
         ax1.set_ylabel("Expected emission feature evolution")
         ax1.legend()
 
-        ax2.errorbar(x, equation,  label='Data', color='b')
+        ax2.errorbar(x, equation, label='Data', color='b')
         ax2.set_xlabel("Orbital phase")
         ax2.set_ylabel("Expected emission feature evolution")
         ax2.legend()
 
         ax3 = plt.subplot(1, 3, 3, projection='polar')
-        ax3.plot(x[R>0] * 2 * np.pi, R[R>0],"b")
+        ax3.plot(x[R > 0] * 2 * np.pi, R[R > 0], "b")
         ax3.set_theta_direction(-1)
         ax3.set_rlabel_position(90)
 
         plt.tight_layout()
-        
         plt.savefig("orbit_doppler_evolution.png")
     
-        del units
-        
-    return t,x,equation
+    return t, x, equation
+
     
 # SPIRAL #########################################################################################
 def doppler_spiral_theoretical(t, units="keV", show_plot=False):
@@ -778,7 +1097,7 @@ def doppler_spiral_theoretical(t, units="keV", show_plot=False):
 
     parameter_names=["iphase_spiral", "semimajor_spiral", "b", "omega", "inclination_spiral", "feature"]
     
-    fixed_values = manage_parameters(parameter_names, "spiral")
+    fixed_values = _manage_parameters(parameter_names, "spiral")
     iphase_spiral, semimajor_spiral, b, omega, inclination_spiral, feature = fixed_values
     #...................................................
     feature_ = {
@@ -786,6 +1105,10 @@ def doppler_spiral_theoretical(t, units="keV", show_plot=False):
         "s": feature,  # No conversion needed for seconds
         "amstrong": feature  # No conversion needed for lambda
     }
+    
+    # Raise KeyError if the unit is invalid
+    if units not in feature_:
+        raise KeyError(f"Invalid unit: {units}. Valid units are 'keV', 's', or 'angstrom'.")
     
     feature = feature_.get(units, 1)
     
@@ -870,12 +1193,11 @@ def doppler_disc_theoretical(t, units="keV", show_plot=False):
         Orbital phase array for the second orbit.
     equation : array-like
         Expected Doppler variation computed for the given orbital and disc movement.
-    
     """
 
     parameter_names=["iphase", "semimajor", "orbitalperiod", "eccentricity", "periapsis", "inclination", "Rstar", "Mstar1", "Mstar2", "iphase2", "semimajor2", "orbitalperiod2", "eccentricity2", "periapsis2", "inclination2",  "Mass3","wind_vel", "feature"]
     
-    fixed_values = manage_parameters(parameter_names, "disc")
+    fixed_values = _manage_parameters(parameter_names, "disc")
     iphase, semimajor, orbitalperiod, eccentricity, periapsis, inclination, Rstar, Mstar1, Mstar2, iphase2, semimajor2, orbitalperiod2, eccentricity2, periapsis2, inclination2,  Mass3, wind_vel, feature = fixed_values
 
     #...................................................
@@ -884,6 +1206,9 @@ def doppler_disc_theoretical(t, units="keV", show_plot=False):
         "s": feature,  # No conversion needed for seconds
         "amstrong": feature  # No conversion needed for lambda
     }
+    # Raise KeyError if the unit is invalid
+    if units not in feature_:
+        raise KeyError(f"Invalid unit: {units}. Valid units are 'keV', 's', or 'angstrom'.")
     
     feature = feature_.get(units, 1)
     
@@ -893,7 +1218,7 @@ def doppler_disc_theoretical(t, units="keV", show_plot=False):
     abar = semimajor * max(Mstar1,Mstar2)/(Mstar1+Mstar2)
     orbitalperiod_s = orbitalperiod * 24 * 60 * 60
 
-    x,_,W  = orbital_time_to_phase_(t ,iphase, semimajor, orbitalperiod, eccentricity, periapsis, Rstar, max(Mstar1,Mstar2), min(Mstar1,Mstar2)+Mass3, precision=0.01)
+    x,_,W  = _orbital_time_to_phase(t ,iphase, semimajor, orbitalperiod, eccentricity, periapsis, Rstar, max(Mstar1,Mstar2), min(Mstar1,Mstar2)+Mass3, precision=0.01)
     
     R = (abar * (1 - eccentricity ** 2) / (1 + eccentricity * np.cos((x - periapsis ) * 2 * np.pi)))
     vdop1 =  -R *Rstar * rsun_m * W * np.sin(2 * np.pi * x ) * np.sin(2 * np.pi * inclination /360)
@@ -904,7 +1229,7 @@ def doppler_disc_theoretical(t, units="keV", show_plot=False):
     abar2 = semimajor2* min(Mstar1,Mstar2)/(min(Mstar1,Mstar2)+Mass3)
     orbitalperiod_s2 = orbitalperiod2 * 24 * 60 * 60
 
-    x2,_,W2  = orbital_time_to_phase_(t ,iphase2, semimajor2, orbitalperiod2, eccentricity2, periapsis2, Rstar, min(Mstar2,Mstar1), Mass3, precision=0.01)
+    x2,_,W2  = _orbital_time_to_phase(t ,iphase2, semimajor2, orbitalperiod2, eccentricity2, periapsis2, Rstar, min(Mstar2,Mstar1), Mass3, precision=0.01)
     #.........................................................
     w2 = periapsis2 #+ (orbitalperiod/orbitalperiod2)*(x2-iphase2)+iphase #CORRECT PERIAPSIS IN 2 ORBIT
      
@@ -997,7 +1322,7 @@ def doppler_spiral_in_orbit_theoretical(t, units="keV", show_plot=False):
 
     parameter_names=["iphase", "semimajor", "orbitalperiod", "eccentricity", "periapsis", "inclination", "iphase_spiral", "semimajor_spiral", "b", "omega", "inclination_spiral", "Rstar", "Mstar1", "Mstar2", "wind_vel", "feature"]
     
-    fixed_values = manage_parameters(parameter_names, "spiral_in_orbit")
+    fixed_values = _manage_parameters(parameter_names, "spiral_in_orbit")
     iphase, semimajor, orbitalperiod, eccentricity, periapsis, inclination, iphase_spiral, semimajor_spiral, b, omega, inclination_spiral, Rstar, Mstar1, Mstar2, wind_vel, feature = fixed_values
 
     #...................................................
@@ -1006,7 +1331,10 @@ def doppler_spiral_in_orbit_theoretical(t, units="keV", show_plot=False):
         "s": feature,  # No conversion needed for seconds
         "amstrong": feature  # No conversion needed for lambda
     }
-    
+    # Raise KeyError if the unit is invalid
+    if units not in feature_:
+        raise KeyError(f"Invalid unit: {units}. Valid units are 'keV', 's', or 'angstrom'.")
+        
     feature = feature_.get(units, 1)
     t0 = min(t)
     #...................................................
@@ -1014,7 +1342,7 @@ def doppler_spiral_in_orbit_theoretical(t, units="keV", show_plot=False):
     abar = semimajor* max(Mstar1,Mstar2)/(Mstar1+Mstar2)
     orbitalperiod_s = orbitalperiod * 24 * 60 * 60
     
-    x,_,W = orbital_time_to_phase_(t , iphase,semimajor, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2, precision=0.01)
+    x,_,W = _orbital_time_to_phase(t , iphase,semimajor, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2, precision=0.01)
 
     R = abar * (1-eccentricity ** 2)/(1+eccentricity * np.cos((x-periapsis/360) * 2 * np.pi)) #R of ellipse
        
@@ -1107,12 +1435,12 @@ def density_through_orbit_theoretical(resolution=0.01, show_plot=False):
 
     parameter_names = ["semimajor","orbitalperiod" ,"eccentricity", "periapsis", "Rstar","Mstar1","Mstar2","wind_infinite_velocity","Mass_loss_rate","beta" ]
     
-    fixed_values = manage_parameters(parameter_names, "density_through_orbit")
+    fixed_values = _manage_parameters(parameter_names, "density_through_orbit")
     semimajor,orbitalperiod , eccentricity,periapsis, Rstar, Mstar1, Mstar2, wind_infinite_velocity, Mass_loss_rate, beta = fixed_values
 
     th = np.arange(0,1,resolution)
 
-    _,time,_ = orbital_phase_to_time_(th,0, semimajor, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2,precision=0.01)
+    _,time,_ = _orbital_phase_to_time(th,0, semimajor, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2,precision=0.01)
 
     #........................................................
     abar = semimajor * max(Mstar1,Mstar2)/(Mstar1+Mstar2)
@@ -1175,6 +1503,7 @@ def absorption_column_through_orbit_theoretical(resolution=0.01, show_plot=True)
     A form will appear to input the necessary orbital parameters. These parameters are saved in a .txt file
     in the current directory and automatically loaded in subsequent runs. This avoids the need to re-enter
     parameters, allowing modification of only those that require adjustment.
+    If the distance to the star is smaller than the stellar radius, the result will be 0.
 
     Returns
     -------
@@ -1184,22 +1513,18 @@ def absorption_column_through_orbit_theoretical(resolution=0.01, show_plot=True)
         Orbital phase array.
     NH1 : array-like
         Absorption column density (NH1, x 10^22 cm^-2) through the orbit.
-
-    Notes
-    -----
-    If the distance to the star is smaller than the stellar radius, the result will be 0.
     
     """
 
 
     parameter_names = ["semimajor","orbitalperiod" ,"eccentricity", "periapsis" ,"inclination", "Rstar","Mstar1","Mstar2","wind_infinite_velocity","Mass_loss_rate","beta" ]
     
-    fixed_values = manage_parameters(parameter_names, "absorption_column_through_orbit")
+    fixed_values = _manage_parameters(parameter_names, "absorption_column_through_orbit")
     semimajor, orbitalperiod,eccentricity, periapsis, inclination, Rstar, Mstar1, Mstar2, wind_infinite_velocity, Mass_loss_rate, beta = fixed_values
 
     th = np.arange(0,1,resolution)
     
-    _,time,_ = orbital_phase_to_time_(th,0, semimajor, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2,precision=0.01)
+    _,time,_ = _orbital_phase_to_time(th,0, semimajor, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2,precision=0.01)
 
     #........................................................
     abar = semimajor * max(Mstar1,Mstar2)/(Mstar1+Mstar2)
@@ -1299,7 +1624,7 @@ def ionization_map_phase(size_in_Rstar=0, min_color=None, max_color=None, save_p
     ]
     
     # Load fixed values
-    fixed_values = manage_parameters(parameter_names, "ionization_map_phase")
+    fixed_values = _manage_parameters(parameter_names, "ionization_map_phase")
     phase, semimajor, eccentricity, periapsis, Rstar, Mstar1, Mstar2, wind_infinite_velocity, Mass_loss_rate, beta, luminosity, bound1, bound2 = fixed_values
     
     # Calculate various parameters
@@ -1587,7 +1912,7 @@ def orbital_phase_to_time(ph, precision=0.01):
 
     #.............................Load parameters
     parameter_names = ["iphase", "semimajor", "orbitalperiod", "eccentricity", "periapsis", "Rstar", "Mstar1", "Mstar2"]
-    fixed_values = manage_parameters(parameter_names, "phase_time")
+    fixed_values = _manage_parameters(parameter_names, "phase_time")
     
     iphase, semimajor, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2 = fixed_values
     
@@ -1671,7 +1996,7 @@ def orbital_time_to_phase(t, precision=0.01):
 
     #.............................Load parameters
     parameter_names = ["iphase", "semimajor", "orbitalperiod", "eccentricity", "periapsis", "Rstar", "Mstar1", "Mstar2"]
-    fixed_values = manage_parameters(parameter_names, "time_phase")
+    fixed_values = _manage_parameters(parameter_names, "time_phase")
     
     iphase, semimajor, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2 = fixed_values
     #.............................Load parameters
@@ -1732,7 +2057,7 @@ def orbital_time_to_phase(t, precision=0.01):
 ##########################################################################################
 
 # CONIC ORBIT #############################################################################
-def conic_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis ,inclination, Rstar, Mstar1, Mstar2, wind_vel, feature, units, method_, extended_binsize):
+def _conic_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis ,inclination, Rstar, Mstar1, Mstar2, wind_vel, feature, units, method_, extended_binsize):
     
     #..........
     t = x_data
@@ -1757,7 +2082,7 @@ def conic_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsi
     
         t_to_phase_puntual = np.mean(t , axis=1)
         #...................................................
-        ph_from_t,_,W = orbital_time_to_phase_(t_to_phase ,iphase, semimajor, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2,  precision=0.01)
+        ph_from_t,_,W = _orbital_time_to_phase(t_to_phase ,iphase, semimajor, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2,  precision=0.01)
         
         phbins = ph_from_t.reshape(shape_t)
         
@@ -1766,10 +2091,10 @@ def conic_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsi
         maxph = max(phbins[-1])
         
         phase = np.arange(0,maxph+10,minsizebin/10)
-        _,_,W = orbital_phase_to_time_(phase ,iphase, semimajor, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2,  precision=0.01)
+        _,_,W = _orbital_phase_to_time(phase ,iphase, semimajor, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2,  precision=0.01)
         
         t_to_phase_puntual = np.mean(t , axis=1)
-        phase_puntual ,_, W_puntual = orbital_time_to_phase_(t_to_phase_puntual, iphase, semimajor, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2,  precision=0.01)
+        phase_puntual ,_, W_puntual = _orbital_time_to_phase(t_to_phase_puntual, iphase, semimajor, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2,  precision=0.01)
         
         #...................................................
         R = abar * (1-eccentricity ** 2)/(1+eccentricity * np.cos((phase-periapsis/360) * 2 * np.pi)) #R of ellipse
@@ -1794,7 +2119,7 @@ def conic_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsi
     #..................................................
     if method_=="discrete":
         
-        phase_discrete ,_,W = orbital_time_to_phase_(t ,iphase, semimajor, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2,  precision=0.01)
+        phase_discrete ,_,W = _orbital_time_to_phase(t ,iphase, semimajor, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2,  precision=0.01)
             
         R_puntual = abar * (1-eccentricity ** 2)/(1+eccentricity * np.cos((phase_discrete-periapsis/360) * 2 * np.pi)) #R of ellipse
 
@@ -1876,7 +2201,7 @@ def fit_orbit_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarms
     parameter_names = ["iphase", "semimajor", "orbitalperiod", "eccentricity", "periapsis" ,"inclination", "Rstar", "Mstar1", "Mstar2","wind_vel" ,"feature"]
     #............................................
     t = x_data
-    x_data, y_err_weight = define_x_y_sy(x_data,y_data, y_err)
+    x_data, y_err_weight = _define_x_y_sy(x_data,y_data, y_err)
 
     if method_ == "discrete" and len(np.shape(x_data)) == 2 and len(x_data) == len(y_data):
         x_data = np.mean(t, axis=1)
@@ -1888,15 +2213,15 @@ def fit_orbit_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarms
     def objective_function(params):
 
         iphase, semimajor, orbitalperiod, eccentricity, periapsis ,inclination, Rstar, Mstar1, Mstar2, wind_vel,feature = params
-        predicted_data = conic_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity,
+        predicted_data = _conic_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity,
                                                      periapsis ,inclination, Rstar, Mstar1, Mstar2, wind_vel, feature, units, method_,extended_binsize)
 
-        chi_squared = chi_squared_weighted(y_data, y_err_weight,predicted_data)
+        chi_squared = _chi_squared_weighted(y_data, y_err_weight,predicted_data)
 
         return chi_squared
 
     #............................................PS implementation
-    lower_bounds, upper_bounds = manage_bounds(parameter_names, "orbit_bounds")
+    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "orbit_bounds")
     best_params_list = []
     chi_list = []
     
@@ -1905,9 +2230,9 @@ def fit_orbit_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarms
         best_params, _ = pso(objective_function, lb=lower_bounds, ub=upper_bounds, maxiter = maxiter, swarmsize = swarmsize)
 
         best_params_list.append(best_params)
-        predicted_data = conic_orbit(x_data, *best_params, units,method_,extended_binsize)
+        predicted_data = _conic_orbit(x_data, *best_params, units,method_,extended_binsize)
 
-        chi_squared = chi_squared_weighted(y_data, y_err_weight,predicted_data)
+        chi_squared = _chi_squared_weighted(y_data, y_err_weight,predicted_data)
         
         chi_list.append(chi_squared)
         
@@ -1922,9 +2247,9 @@ def fit_orbit_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarms
     (iphase, semimajor, orbitalperiod, eccentricity, periapsis ,inclination, Rstar, Mstar1, Mstar2, wind_vel, feature) = best_params
     
     #.............................Evaluate results
-    predicted_data = conic_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis ,inclination, Rstar, Mstar1, Mstar2, wind_vel, feature, units, method_,extended_binsize)
+    predicted_data = _conic_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis ,inclination, Rstar, Mstar1, Mstar2, wind_vel, feature, units, method_,extended_binsize)
 
-    chi_squared = chi_squared_weighted(y_data, y_err_weight,predicted_data)
+    chi_squared = _chi_squared_weighted(y_data, y_err_weight,predicted_data)
     #.............................Prepare output
     results = []
     
@@ -1939,7 +2264,7 @@ def fit_orbit_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarms
 
         t =  np.array([np.mean(i) for i in x_data])
         
-        ph,_,_ = orbital_time_to_phase_(t ,
+        ph,_,_ = _orbital_time_to_phase(t ,
         df_results_transposed.iphase.Value,
         df_results_transposed.semimajor.Value,
         df_results_transposed.orbitalperiod.Value,
@@ -1953,7 +2278,7 @@ def fit_orbit_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarms
 
         t = x_data
         
-        ph,_,_ = orbital_time_to_phase_(t ,
+        ph,_,_ = _orbital_time_to_phase(t ,
         df_results_transposed.iphase.Value,
         df_results_transposed.semimajor.Value,
         df_results_transposed.orbitalperiod.Value,
@@ -2019,7 +2344,7 @@ def fit_orbit_ls(x_data, y_data, y_err=0, units="keV", method_="extended", exten
     
     t=x_data
     
-    x_data, y_err_weight = define_x_y_sy(x_data,y_data, y_err)
+    x_data, y_err_weight = _define_x_y_sy(x_data,y_data, y_err)
 
     if method_ == "discrete" and len(np.shape(x_data)) == 2 and len(x_data) == len(y_data):
         x_data = np.mean(t, axis=1)
@@ -2028,9 +2353,9 @@ def fit_orbit_ls(x_data, y_data, y_err=0, units="keV", method_="extended", exten
         method_ == "discrete"
         
     #............................................LS implementation
-    lower_bounds, upper_bounds = manage_bounds(parameter_names, "orbit_bounds")
+    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "orbit_bounds")
     
-    model_func = lambda x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis, inclination, Rstar, Mstar1, Mstar2,wind_vel, feature: conic_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis, inclination, Rstar, Mstar1, Mstar2, wind_vel,feature, units=units, method_=method_,extended_binsize=extended_binsize)
+    model_func = lambda x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis, inclination, Rstar, Mstar1, Mstar2,wind_vel, feature: _conic_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis, inclination, Rstar, Mstar1, Mstar2, wind_vel,feature, units=units, method_=method_,extended_binsize=extended_binsize)
     
     try:
         fit_params, fit_covariance = curve_fit(model_func, x_data, y_data, bounds=[lower_bounds, upper_bounds], maxfev=100000)
@@ -2062,7 +2387,7 @@ def fit_orbit_ls(x_data, y_data, y_err=0, units="keV", method_="extended", exten
 
         t =  np.array([np.mean(i) for i in x_data])
         
-        ph,_,_ = orbital_time_to_phase_(t ,
+        ph,_,_ = _orbital_time_to_phase(t ,
         df_results_transposed.iphase.Value,
         df_results_transposed.semimajor.Value,
         df_results_transposed.orbitalperiod.Value,
@@ -2076,7 +2401,7 @@ def fit_orbit_ls(x_data, y_data, y_err=0, units="keV", method_="extended", exten
 
         t = x_data
         
-        ph,_,_ = orbital_time_to_phase_(t ,
+        ph,_,_ = _orbital_time_to_phase(t ,
         df_results_transposed.iphase.Value,
         df_results_transposed.semimajor.Value,
         df_results_transposed.orbitalperiod.Value,
@@ -2089,7 +2414,7 @@ def fit_orbit_ls(x_data, y_data, y_err=0, units="keV", method_="extended", exten
     return df_results_transposed,  ph, predicted_data, r_squared
 
 # ORBIT IN ORBIT #############################################################################
-def disc_in_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis, inclination, Rstar, Mstar1, Mstar2, iphase2, semimajor2, orbitalperiod2, eccentricity2, periapsis2, inclination2, Mass3, feature, wind_vel, units, method_, extended_binsize):
+def _disc_in_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis, inclination, Rstar, Mstar1, Mstar2, iphase2, semimajor2, orbitalperiod2, eccentricity2, periapsis2, inclination2, Mass3, feature, wind_vel, units, method_, extended_binsize):
     t = x_data
     
     # Feature conversion based on units
@@ -2115,29 +2440,29 @@ def disc_in_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periap
     if method_ == "extended":
         t_to_phase_puntual = np.mean(t, axis=1)
         # Main orbit phase calculations
-        ph_from_t, _, W = orbital_time_to_phase_(t_to_phase, iphase, semimajor, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2, precision=0.01)
+        ph_from_t, _, W = _orbital_time_to_phase(t_to_phase, iphase, semimajor, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2, precision=0.01)
         phbins = ph_from_t.reshape(shape_t)
         size_phase_bin = np.diff(phbins)
         minsizebin = min(size_phase_bin)
         maxph = max(phbins[-1])
         
         phase = np.arange(0, maxph + 10, minsizebin / 10)
-        _, _, W = orbital_phase_to_time_(phase, iphase, semimajor, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2, precision=0.01)
+        _, _, W = _orbital_phase_to_time(phase, iphase, semimajor, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2, precision=0.01)
         
         t_to_phase_puntual = np.mean(t, axis=1)
-        phase_puntual, _, W_puntual = orbital_time_to_phase_(t_to_phase_puntual, iphase, semimajor, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2, precision=0.01)
+        phase_puntual, _, W_puntual = _orbital_time_to_phase(t_to_phase_puntual, iphase, semimajor, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2, precision=0.01)
         
         # Secondary orbit phase calculations
-        ph_from_t2, _, W2 = orbital_time_to_phase_(t_to_phase, iphase2, semimajor2, orbitalperiod2, eccentricity2, periapsis2, Rstar, min(Mstar2, Mstar1), Mass3, precision=0.01)
+        ph_from_t2, _, W2 = _orbital_time_to_phase(t_to_phase, iphase2, semimajor2, orbitalperiod2, eccentricity2, periapsis2, Rstar, min(Mstar2, Mstar1), Mass3, precision=0.01)
         phbins2 = ph_from_t2.reshape(shape_t)
         size_phase_bin2 = np.diff(phbins2)
         minsizebin2 = min(size_phase_bin2)
         maxph2 = max(phbins2[-1])
         
         phase2 = np.arange(0, maxph2 + 10, minsizebin2 / 10)
-        _, _, W2 = orbital_phase_to_time_(phase2, iphase2, semimajor2, orbitalperiod2, eccentricity2, periapsis2, Rstar, min(Mstar2, Mstar1), Mass3, precision=0.01)
+        _, _, W2 = _orbital_phase_to_time(phase2, iphase2, semimajor2, orbitalperiod2, eccentricity2, periapsis2, Rstar, min(Mstar2, Mstar1), Mass3, precision=0.01)
         
-        phase_puntual2, _, W_puntual2 = orbital_time_to_phase_(t_to_phase_puntual, iphase2, semimajor2, orbitalperiod2, eccentricity2, periapsis2, Rstar, min(Mstar2, Mstar1), Mass3, precision=0.01)
+        phase_puntual2, _, W_puntual2 = _orbital_time_to_phase(t_to_phase_puntual, iphase2, semimajor2, orbitalperiod2, eccentricity2, periapsis2, Rstar, min(Mstar2, Mstar1), Mass3, precision=0.01)
         
         # Main orbit velocity calculations
         R = abar * (1 - eccentricity ** 2) / (1 + eccentricity * np.cos((phase - periapsis / 360) * 2 * np.pi))
@@ -2174,14 +2499,14 @@ def disc_in_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periap
     
     if method_ == "discrete":
         # Discrete main orbit calculations
-        phase_discrete, _, W_discrete = orbital_time_to_phase_(t, iphase, semimajor, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2, precision=0.01)
+        phase_discrete, _, W_discrete = _orbital_time_to_phase(t, iphase, semimajor, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2, precision=0.01)
         R_discrete = abar * (1 - eccentricity ** 2) / (1 + eccentricity * np.cos((phase_discrete - periapsis / 360) * 2 * np.pi))
         vdop_discrete = -R_discrete * Rstar * rsun_m * W_discrete * np.sin(2 * np.pi * phase_discrete) * np.sin(2 * np.pi * inclination / 360)
         vrad_discrete = wind_vel * 1000 * np.cos(2 * np.pi * phase_discrete) * np.sin(2 * np.pi * inclination / 360)
         vdop_bin1 = vdop_discrete + vrad_discrete
         
         # Discrete secondary orbit calculations
-        phase_discrete2, _, W_discrete2 = orbital_time_to_phase_(t_to_phase, iphase2, semimajor2, orbitalperiod2, eccentricity2, periapsis2, Rstar, Mstar2, Mass3, precision=0.01)
+        phase_discrete2, _, W_discrete2 = _orbital_time_to_phase(t_to_phase, iphase2, semimajor2, orbitalperiod2, eccentricity2, periapsis2, Rstar, Mstar2, Mass3, precision=0.01)
         R_discrete2 = abar2 * (1 - eccentricity2 ** 2) / (1 + eccentricity2 * np.cos((phase_discrete2 - periapsis2 / 360) * 2 * np.pi))
         vdop_discrete2 = -R_discrete2 * Rstar * rsun_m * W_discrete2 * np.sin(2 * np.pi * phase_discrete2) * np.sin(2 * np.pi * inclination2 / 360)
         vdop_bin2 = vdop_discrete2
@@ -2265,7 +2590,7 @@ def fit_disc_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarmsi
     #............................................data prep
     parameter_names = ["iphase", "semimajor", "orbitalperiod", "eccentricity", "periapsis" ,"inclination", "Rstar", "Mstar1", "Mstar2", "iphase2", "semimajor2", "orbitalperiod2", "eccentricity2", "periapsis2" ,"inclination2",  "Mass3", "feature","wind_vel"]
 
-    x_data, y_err_weight = define_x_y_sy(x_data,y_data, y_err)
+    x_data, y_err_weight = _define_x_y_sy(x_data,y_data, y_err)
         
     if method_ == "discrete" and len(np.shape(x_data)) == 2 and len(x_data) == len(y_data):
        x_data = np.mean(x_data , axis=1)
@@ -2278,14 +2603,14 @@ def fit_disc_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarmsi
 
         iphase, semimajor, orbitalperiod, eccentricity, periapsis ,inclination, Rstar, Mstar1, Mstar2, iphase2, semimajor2, orbitalperiod2, eccentricity2, periapsis2 ,inclination2, Mass3, feature, wind_vel = params
 
-        predicted_data = disc_in_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis ,inclination, Rstar, Mstar1, Mstar2, iphase2, semimajor2, orbitalperiod2, eccentricity2, periapsis2 ,inclination2, Mass3, feature, wind_vel, units, method_,extended_binsize)
+        predicted_data = _disc_in_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis ,inclination, Rstar, Mstar1, Mstar2, iphase2, semimajor2, orbitalperiod2, eccentricity2, periapsis2 ,inclination2, Mass3, feature, wind_vel, units, method_,extended_binsize)
 
-        chi_squared = chi_squared_weighted(y_data, y_err_weight,predicted_data)
+        chi_squared = _chi_squared_weighted(y_data, y_err_weight,predicted_data)
 
         return chi_squared
         
     #............................................PS implementation
-    lower_bounds, upper_bounds = manage_bounds(parameter_names, "disc_bounds")
+    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "disc_bounds")
     best_params_list = []
     chi_list = []
     
@@ -2294,8 +2619,8 @@ def fit_disc_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarmsi
         best_params, _ = pso(objective_function, lb=lower_bounds, ub=upper_bounds, maxiter = maxiter, swarmsize = swarmsize)
         
         best_params_list.append(best_params)
-        predicted_data = disc_in_orbit(x_data, *best_params, units,method_,extended_binsize)
-        chi_squared = chi_squared_weighted(y_data, y_err_weight,predicted_data)
+        predicted_data = _disc_in_orbit(x_data, *best_params, units,method_,extended_binsize)
+        chi_squared = _chi_squared_weighted(y_data, y_err_weight,predicted_data)
         
         chi_list.append(chi_squared)
 
@@ -2310,9 +2635,9 @@ def fit_disc_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarmsi
     (iphase, semimajor, orbitalperiod, eccentricity, periapsis ,inclination, Rstar, Mstar1, Mstar2, iphase2, semimajor2, orbitalperiod2, eccentricity2, periapsis2 ,inclination2, Mass3, feature, wind_vel) = best_params
 
     # ...............................Evaluate reults
-    predicted_data = disc_in_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis ,inclination, Rstar, Mstar1, Mstar2, iphase2, semimajor2, orbitalperiod2, eccentricity2, periapsis2 ,inclination2, Mass3, feature, wind_vel, units, method_,extended_binsize)
+    predicted_data = _disc_in_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis ,inclination, Rstar, Mstar1, Mstar2, iphase2, semimajor2, orbitalperiod2, eccentricity2, periapsis2 ,inclination2, Mass3, feature, wind_vel, units, method_,extended_binsize)
 
-    chi_squared = chi_squared_weighted(y_data, y_err_weight,predicted_data)
+    chi_squared = _chi_squared_weighted(y_data, y_err_weight,predicted_data)
     #.............................prepare output
 
     results = []
@@ -2328,7 +2653,7 @@ def fit_disc_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarmsi
 
         t =  np.array([np.mean(i) for i in x_data])
         
-        ph,_,_ = orbital_time_to_phase_(t ,
+        ph,_,_ = _orbital_time_to_phase(t ,
         df_results_transposed.iphase.Value,
         df_results_transposed.semimajor.Value,
         df_results_transposed.orbitalperiod.Value,
@@ -2338,7 +2663,7 @@ def fit_disc_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarmsi
         max(df_results_transposed.Mstar2.Value, df_results_transposed.Mstar1.Value),
         df_results_transposed.Mass3.Value + min(df_results_transposed.Mstar2.Value,df_results_transposed.Mstar1.Value),  precision=0.01)
         
-        ph2,_,_ = orbital_time_to_phase_(t ,
+        ph2,_,_ = _orbital_time_to_phase(t ,
         df_results_transposed.iphase2.Value,
         df_results_transposed.semimajor2.Value,
         df_results_transposed.orbitalperiod2.Value,
@@ -2352,7 +2677,7 @@ def fit_disc_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarmsi
 
         t = x_data
         
-        ph,_,_ = orbital_time_to_phase_(t ,
+        ph,_,_ = _orbital_time_to_phase(t ,
         df_results_transposed.iphase.Value,
         df_results_transposed.semimajor.Value,
         df_results_transposed.orbitalperiod.Value,
@@ -2362,7 +2687,7 @@ def fit_disc_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarmsi
         max(df_results_transposed.Mstar2.Value, df_results_transposed.Mstar1.Value),
         df_results_transposed.Mass3.Value + min(df_results_transposed.Mstar2.Value,df_results_transposed.Mstar1.Value),  precision=0.01)
         
-        ph2,_,_ = orbital_time_to_phase_(t ,
+        ph2,_,_ = _orbital_time_to_phase(t ,
         df_results_transposed.iphase2.Value,
         df_results_transposed.semimajor2.Value,
         df_results_transposed.orbitalperiod2.Value,
@@ -2429,7 +2754,7 @@ def fit_disc_ls(x_data, y_data, y_err=0, units="keV", method_="extended", extend
     #............................................ data prep
     parameter_names = ["iphase", "semimajor", "orbitalperiod", "eccentricity", "periapsis" ,"inclination", "Rstar", "Mstar1", "Mstar2", "iphase2", "semimajor2", "orbitalperiod2", "eccentricity2", "periapsis2" ,"inclination2",  "Mass3", "feature","wind_vel"]
 
-    x_data, y_err_weight = define_x_y_sy(x_data,y_data, y_err)
+    x_data, y_err_weight = _define_x_y_sy(x_data,y_data, y_err)
         
     if method_ == "discrete" and len(np.shape(x_data)) == 2 and len(x_data) == len(y_data):
         x_data = np.mean(x_data, axis=1)
@@ -2438,9 +2763,9 @@ def fit_disc_ls(x_data, y_data, y_err=0, units="keV", method_="extended", extend
         method_ == "discrete"
         
     #............................................LS implementation
-    lower_bounds, upper_bounds = manage_bounds(parameter_names, "disc_bounds")
+    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "disc_bounds")
     
-    model_func = lambda x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis ,inclination, Rstar, Mstar1, Mstar2, iphase2, semimajor2, orbitalperiod2, eccentricity2, periapsis2 ,inclination2, Mass3, feature, wind_vel : disc_in_orbit(x_data,  iphase, semimajor, orbitalperiod, eccentricity, periapsis ,inclination, Rstar, Mstar1, Mstar2, iphase2, semimajor2, orbitalperiod2, eccentricity2, periapsis2 ,inclination2, Mass3, feature,wind_vel,units=units, method_=method_,extended_binsize=extended_binsize)
+    model_func = lambda x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis ,inclination, Rstar, Mstar1, Mstar2, iphase2, semimajor2, orbitalperiod2, eccentricity2, periapsis2 ,inclination2, Mass3, feature, wind_vel : _disc_in_orbit(x_data,  iphase, semimajor, orbitalperiod, eccentricity, periapsis ,inclination, Rstar, Mstar1, Mstar2, iphase2, semimajor2, orbitalperiod2, eccentricity2, periapsis2 ,inclination2, Mass3, feature,wind_vel,units=units, method_=method_,extended_binsize=extended_binsize)
     
     try:
         fit_params, fit_covariance = curve_fit(model_func, x_data, y_data,  bounds=[lower_bounds, upper_bounds], maxfev=100000)
@@ -2471,7 +2796,7 @@ def fit_disc_ls(x_data, y_data, y_err=0, units="keV", method_="extended", extend
 
         t =  np.array([np.mean(i) for i in x_data])
         
-        ph,_,_ = orbital_time_to_phase_(t ,
+        ph,_,_ = _orbital_time_to_phase(t ,
         df_results_transposed.iphase.Value,
         df_results_transposed.semimajor.Value,
         df_results_transposed.orbitalperiod.Value,
@@ -2481,7 +2806,7 @@ def fit_disc_ls(x_data, y_data, y_err=0, units="keV", method_="extended", extend
         max(df_results_transposed.Mstar2.Value, df_results_transposed.Mstar1.Value),
         df_results_transposed.Mass3.Value + min(df_results_transposed.Mstar2.Value,df_results_transposed.Mstar1.Value),  precision=0.01)
         
-        ph2,_,_ = orbital_time_to_phase_(t ,
+        ph2,_,_ = _orbital_time_to_phase(t ,
         df_results_transposed.iphase2.Value,
         df_results_transposed.semimajor2.Value,
         df_results_transposed.orbitalperiod2.Value,
@@ -2495,7 +2820,7 @@ def fit_disc_ls(x_data, y_data, y_err=0, units="keV", method_="extended", extend
 
         t = x_data
         
-        ph,_,_ = orbital_time_to_phase_(t ,
+        ph,_,_ = _orbital_time_to_phase(t ,
         df_results_transposed.iphase.Value,
         df_results_transposed.semimajor.Value,
         df_results_transposed.orbitalperiod.Value,
@@ -2505,7 +2830,7 @@ def fit_disc_ls(x_data, y_data, y_err=0, units="keV", method_="extended", extend
         max(df_results_transposed.Mstar2.Value, df_results_transposed.Mstar1.Value),
         df_results_transposed.Mass3.Value + min(df_results_transposed.Mstar2.Value,df_results_transposed.Mstar1.Value),  precision=0.01)
         
-        ph2,_,_ = orbital_time_to_phase_(t ,
+        ph2,_,_ = _orbital_time_to_phase(t ,
         df_results_transposed.iphase2.Value,
         df_results_transposed.semimajor2.Value,
         df_results_transposed.orbitalperiod2.Value,
@@ -2518,7 +2843,7 @@ def fit_disc_ls(x_data, y_data, y_err=0, units="keV", method_="extended", extend
     return df_results_transposed,  ph,ph2, predicted_data, r_squared
 
 # SPIRAL #############################################################################
-def spiral(x_data, iphase_spiral, semimajor_spiral, b, omega, inclination_spiral, feature, units, method_, extended_binsize):
+def _spiral(x_data, iphase_spiral, semimajor_spiral, b, omega, inclination_spiral, feature, units, method_, extended_binsize):
 
     #...................................................
     feature_ = {
@@ -2638,7 +2963,7 @@ def fit_spiral_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarm
     #............................................data prep
     parameter_names = ["iphase_spiral", "semimajor_spiral", "b", "omega", "inclination_spiral", "feature"]
     #............................................
-    x_data, y_err_weight = define_x_y_sy(x_data,y_data, y_err)
+    x_data, y_err_weight = _define_x_y_sy(x_data,y_data, y_err)
     
     t=x_data
         
@@ -2653,14 +2978,14 @@ def fit_spiral_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarm
     
         iphase_spiral, semimajor_spiral, b, omega, inclination_spiral, feature = params
 
-        predicted_data = spiral(x_data, iphase_spiral, semimajor_spiral, b, omega, inclination_spiral, feature, units, method_,extended_binsize)
+        predicted_data = _spiral(x_data, iphase_spiral, semimajor_spiral, b, omega, inclination_spiral, feature, units, method_,extended_binsize)
       
-        chi_squared = chi_squared_weighted(y_data, y_err_weight,predicted_data)
+        chi_squared = _chi_squared_weighted(y_data, y_err_weight,predicted_data)
 
         return chi_squared
         
     #............................................ PS implementation
-    lower_bounds, upper_bounds = manage_bounds(parameter_names, "spiral_bounds")
+    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "spiral_bounds")
     best_params_list = []
     chi_list = []
     
@@ -2668,9 +2993,9 @@ def fit_spiral_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarm
         
         best_params, _ = pso(objective_function, lb=lower_bounds, ub=upper_bounds, maxiter = maxiter, swarmsize = swarmsize)
         best_params_list.append(best_params)
-        predicted_data = spiral(x_data, *best_params, units,method_,extended_binsize)
+        predicted_data = _spiral(x_data, *best_params, units,method_,extended_binsize)
 
-        chi_squared = chi_squared_weighted(y_data, y_err_weight,predicted_data)
+        chi_squared = _chi_squared_weighted(y_data, y_err_weight,predicted_data)
         
         chi_list.append(chi_squared)
         
@@ -2687,8 +3012,8 @@ def fit_spiral_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarm
 
 
     #............................. Evaluate results
-    predicted_data = spiral(x_data, iphase_spiral, semimajor_spiral, b, omega, inclination_spiral, feature, units, method_,extended_binsize)
-    chi_squared = chi_squared_weighted(y_data, y_err_weight,predicted_data)
+    predicted_data = _spiral(x_data, iphase_spiral, semimajor_spiral, b, omega, inclination_spiral, feature, units, method_,extended_binsize)
+    chi_squared = _chi_squared_weighted(y_data, y_err_weight,predicted_data)
     #............................. Prepare output
 
     results = []
@@ -2765,7 +3090,7 @@ def fit_spiral_ls(x_data, y_data, y_err=0, units="keV", method_="extended", exte
 
     parameter_names = ["iphase_spiral", "semimajor_spiral", "b", "omega", "inclination_spiral", "feature"]
 
-    x_data, y_err_weight = define_x_y_sy(x_data,y_data, y_err)
+    x_data, y_err_weight = _define_x_y_sy(x_data,y_data, y_err)
    
     t=x_data
         
@@ -2775,9 +3100,9 @@ def fit_spiral_ls(x_data, y_data, y_err=0, units="keV", method_="extended", exte
     if len(np.shape(x_data)) == 1 and len(x_data) == len(y_data):
         method_ == "discrete"
     #............................................LS implementation
-    lower_bounds, upper_bounds = manage_bounds(parameter_names, "spiral")
+    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "spiral")
     
-    model_func = lambda x_data, iphase_spiral, semimajor_spiral, b, omega, inclination_spiral, feature: spiral(x_data,  iphase_spiral, semimajor_spiral, b, omega, inclination_spiral, feature, units=units, method_=method_,extended_binsize=extended_binsize)
+    model_func = lambda x_data, iphase_spiral, semimajor_spiral, b, omega, inclination_spiral, feature: _spiral(x_data,  iphase_spiral, semimajor_spiral, b, omega, inclination_spiral, feature, units=units, method_=method_,extended_binsize=extended_binsize)
     try:
         fit_params, fit_covariance = curve_fit(model_func, x_data, y_data, bounds=[lower_bounds, upper_bounds], maxfev=100000)
     except RuntimeError:
@@ -2824,7 +3149,7 @@ def fit_spiral_ls(x_data, y_data, y_err=0, units="keV", method_="extended", exte
 
 
 # SPIRAL IN ORBIT #############################################################################
-def spiral_orbit(x_data, iphase_orbit, semimajor_orbit, orbitalperiod, eccentricity, periapsis, inclination_orbit, Rstar, Mstar1, Mstar2, iphase_spiral, semimajor_spiral, b, omega, inclination_spiral, feature, units, method_,extended_binsize):
+def _spiral_orbit(x_data, iphase_orbit, semimajor_orbit, orbitalperiod, eccentricity, periapsis, inclination_orbit, Rstar, Mstar1, Mstar2, iphase_spiral, semimajor_spiral, b, omega, inclination_spiral, feature, units, method_,extended_binsize):
 
     t=x_data
 
@@ -2848,7 +3173,7 @@ def spiral_orbit(x_data, iphase_orbit, semimajor_orbit, orbitalperiod, eccentric
     
     if method_=="extended":
     
-        ph_from_t,_,W = orbital_time_to_phase_(t_to_phase ,iphase_orbit, semimajor_orbit, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2,  precision=0.01)
+        ph_from_t,_,W = _orbital_time_to_phase(t_to_phase ,iphase_orbit, semimajor_orbit, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2,  precision=0.01)
         
         phbins = ph_from_t.reshape(shape_t)
             
@@ -2857,10 +3182,10 @@ def spiral_orbit(x_data, iphase_orbit, semimajor_orbit, orbitalperiod, eccentric
         maxph = max(ph_from_t)
             
         phase = np.arange(0,maxph+10,minsizebin/10)
-        _,_,W = orbital_phase_to_time_(phase ,iphase_orbit, semimajor_orbit, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2,  precision=0.01)
+        _,_,W = _orbital_phase_to_time(phase ,iphase_orbit, semimajor_orbit, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2,  precision=0.01)
             
         t_to_phase_puntual = np.mean(t , axis=1)
-        phase_puntual ,_, W_puntual = orbital_time_to_phase_(t_to_phase_puntual, iphase_orbit, semimajor_orbit, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2,  precision=0.01)
+        phase_puntual ,_, W_puntual = _orbital_time_to_phase(t_to_phase_puntual, iphase_orbit, semimajor_orbit, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2,  precision=0.01)
 
 
         R = abar * (1-eccentricity ** 2)/(1+eccentricity * np.cos((phase-periapsis/360) * 2 * np.pi)) #R of ellipse
@@ -2911,7 +3236,7 @@ def spiral_orbit(x_data, iphase_orbit, semimajor_orbit, orbitalperiod, eccentric
     if method_=="discrete":
             #............................................................ DISCRETE MAIN ORBIT
        
-        phase_discrete_orbit,_,W = orbital_time_to_phase_(t ,iphase_orbit, semimajor_orbit, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2,  precision=0.01)
+        phase_discrete_orbit,_,W = _orbital_time_to_phase(t ,iphase_orbit, semimajor_orbit, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2,  precision=0.01)
 
         R_discrete_orbit = abar * (1-eccentricity ** 2)/(1+eccentricity * np.cos((phase_discrete_orbit-periapsis/360) * 2 * np.pi)) #R of ellipse
         vdop_discrete_orbit =  -R_discrete_orbit * Rstar * rsun_m * W * np.sin(2 * np.pi * phase_discrete_orbit) * np.sin(2 * np.pi * inclination_orbit)
@@ -2998,7 +3323,7 @@ def fit_spiral_in_orbit_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=10
 
     #.............................Data prep
     parameter_names = ["iphase_orbit", "semimajor_orbit", "orbitalperiod", "eccentricity", "periapsis", "inclination", "Rstar", "Mstar1", "Mstar2", "iphase_spiral", "semimajor_spiral", "b", "omega", "inclination_spiral","feature"]
-    x_data, y_err_weight = define_x_y_sy(x_data,y_data, y_err)
+    x_data, y_err_weight = _define_x_y_sy(x_data,y_data, y_err)
     
     t=x_data
         
@@ -3012,14 +3337,14 @@ def fit_spiral_in_orbit_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=10
     def objective_function(params):
         iphase_orbit, semimajor_orbit, orbitalperiod, eccentricity, periapsis, inclination_orbit, Rstar, Mstar1, Mstar2, iphase_spiral, semimajor_spiral, b, omega, inclination_spiral, feature,  = params
 
-        predicted_data = spiral_orbit(x_data, iphase_orbit, semimajor_orbit, orbitalperiod, eccentricity, periapsis, inclination_orbit, Rstar, Mstar1, Mstar2, iphase_spiral, semimajor_spiral, b, omega, inclination_spiral, feature, units, method_,extended_binsize)
+        predicted_data = _spiral_orbit(x_data, iphase_orbit, semimajor_orbit, orbitalperiod, eccentricity, periapsis, inclination_orbit, Rstar, Mstar1, Mstar2, iphase_spiral, semimajor_spiral, b, omega, inclination_spiral, feature, units, method_,extended_binsize)
 
-        chi_squared = chi_squared_weighted(y_data, y_err_weight,predicted_data)
+        chi_squared = _chi_squared_weighted(y_data, y_err_weight,predicted_data)
 
         return chi_squared
         
 #............................................ PS implementation
-    lower_bounds, upper_bounds = manage_bounds(parameter_names, "spiralorbit")
+    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "spiralorbit")
     best_params_list = []
     chi_list = []
     
@@ -3028,9 +3353,9 @@ def fit_spiral_in_orbit_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=10
         best_params, _ = pso(objective_function, lb=lower_bounds, ub=upper_bounds, maxiter = maxiter, swarmsize = swarmsize)
 
         best_params_list.append(best_params)
-        predicted_data = spiral_orbit(x_data, *best_params, units,method_,extended_binsize)
+        predicted_data = _spiral_orbit(x_data, *best_params, units,method_,extended_binsize)
 
-        chi_squared = chi_squared_weighted(y_data, y_err_weight,predicted_data)
+        chi_squared = _chi_squared_weighted(y_data, y_err_weight,predicted_data)
         
         chi_list.append(chi_squared)
         
@@ -3046,8 +3371,8 @@ def fit_spiral_in_orbit_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=10
     (iphase_orbit, semimajor_orbit, orbitalperiod, eccentricity, periapsis, inclination_orbit, Rstar, Mstar1, Mstar2, iphase_spiral, semimajor_spiral, b, omega, inclination_spiral, feature) = best_params
     
     #.............................Evaluate results
-    predicted_data = spiral_orbit(x_data, iphase_orbit, semimajor_orbit, orbitalperiod, eccentricity, periapsis, inclination_orbit, Rstar, Mstar1, Mstar2, iphase_spiral, semimajor_spiral, b, omega, inclination_spiral, feature, units, method_, extended_binsize)
-    chi_squared = chi_squared_weighted(y_data, y_err_weight,predicted_data)
+    predicted_data = _spiral_orbit(x_data, iphase_orbit, semimajor_orbit, orbitalperiod, eccentricity, periapsis, inclination_orbit, Rstar, Mstar1, Mstar2, iphase_spiral, semimajor_spiral, b, omega, inclination_spiral, feature, units, method_, extended_binsize)
+    chi_squared = _chi_squared_weighted(y_data, y_err_weight,predicted_data)
     
     #.............................Prepare output
     results = []
@@ -3063,7 +3388,7 @@ def fit_spiral_in_orbit_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=10
 
         t =  np.array([np.mean(i) for i in x_data])
         
-        ph,_,_ = orbital_time_to_phase_(t ,
+        ph,_,_ = _orbital_time_to_phase(t ,
         df_results_transposed.iphase_orbit.Value,
         df_results_transposed.semimajor_orbit.Value,
         df_results_transposed.orbitalperiod.Value,
@@ -3077,7 +3402,7 @@ def fit_spiral_in_orbit_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=10
 
         t = x_data
         
-        ph,_,_ = orbital_time_to_phase_(t ,
+        ph,_,_ = _orbital_time_to_phase(t ,
         df_results_transposed.iphase_orbit.Value,
         df_results_transposed.semimajor_orbit.Value,
         df_results_transposed.orbitalperiod.Value,
@@ -3140,7 +3465,7 @@ def fit_spiral_in_orbit_ls(x_data, y_data, y_err=0, units="keV", method_="extend
     #............................................Data prep
     parameter_names = ["iphase_orbit", "semimajor_orbit", "orbitalperiod", "eccentricity", "periapsis", "inclination", "Rstar", "Mstar1", "Mstar2", "iphase_spiral", "semimajor_spiral", "b", "omega", "inclination_spiral"]
 
-    x_data, y_err_weight = define_x_y_sy(x_data,y_data, y_err)
+    x_data, y_err_weight = _define_x_y_sy(x_data,y_data, y_err)
         
     t=x_data
         
@@ -3150,9 +3475,9 @@ def fit_spiral_in_orbit_ls(x_data, y_data, y_err=0, units="keV", method_="extend
     if len(np.shape(x_data)) == 1 and len(x_data) == len(y_data):
         method_ == "discrete"
     #............................................ LS implementation
-    lower_bounds, upper_bounds = manage_bounds(parameter_names, "spiralorbit")
+    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "spiralorbit")
     
-    model_func = lambda x_data,iphase_orbit, semimajor_orbit, orbitalperiod, eccentricity, periapsis, inclination_orbit, Rstar, Mstar1, Mstar2, iphase_spiral, semimajor_spiral, b, omega, inclination_spiral, feature: spiral_orbit( x_data,iphase_orbit, semimajor_orbit, orbitalperiod, eccentricity, periapsis, inclination_orbit, Rstar, Mstar1, Mstar2, iphase_spiral, semimajor_spiral, b, omega, inclination_spiral, feature, units=units, method_=method_, extended_binsize=extended_binsize)
+    model_func = lambda x_data,iphase_orbit, semimajor_orbit, orbitalperiod, eccentricity, periapsis, inclination_orbit, Rstar, Mstar1, Mstar2, iphase_spiral, semimajor_spiral, b, omega, inclination_spiral, feature: _spiral_orbit( x_data,iphase_orbit, semimajor_orbit, orbitalperiod, eccentricity, periapsis, inclination_orbit, Rstar, Mstar1, Mstar2, iphase_spiral, semimajor_spiral, b, omega, inclination_spiral, feature, units=units, method_=method_, extended_binsize=extended_binsize)
     
     try:
         fit_params, fit_covariance = curve_fit(model_func, x_data, y_data, bounds=[lower_bounds, upper_bounds], maxfev=100000)
@@ -3183,7 +3508,7 @@ def fit_spiral_in_orbit_ls(x_data, y_data, y_err=0, units="keV", method_="extend
 
         t =  np.array([np.mean(i) for i in x_data])
         
-        ph,_,_ = orbital_time_to_phase_(t ,
+        ph,_,_ = _orbital_time_to_phase(t ,
         df_results_transposed.iphase_orbit.Value,
         df_results_transposed.semimajor_orbit.Value,
         df_results_transposed.orbitalperiod.Value,
@@ -3197,7 +3522,7 @@ def fit_spiral_in_orbit_ls(x_data, y_data, y_err=0, units="keV", method_="extend
 
         t = x_data
         
-        ph,_,_ = orbital_time_to_phase_(t ,
+        ph,_,_ = _orbital_time_to_phase(t ,
         df_results_transposed.iphase_orbit.Value,
         df_results_transposed.semimajor_orbit.Value,
         df_results_transposed.orbitalperiod.Value,
@@ -3255,9 +3580,9 @@ def nh_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis, 
 
     if method_ == "extended":
         
-        ph_from_t, _, _ = orbital_time_to_phase_(t_to_phase, iphase, semimajor, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2, precision=0.01)
+        ph_from_t, _, _ = _orbital_time_to_phase(t_to_phase, iphase, semimajor, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2, precision=0.01)
         t_to_phase_punctual = np.mean(t, axis=1)
-        phase_punctual, _, _ = orbital_time_to_phase_(t_to_phase_punctual, iphase, semimajor, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2, precision=0.01)
+        phase_punctual, _, _ = _orbital_time_to_phase(t_to_phase_punctual, iphase, semimajor, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2, precision=0.01)
 
         phbins = ph_from_t.reshape(shape_t)
         size_phase_bin = np.diff(phbins)
@@ -3280,7 +3605,7 @@ def nh_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis, 
     elif method_ == "discrete":
 
         
-        phase_discrete, _, _ = orbital_time_to_phase_(t, iphase, semimajor, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2, precision=0.01)
+        phase_discrete, _, _ = _orbital_time_to_phase(t, iphase, semimajor, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2, precision=0.01)
         
         nh_bin = nh_calc(phase_discrete)
 
@@ -3346,7 +3671,7 @@ def fit_nh_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=200, swarmsize=
     parameter_names=["iphase", "semimajor", "orbitalperiod", "eccentricity", "periapsis" ,"inclination", "Rstar", "Mstar1", "Mstar2", "Mdot", "v_inf", "beta"]
     
     t = x_data
-    x_data, y_err_weight = define_x_y_sy(x_data,y_data, y_err)
+    x_data, y_err_weight = _define_x_y_sy(x_data,y_data, y_err)
         
     if method_ == "discrete" and len(np.shape(x_data)) == 2 and len(x_data) == len(y_data):
         x_data = np.mean(t, axis=1)
@@ -3361,11 +3686,11 @@ def fit_nh_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=200, swarmsize=
         predicted_data = nh_orbit(x_data,  iphase, semimajor, orbitalperiod, eccentricity, periapsis ,inclination, Rstar, Mstar1,
                                      Mstar2, Mdot, v_inf, beta, method_,extended_binsize)
 
-        chi_squared = chi_squared_weighted(y_data, y_err_weight,predicted_data)
+        chi_squared = _chi_squared_weighted(y_data, y_err_weight,predicted_data)
          
         return chi_squared
 #............................................PS implementation
-    lower_bounds, upper_bounds = manage_bounds(parameter_names, "nh")
+    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "nh")
     best_params_list = []
     chi_list = []
 
@@ -3377,7 +3702,7 @@ def fit_nh_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=200, swarmsize=
         best_params_list.append(best_params)
         predicted_data = nh_orbit(x_data, *best_params, method_,extended_binsize)
 
-        chi_squared = chi_squared_weighted(y_data, y_err_weight, predicted_data)
+        chi_squared = _chi_squared_weighted(y_data, y_err_weight, predicted_data)
 
         chi_list.append(chi_squared)
         #print(chi_squared)
@@ -3394,7 +3719,7 @@ def fit_nh_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=200, swarmsize=
 
     predicted_data = nh_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis ,inclination, Rstar, Mstar1, Mstar2, Mdot, v_inf, beta, method_,extended_binsize)
 #............................. Final evaluation
-    chi_squared = chi_squared_weighted(y_data, y_err_weight,predicted_data)
+    chi_squared = _chi_squared_weighted(y_data, y_err_weight,predicted_data)
 #............................. Prepare output
 
     results = []
@@ -3410,7 +3735,7 @@ def fit_nh_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=200, swarmsize=
 
         t =  np.array([np.mean(i) for i in x_data])
         
-        ph,_,_ = orbital_time_to_phase_(t ,
+        ph,_,_ = _orbital_time_to_phase(t ,
         df_results_transposed.iphase.Value,
         df_results_transposed.semimajor.Value,
         df_results_transposed.orbitalperiod.Value,
@@ -3424,7 +3749,7 @@ def fit_nh_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=200, swarmsize=
 
         t = x_data
         
-        ph,_,_ = orbital_time_to_phase_(t ,
+        ph,_,_ = _orbital_time_to_phase(t ,
         df_results_transposed.iphase.Value,
         df_results_transposed.semimajor.Value,
         df_results_transposed.orbitalperiod.Value,
@@ -3599,7 +3924,7 @@ def rebin_snr(t, x, sy, snr_threshold):
     return t_new,c_new,sc_new
 
 #.................................................. Rebin by bins
-def rebin_bins(t, x, sy, nbin):
+def rebin_bins(t, c, sc, nbin):
     """
     Calculates a rebinned lightcurve using a specified number of time bins.
 
@@ -3629,17 +3954,17 @@ def rebin_bins(t, x, sy, nbin):
     t_new=[]
     sc_new=[]
     
-    t, x, sy = preprocess_data(t, x, sy)
+    t, c, sc = preprocess_data(t, c, sc)
     
-    for i in range(len(x)-nbin-1):
+    for i in range(len(c)-nbin-1):
 
-        w = (pow(1/sy[i*nbin:(i+1)*nbin],2))
+        w = (pow(1/sc[i*nbin:(i+1)*nbin],2))
         
         if (sum(w) >0):
         
             t_bin = t[i*nbin:(i+1)*nbin]
-            c_bin = x[i*nbin:(i+1)*nbin]
-            sc_bin = sy[i*nbin:(i+1)*nbin]
+            c_bin = c[i*nbin:(i+1)*nbin]
+            sc_bin = sc[i*nbin:(i+1)*nbin]
 
             #...............................
 
@@ -3808,15 +4133,22 @@ def period_sliding_window(t, c, sc, window_sec, step_sec, max_period=None, min_p
             peaks_indices = pos[index_fa]
 
             if len(peaks_indices) > 0:
-                
+            
                 # Calculate widths and errors for the peaks
                 results_widths = peak_widths(power, peaks_indices, rel_height=rel_high_for_error)
-               
+                
                 # Loop through each peak and store data
                 for i, index in enumerate(peaks_indices):
-          
-                    freq_error = max(np.diff(freq[int(max(results_widths[2][i]-10,0)):int(results_widths[2][i])+10]))*3
-        
+                    
+                    # Ensure that the frequency slice contains enough elements
+                    start_idx = max(int(results_widths[2][i]) - 3, 0)
+                    end_idx = min(int(results_widths[2][i]) + 3, len(freq) - 1)
+                    
+                    if end_idx > start_idx:  # Ensure there are at least two elements
+                        freq_error = max(np.diff(freq[start_idx:end_idx])) * 3
+                    else:
+                        freq_error = 0  # Assign 0 if there's not enough data to calculate frequency error
+                
                     power_error = results_widths[1][i]  # Width corresponds to the peak
                     snr=power[index]/np.median(power)
 
@@ -3888,7 +4220,7 @@ def period_sliding_window(t, c, sc, window_sec, step_sec, max_period=None, min_p
             c_ = np.array(c[idx])
             sc_ = np.array(sc[idx])
 
-            ph_pulse, c_pulse, sc_pulse = fold_pulse_(t_, c_, sc_, result.Period[i], snr=snr_pulse, rebin=nbin_pulse)
+            ph_pulse, c_pulse, sc_pulse = fold_pulse(t_, c_, sc_, result.Period[i], snr=snr_pulse, rebin=nbin_pulse)
             pulse_data = {'ph_pulse': ph_pulse, 'c_pulse': c_pulse, 'sc_pulse': sc_pulse}
 
             pulses[i] = pulse_data
