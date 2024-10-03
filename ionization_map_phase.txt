@@ -1,2 +1,0 @@
-phase,semimajor,eccentricity,periapsis,Rstar,Mstar1,Mstar2,wind_infinite_velocity,Mass_loss_rate,beta,luminosity,bound1,bound2
-0.0,2.0,0.3,100.0,22.0,20.0,2.0,1000.0,1e-05,0.2,1e+36,100.0,1000.0

@@ -1,2 +1,0 @@
-iphase,semimajor,orbitalperiod,eccentricity,periapsis,Rstar,Mstar1,Mstar2
-0.0,2.0,1.0,0.2,100.0,22.0,22.0,1.0
