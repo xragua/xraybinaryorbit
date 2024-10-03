@@ -5,4 +5,4 @@ pyswarm
 matplotlib
 tk
 astropy
-monkeypatch
+pytest>=6.0
