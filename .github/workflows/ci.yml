@@ -31,9 +31,12 @@ jobs:
         pip install --upgrade xraybinaryorbit
         pip install pytest>=6.0
         pip install -r requirements.txt
-  
+
+    # Clear pytest cache after installing dependencies
+    - name: Clear pytest cache
+      run: pytest --cache-clear    
 
     - name: Run tests
       run: |
-        pytest 
+        pytest --verbose
 
