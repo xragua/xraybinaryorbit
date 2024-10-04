@@ -6,3 +6,4 @@ matplotlib
 tk
 astropy
 pytest>=6.0
+xraybinaryorbit
