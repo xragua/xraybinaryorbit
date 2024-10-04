@@ -1,9 +1,6 @@
 import pytest
 import numpy as np
-import pandas as pd
-from matplotlib import pyplot as plt
-from xraybinaryorbit import ionization_map_phase
-
+from xraybinaryorbit import *
 # Mock functions for _manage_parameters
 def _mock_manage_parameters(parameter_names, context):
     """Mock function to return dummy fixed values for parameters."""

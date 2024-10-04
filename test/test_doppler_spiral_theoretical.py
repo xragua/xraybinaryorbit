@@ -1,6 +1,6 @@
 import pytest
 import numpy as np
-from xraybinaryorbit import doppler_spiral_theoretical
+from xraybinaryorbit import *
 
 # Mock functions for _manage_parameters and _orbital_time_to_phase
 def _mock_manage_parameters(parameter_names, context):

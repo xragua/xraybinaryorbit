@@ -1,6 +1,6 @@
 import pytest
 import numpy as np
-
+from xraybinaryorbit import *
 
 # Mock functions for _manage_parameters and _orbital_phase_to_time
 def _mock_manage_parameters(parameter_names, context):
