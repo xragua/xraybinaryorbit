@@ -262,7 +262,7 @@ def _define_x_y_sy(x_data, y_data, y_err):
     if len(y_data) + 1 == len(x_data) and len(x_data.shape) == 1:
         x_data = _time_pairs(x_data)
         
-    return x_data, y_err_weight
+    return np.array(x_data), np.array(y_err_weight)
 
 #................................................... Weighted to the error chi squared
 def _chi_squared_weighted(y_data, y_err, y_pred):
@@ -511,7 +511,7 @@ def _load_values_to_interface(param_list, fixed_values, name):
     root.mainloop()
     
 
-def _manage_parameters(param_list, name):
+def _manage_parameters(param_list, name, load_directly=False):
     """
     Manage parameter values by loading from a file, displaying a user input form for modification,
     and saving the updated values back to the file.
@@ -536,18 +536,21 @@ def _manage_parameters(param_list, name):
         A list of the final parameter values, either loaded from the file or updated through user input.
     """
 
-
     global fixed_values_list
 
-    # Load previous fixed values if available
+    # Try to load previous fixed values if available
+    file_exists = True
     try:
         with open(f"{name}.txt", "r") as file:
             lines = file.readlines()
             fixed_values_list = [float(val) for val in lines[1].strip().split(",")]
     except FileNotFoundError:
+        file_exists = False
         fixed_values_list = [np.nan] * len(param_list)
 
-    _load_values_to_interface(param_list, fixed_values_list, name)
+    # If load_directly is True but file does not exist, still display the GUI
+    if not load_directly or not file_exists:
+        _load_values_to_interface(param_list, fixed_values_list, name)
 
     # Save fixed values to file
     with open(f"{name}.txt", "w") as file:
@@ -712,8 +715,7 @@ def _load_bounds_to_interface(param_list, lower_bounds, upper_bounds, name):
 
     root.mainloop()
     
-#........................................................................................
-def _manage_bounds(param_list, name):
+def _manage_bounds(param_list, name, load_directly=False):
     """
     Manage parameter bounds by loading from a file, displaying a user input form for modification, and saving
     the updated bounds back to the file.
@@ -731,6 +733,9 @@ def _manage_bounds(param_list, name):
     name : str
         The base name for the bounds file where the parameters will be saved and loaded from.
         The file is expected to be named `bounds_{name}.txt`.
+    load_directly : bool, optional
+        If True, the function will load the bounds directly from the file if it exists, without showing the GUI.
+        If False (default), the function will display the GUI for the user to modify the bounds, even if the file exists.
 
     Returns
     -------
@@ -740,33 +745,41 @@ def _manage_bounds(param_list, name):
         The final list of valid upper bounds (i.e., where both lower and upper bounds are not `NaN`).
     """
 
-
     global lower_bounds_list, upper_bounds_list
 
-    # Load previous bounds if available
+    file_exists = True
+
+    # Try to load previous bounds if available
     try:
-        with open("bounds_"+str(name)+".txt", "r") as file:
+        with open(f"bounds_{name}.txt", "r") as file:
             lines = file.readlines()
             param_names = lines[0].strip().split(",")  # Extract parameter names
             lower_bounds_list = [float(val) for val in lines[1].strip().split(",")]
             upper_bounds_list = [float(val) for val in lines[2].strip().split(",")]
     except FileNotFoundError:
+        file_exists = False
         param_names = param_list
         lower_bounds_list = [np.nan] * len(param_list)
         upper_bounds_list = [np.nan] * len(param_list)
 
-    _load_bounds_to_interface(param_names, lower_bounds_list, upper_bounds_list, name)
+    # If load_directly is False or the file does not exist, display the GUI to allow user modifications
+    if not load_directly or not file_exists:
+        _load_bounds_to_interface(param_names, lower_bounds_list, upper_bounds_list, name)
 
-    # Save bounds to file
-    with open("bounds_"+str(name)+".txt", "w") as file:
+    # Save updated bounds to the file
+    with open(f"bounds_{name}.txt", "w") as file:
         file.write(",".join(map(str, param_names)) + "\n")  # Write parameter names
         file.write(",".join(map(str, lower_bounds_list)) + "\n")  # Write lower bounds
         file.write(",".join(map(str, upper_bounds_list)) + "\n")  # Write upper bounds
 
-    lower_bounds = [lower_bounds_list[i] for i in range(len(lower_bounds_list)) if not np.isnan(lower_bounds_list[i]) and not np.isnan(upper_bounds_list[i])]
-    upper_bounds = [upper_bounds_list[i] for i in range(len(upper_bounds_list)) if not np.isnan(lower_bounds_list[i]) and not np.isnan(upper_bounds_list[i])]
-    
+    # Filter out NaN values and return valid lower and upper bounds
+    lower_bounds = [lower_bounds_list[i] for i in range(len(lower_bounds_list))
+                    if not np.isnan(lower_bounds_list[i]) and not np.isnan(upper_bounds_list[i])]
+    upper_bounds = [upper_bounds_list[i] for i in range(len(upper_bounds_list))
+                    if not np.isnan(lower_bounds_list[i]) and not np.isnan(upper_bounds_list[i])]
+
     return lower_bounds, upper_bounds
+
     
     
 def _orbital_phase_to_time(ph, iphase, semimajor, orbitalperiod, eccentricity, periapsis,
@@ -927,6 +940,12 @@ def _orbital_time_to_phase(t, iphase, semimajor, orbitalperiod, eccentricity, pe
     constant = number_of_orbits * orbital_period_s/max(time_)
     time = np.array(time_) * constant
     W_to_interpolate  = np.array(w_) / constant
+    
+    if (len(time) != (len(th))):
+        time=np.array(time[0:len(th)])
+        
+    if (len(W_to_interpolate) != (len(th))):
+        W_to_interpolate=np.array(W_to_interpolate[0:len(th)])
                     
     #.............................Now that we know the relation between time, W and phase respectively, interpolate to obtain phase from our input time
     times_to_interpolate = t-min(t)
@@ -951,7 +970,7 @@ def _orbital_time_to_phase(t, iphase, semimajor, orbitalperiod, eccentricity, pe
 ##########################################################################################
 
 # CONIC ORBIT #############################################################################
-def doppler_orbit_theoretical(t, units="keV", show_plot=False, precision_for_phase=0.01):
+def doppler_orbit_theoretical(t, units="keV", show_plot=False, precision_for_phase=0.01, load_directly=False):
     """
     Computes the Doppler variation expected from orbital movement given a time array in seconds.
 
@@ -987,7 +1006,7 @@ def doppler_orbit_theoretical(t, units="keV", show_plot=False, precision_for_pha
 
     parameter_names = ["iphase", "semimajor", "orbitalperiod", "eccentricity", "periapsis", "inclination", "Rstar", "Mstar1", "Mstar2", "wind_vel", "feature"]
     
-    fixed_values = _manage_parameters(parameter_names, "orbit")
+    fixed_values = _manage_parameters(parameter_names, "orbit",load_directly=load_directly)
     iphase, semimajor, orbitalperiod, eccentricity, periapsis, inclination, Rstar, Mstar1, Mstar2, wind_vel, feature = fixed_values
     
     #...................................................
@@ -1054,7 +1073,7 @@ def doppler_orbit_theoretical(t, units="keV", show_plot=False, precision_for_pha
 
     
 # SPIRAL #########################################################################################
-def doppler_spiral_theoretical(t, units="keV", show_plot=False):
+def doppler_spiral_theoretical(t, units="keV", show_plot=False, load_directly=False):
     """
     Computes the Doppler variation expected from a spiral movement given a time array in seconds.
 
@@ -1097,7 +1116,7 @@ def doppler_spiral_theoretical(t, units="keV", show_plot=False):
 
     parameter_names=["iphase_spiral", "semimajor_spiral", "b", "omega", "inclination_spiral", "feature"]
     
-    fixed_values = _manage_parameters(parameter_names, "spiral")
+    fixed_values = _manage_parameters(parameter_names, "spiral", load_directly=load_directly)
     iphase_spiral, semimajor_spiral, b, omega, inclination_spiral, feature = fixed_values
     #...................................................
     feature_ = {
@@ -1160,7 +1179,7 @@ def doppler_spiral_theoretical(t, units="keV", show_plot=False):
     return t,x,equation
     
 # ORBIT IN ORBIT #####################################################################################
-def doppler_disc_theoretical(t, units="keV", show_plot=False):
+def doppler_disc_theoretical(t, units="keV", show_plot=False, load_directly=False):
     """
     Computes the Doppler variation expected from orbital movement in a main orbit, assuming a ballistic
     movement of plasma around a compact object or the movement of a mass entering an accretion disc.
@@ -1197,7 +1216,7 @@ def doppler_disc_theoretical(t, units="keV", show_plot=False):
 
     parameter_names=["iphase", "semimajor", "orbitalperiod", "eccentricity", "periapsis", "inclination", "Rstar", "Mstar1", "Mstar2", "iphase2", "semimajor2", "orbitalperiod2", "eccentricity2", "periapsis2", "inclination2",  "Mass3","wind_vel", "feature"]
     
-    fixed_values = _manage_parameters(parameter_names, "disc")
+    fixed_values = _manage_parameters(parameter_names, "disc",load_directly=load_directly)
     iphase, semimajor, orbitalperiod, eccentricity, periapsis, inclination, Rstar, Mstar1, Mstar2, iphase2, semimajor2, orbitalperiod2, eccentricity2, periapsis2, inclination2,  Mass3, wind_vel, feature = fixed_values
 
     #...................................................
@@ -1278,7 +1297,7 @@ def doppler_disc_theoretical(t, units="keV", show_plot=False):
     return t,x,x2,equation
     
 # SPIRAL IN ORBIT ####################################################################################
-def doppler_spiral_in_orbit_theoretical(t, units="keV", show_plot=False):
+def doppler_spiral_in_orbit_theoretical(t, units="keV", show_plot=False, load_directly=False):
     """
     Computes the Doppler variation expected from an orbital movement with a logarithmic spiral component,
     given a time array in seconds.
@@ -1322,7 +1341,7 @@ def doppler_spiral_in_orbit_theoretical(t, units="keV", show_plot=False):
 
     parameter_names=["iphase", "semimajor", "orbitalperiod", "eccentricity", "periapsis", "inclination", "iphase_spiral", "semimajor_spiral", "b", "omega", "inclination_spiral", "Rstar", "Mstar1", "Mstar2", "wind_vel", "feature"]
     
-    fixed_values = _manage_parameters(parameter_names, "spiral_in_orbit")
+    fixed_values = _manage_parameters(parameter_names, "spiral_in_orbit",load_directly=load_directly)
     iphase, semimajor, orbitalperiod, eccentricity, periapsis, inclination, iphase_spiral, semimajor_spiral, b, omega, inclination_spiral, Rstar, Mstar1, Mstar2, wind_vel, feature = fixed_values
 
     #...................................................
@@ -1403,7 +1422,7 @@ def doppler_spiral_in_orbit_theoretical(t, units="keV", show_plot=False):
 ##########################################################################################
      
 # DENSITY IN THE ORBIT #############################################################################
-def density_through_orbit_theoretical(resolution=0.01, show_plot=False):
+def density_through_orbit_theoretical(resolution=0.01, show_plot=False, load_directly=False):
     """
     Visualizes the density (gr/cm^2) encountered by a compact object along its orbit, assuming a spherically
     distributed stellar wind based on the CAK (Castor-Abbott-Klein) model.
@@ -1435,7 +1454,7 @@ def density_through_orbit_theoretical(resolution=0.01, show_plot=False):
 
     parameter_names = ["semimajor","orbitalperiod" ,"eccentricity", "periapsis", "Rstar","Mstar1","Mstar2","wind_infinite_velocity","Mass_loss_rate","beta" ]
     
-    fixed_values = _manage_parameters(parameter_names, "density_through_orbit")
+    fixed_values = _manage_parameters(parameter_names, "density_through_orbit",load_directly=load_directly)
     semimajor,orbitalperiod , eccentricity,periapsis, Rstar, Mstar1, Mstar2, wind_infinite_velocity, Mass_loss_rate, beta = fixed_values
 
     th = np.arange(0,1,resolution)
@@ -1484,7 +1503,7 @@ def density_through_orbit_theoretical(resolution=0.01, show_plot=False):
     return  time[Rorb > Rstar_cm], th[Rorb > Rstar_cm],  rho
 
 # ABSOPTION COLUMN #############################################################################
-def absorption_column_through_orbit_theoretical(resolution=0.01, show_plot=True):
+def absorption_column_through_orbit_theoretical(resolution=0.01, show_plot=True, load_directly=False):
     """
     Visualizes the column density (NH1, x 10^22 cm^-2) encountered by radiation emitted at each orbital
     phase as it travels towards an observer. Assumes a spherically distributed, neutral (unionized)
@@ -1519,7 +1538,7 @@ def absorption_column_through_orbit_theoretical(resolution=0.01, show_plot=True)
 
     parameter_names = ["semimajor","orbitalperiod" ,"eccentricity", "periapsis" ,"inclination", "Rstar","Mstar1","Mstar2","wind_infinite_velocity","Mass_loss_rate","beta" ]
     
-    fixed_values = _manage_parameters(parameter_names, "absorption_column_through_orbit")
+    fixed_values = _manage_parameters(parameter_names, "absorption_column_through_orbit",load_directly=load_directly)
     semimajor, orbitalperiod,eccentricity, periapsis, inclination, Rstar, Mstar1, Mstar2, wind_infinite_velocity, Mass_loss_rate, beta = fixed_values
 
     th = np.arange(0,1,resolution)
@@ -1585,7 +1604,7 @@ def absorption_column_through_orbit_theoretical(resolution=0.01, show_plot=True)
 # Ionization parameter map ###############################################################
 
 
-def ionization_map_phase(size_in_Rstar=0, min_color=None, max_color=None, save_plot=False, name="ionization_map"):
+def ionization_map_phase(size_in_Rstar=0, min_color=None, max_color=None, save_plot=False, name="ionization_map", load_directly=False):
     """
     Generates a logarithmic ionization parameter map based on the stellar wind density, luminosity, and
     orbital parameters. The uncolored area in the map represents the X-ray shadow.
@@ -1624,7 +1643,7 @@ def ionization_map_phase(size_in_Rstar=0, min_color=None, max_color=None, save_p
     ]
     
     # Load fixed values
-    fixed_values = _manage_parameters(parameter_names, "ionization_map_phase")
+    fixed_values = _manage_parameters(parameter_names, "ionization_map_phase",load_directly=load_directly)
     phase, semimajor, eccentricity, periapsis, Rstar, Mstar1, Mstar2, wind_infinite_velocity, Mass_loss_rate, beta, luminosity, bound1, bound2 = fixed_values
     
     # Calculate various parameters
@@ -1875,7 +1894,7 @@ def ionization_map_phase(size_in_Rstar=0, min_color=None, max_color=None, save_p
 ##########################################################################################
 
 # PHASE TO TIME ###########################################################################
-def orbital_phase_to_time(ph, precision=0.01):
+def orbital_phase_to_time(ph, precision=0.01,load_directly=False):
     """
     Converts an orbital phase array to a time array for a compact object orbiting a companion star.
     The compact object moves faster at periastron than at apoastro due to the conservation of angular momentum
@@ -1912,7 +1931,7 @@ def orbital_phase_to_time(ph, precision=0.01):
 
     #.............................Load parameters
     parameter_names = ["iphase", "semimajor", "orbitalperiod", "eccentricity", "periapsis", "Rstar", "Mstar1", "Mstar2"]
-    fixed_values = _manage_parameters(parameter_names, "phase_time")
+    fixed_values = _manage_parameters(parameter_names, "phase_time",load_directly=load_directly)
     
     iphase, semimajor, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2 = fixed_values
     
@@ -1958,7 +1977,7 @@ def orbital_phase_to_time(ph, precision=0.01):
     return ph, time, W
     
     
-def orbital_time_to_phase(t, precision=0.01):
+def orbital_time_to_phase(t, precision=0.01,load_directly=False):
     """
     Converts an orbital time array to a phase array for a compact object orbiting a companion star.
     The compact object moves faster at periastron than at apoastro due to the conservation of angular momentum
@@ -1996,7 +2015,7 @@ def orbital_time_to_phase(t, precision=0.01):
 
     #.............................Load parameters
     parameter_names = ["iphase", "semimajor", "orbitalperiod", "eccentricity", "periapsis", "Rstar", "Mstar1", "Mstar2"]
-    fixed_values = _manage_parameters(parameter_names, "time_phase")
+    fixed_values = _manage_parameters(parameter_names, "time_phase",load_directly=load_directly)
     
     iphase, semimajor, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2 = fixed_values
     #.............................Load parameters
@@ -2034,6 +2053,12 @@ def orbital_time_to_phase(t, precision=0.01):
     constant = number_of_orbits * orbital_period_s/max(time_)
     time = np.array(time_) * constant
     W_to_interpolate  = np.array(w_) / constant
+    
+    if (len(time) != (len(th))):
+        time=np.array(time[0:len(th)])
+        
+    if (len(W_to_interpolate) != (len(th))):
+        W_to_interpolate=np.array(W_to_interpolate[0:len(th)])
                     
     #.............................Now that we know the relation between time, W and phase respectively, interpolate to obtain phase from our input time
     times_to_interpolate = t-min(t)
@@ -2057,9 +2082,62 @@ def orbital_time_to_phase(t, precision=0.01):
 ##########################################################################################
 
 # CONIC ORBIT #############################################################################
-def _conic_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis ,inclination, Rstar, Mstar1, Mstar2, wind_vel, feature, units, method_, extended_binsize):
+def _conic_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis, inclination, Rstar, Mstar1, Mstar2, wind_vel, feature, units, method_, extended_binsize):
+    """
+    Simulate the Doppler and radial velocities in a conic orbital system using either a discrete or extended method. Its a private function called by
+    fit_orbit_ps abd fit_orbit_ls.
     
-    #..........
+    This function calculates the Doppler shift and radial velocity in an orbital system where the motion follows a conic orbit (usually elliptical).
+    The function can calculate these velocities either for discrete time points or extended time bins, depending on the `method_` parameter.
+    The output is the Doppler shift or time shift based on the provided units, such as keV, seconds, or wavelength (angstrom).
+
+    Parameters
+    ----------
+    x_data : array-like
+        The input time data (or time bins) to compute the Doppler shift and radial velocities.
+    iphase : float
+        The initial phase of the orbit, typically in radians or fractions of the orbit period.
+    semimajor : float
+        The semi-major axis of the orbit, in solar radii or other relevant units.
+    orbitalperiod : float
+        The orbital period of the system in days.
+    eccentricity : float
+        The eccentricity of the orbit, ranging from 0 (circular) to 1 (parabolic).
+    periapsis : float
+        The argument of periapsis, describing the orientation of the orbit in the plane of motion.
+    inclination : float
+        The inclination of the orbit in degrees, relative to the plane of the sky.
+    Rstar : float
+        The radius of the star, typically in solar radii.
+    Mstar1 : float
+        The mass of the primary star (star 1), typically in solar masses.
+    Mstar2 : float
+        The mass of the secondary object (star 2), typically in solar masses.
+    wind_vel : float
+        The wind velocity from the star, typically in km/s.
+    feature : float
+        The spectral feature of interest, either in keV or another unit, that will be Doppler-shifted.
+    units : str
+        The units for the feature, such as "keV", "s" (seconds), or "amstrong" (angstroms). Determines how the feature is Doppler shifted.
+    method_ : str
+        The method used for calculation. Can be "extended" (for time bins) or "discrete" (for individual time points).
+    extended_binsize : float
+        The bin size for extended methods. This is used to average Doppler shifts and velocities over each time bin.
+
+    Returns
+    -------
+    equation : array-like
+        The Doppler-shifted or time-shifted values of the feature, depending on the `units` parameter.
+        This can be in keV, seconds, or wavelength (angstroms), depending on the chosen units.
+
+    Notes
+    -----
+    - The function uses both the Doppler and radial velocity components to calculate the shift in the feature of interest.
+    - For the "extended" method, it computes average values over the bins, while for the "discrete" method, it computes values at individual time points.
+    - The Doppler shift accounts for both the motion of the star and any wind velocities.
+    - The feature is Doppler-shifted according to the motion of the object, and the result is returned in the desired units.
+
+    """
     t = x_data
     
     feature_ = {
@@ -2143,7 +2221,7 @@ def _conic_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periaps
 # PS FIT------------------------------------------------------------------------------------------------------
 
 def fit_orbit_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarmsize=100,
-                 units="keV", method_="extended", extended_binsize=0.01):
+                 units="keV", method_="extended", extended_binsize=0.01,load_directly=False):
     """
     Fits observed orbital modulation data by estimating parameters such as phase, semi-major axis,
     orbital period, eccentricity, inclination, and periapsis using particle swarm optimization (PSO).
@@ -2207,7 +2285,8 @@ def fit_orbit_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarms
         x_data = np.mean(t, axis=1)
     
     if len(np.shape(x_data)) == 1 and len(x_data) == len(y_data):
-        method_ == "discrete"
+        print("The number of time points does not allow an extended approach. Changing to discrete")
+        method_ = "discrete"
         
     #............................................Objective function
     def objective_function(params):
@@ -2221,7 +2300,7 @@ def fit_orbit_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarms
         return chi_squared
 
     #............................................PS implementation
-    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "orbit_bounds")
+    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "orbit_bounds",load_directly=load_directly)
     best_params_list = []
     chi_list = []
     
@@ -2291,7 +2370,7 @@ def fit_orbit_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarms
     return df_results_transposed, ph, predicted_data, chi_squared
     
 # LS FIT------------------------------------------------------------------------------------------------------
-def fit_orbit_ls(x_data, y_data, y_err=0, units="keV", method_="extended", extended_binsize=0.01):
+def fit_orbit_ls(x_data, y_data, y_err=0, units="keV", method_="extended", extended_binsize=0.01,load_directly=False):
     """
     Fits orbital modulation data by estimating parameters such as phase, semi-major axis, orbital period,
     eccentricity, inclination, and periapsis using a traditional Least Squares (LS) method.
@@ -2350,10 +2429,11 @@ def fit_orbit_ls(x_data, y_data, y_err=0, units="keV", method_="extended", exten
         x_data = np.mean(t, axis=1)
     
     if len(np.shape(x_data)) == 1 and len(x_data) == len(y_data):
-        method_ == "discrete"
+        print("The number of time points does not allow an extended approach. Changing to discrete")
+        method_ = "discrete"
         
     #............................................LS implementation
-    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "orbit_bounds")
+    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "orbit_bounds",load_directly=load_directly)
     
     model_func = lambda x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis, inclination, Rstar, Mstar1, Mstar2,wind_vel, feature: _conic_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis, inclination, Rstar, Mstar1, Mstar2, wind_vel,feature, units=units, method_=method_,extended_binsize=extended_binsize)
     
@@ -2415,14 +2495,87 @@ def fit_orbit_ls(x_data, y_data, y_err=0, units="keV", method_="extended", exten
 
 # ORBIT IN ORBIT #############################################################################
 def _disc_in_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis, inclination, Rstar, Mstar1, Mstar2, iphase2, semimajor2, orbitalperiod2, eccentricity2, periapsis2, inclination2, Mass3, feature, wind_vel, units, method_, extended_binsize):
-    t = x_data
-    
+    """
+    Simulate the Doppler and radial velocities for a binary system with a third mass object (disc in orbit). This private function is
+    called by fit_disc_ps and fit_disc_ls.
+
+    This function calculates the Doppler shifts and radial velocities in a system with a binary star (primary and secondary objects)
+    and a third body (disc or additional mass). The method can calculate these velocities either for discrete time points or extended
+    time bins, depending on the value of the `method_` parameter. The output is the Doppler shift or time shift, based on the
+    provided units, such as keV, seconds, or wavelength (angstroms).
+
+    Parameters
+    ----------
+    x_data : array-like
+        The input time data (or time bins) for which Doppler shifts and radial velocities are computed.
+    iphase : float
+        The initial phase of the main orbit, typically in radians or as a fraction of the orbit period.
+    semimajor : float
+        The semi-major axis of the main orbit, typically in solar radii or other relevant units.
+    orbitalperiod : float
+        The orbital period of the main system in days.
+    eccentricity : float
+        The eccentricity of the main orbit, ranging from 0 (circular) to 1 (parabolic).
+    periapsis : float
+        The argument of periapsis of the main orbit, describing the orientation of the orbit in the plane of motion.
+    inclination : float
+        The inclination of the main orbit in degrees, relative to the plane of the sky.
+    Rstar : float
+        The radius of the star, typically in solar radii.
+    Mstar1 : float
+        The mass of the primary object (main star), typically in solar masses.
+    Mstar2 : float
+        The mass of the secondary object, typically in solar masses.
+    iphase2 : float
+        The initial phase of the secondary orbit, typically in radians or as a fraction of the orbit period.
+    semimajor2 : float
+        The semi-major axis of the secondary orbit, typically in solar radii.
+    orbitalperiod2 : float
+        The orbital period of the secondary system in days.
+    eccentricity2 : float
+        The eccentricity of the secondary orbit, ranging from 0 (circular) to 1 (parabolic).
+    periapsis2 : float
+        The argument of periapsis of the secondary orbit, describing the orientation of the orbit in the plane of motion.
+    inclination2 : float
+        The inclination of the secondary orbit in degrees.
+    Mass3 : float
+        The mass of the third object (disc or additional mass) in solar masses.
+    feature : float
+        The spectral feature of interest, either in keV or another unit, that will be Doppler-shifted.
+    wind_vel : float
+        The wind velocity from the star, typically in km/s.
+    units : str
+        The units for the feature, such as "keV", "s" (seconds), or "amstrong" (angstroms). Determines how the feature is Doppler-shifted.
+    method_ : str
+        The method used for calculation. Can be "extended" (for time bins) or "discrete" (for individual time points).
+    extended_binsize : float
+        The bin size for the extended method. This is used to average Doppler shifts and velocities over each time bin.
+
+    Returns
+    -------
+    equation : array-like
+        The Doppler-shifted or time-shifted values of the feature, depending on the `units` parameter.
+        This can be in keV, seconds, or wavelength (angstroms), depending on the chosen units.
+
+    Notes
+    -----
+    - The function performs Doppler shift and radial velocity calculations for both the main binary orbit and the secondary orbit
+      associated with the third mass object.
+    - For the "extended" method, the function computes average values over time bins, while for the "discrete" method,
+      it computes values at individual time points.
+    - The Doppler shift accounts for both the motion of the stars and any wind velocities from the star.
+    - The final result returns the Doppler-shifted feature, adjusted for both the main and secondary orbits, in the specified units.
+
+    """
+
     # Feature conversion based on units
     feature_ = {
         "keV": kev_ams / feature,
         "s": feature,  # No conversion needed for seconds
         "amstrong": feature  # No conversion needed for lambda
     }
+    
+    t=x_data
     
     feature = feature_.get(units, 1)
     
@@ -2432,7 +2585,7 @@ def _disc_in_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, peria
     
     abar2 = semimajor2 * min(Mstar1, Mstar2) / (min(Mstar1, Mstar2) + Mass3)
     orbitalperiod_s2 = orbitalperiod2 * 24 * 60 * 60
-    
+
     shape_t = t.shape
     t_to_phase = t.reshape(-1)
     
@@ -2529,7 +2682,7 @@ def _disc_in_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, peria
 
 # PS FIT------------------------------------------------------------------------------------------------------
 def fit_disc_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarmsize=100,
-                units="keV", method_="extended", extended_binsize=0.01):
+                units="keV", method_="extended", extended_binsize=0.01,load_directly=False):
     """
     Fits orbital modulation data by estimating parameters such as phase, semi-major axis, orbital period,
     eccentricity, and inclination for the main orbit, as well as corresponding parameters for a secondary
@@ -2596,7 +2749,8 @@ def fit_disc_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarmsi
        x_data = np.mean(x_data , axis=1)
     
     if len(np.shape(x_data)) == 1 and len(x_data) == len(y_data):
-        method_ == "discrete"
+        print("The number of time points does not allow an extended approach. Changing to discrete")
+        method_ = "discrete"
         
     #............................................objective function
     def objective_function(params):
@@ -2610,7 +2764,7 @@ def fit_disc_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarmsi
         return chi_squared
         
     #............................................PS implementation
-    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "disc_bounds")
+    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "disc_bounds",load_directly=load_directly)
     best_params_list = []
     chi_list = []
     
@@ -2701,7 +2855,7 @@ def fit_disc_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarmsi
     
 # lS FIT------------------------------------------------------------------------------------------------------
 
-def fit_disc_ls(x_data, y_data, y_err=0, units="keV", method_="extended", extended_binsize=0.01):
+def fit_disc_ls(x_data, y_data, y_err=0, units="keV", method_="extended", extended_binsize=0.01,load_directly=False):
     """
     Fits orbital modulation data by estimating parameters such as phase, semi-major axis, orbital period,
     eccentricity, and inclination for the main orbit, as well as corresponding parameters for a secondary
@@ -2760,10 +2914,11 @@ def fit_disc_ls(x_data, y_data, y_err=0, units="keV", method_="extended", extend
         x_data = np.mean(x_data, axis=1)
     
     if len(np.shape(x_data)) == 1 and len(x_data) == len(y_data):
-        method_ == "discrete"
+        print("The number of time points does not allow an extended approach. Changing to discrete")
+        method_ = "discrete"
         
     #............................................LS implementation
-    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "disc_bounds")
+    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "disc_bounds",load_directly=load_directly)
     
     model_func = lambda x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis ,inclination, Rstar, Mstar1, Mstar2, iphase2, semimajor2, orbitalperiod2, eccentricity2, periapsis2 ,inclination2, Mass3, feature, wind_vel : _disc_in_orbit(x_data,  iphase, semimajor, orbitalperiod, eccentricity, periapsis ,inclination, Rstar, Mstar1, Mstar2, iphase2, semimajor2, orbitalperiod2, eccentricity2, periapsis2 ,inclination2, Mass3, feature,wind_vel,units=units, method_=method_,extended_binsize=extended_binsize)
     
@@ -2844,6 +2999,54 @@ def fit_disc_ls(x_data, y_data, y_err=0, units="keV", method_="extended", extend
 
 # SPIRAL #############################################################################
 def _spiral(x_data, iphase_spiral, semimajor_spiral, b, omega, inclination_spiral, feature, units, method_, extended_binsize):
+    """
+    Simulate the Doppler shift for a spiral structure in orbit around a central object. This private function is called
+    by fit_spiral_ps and fit_spiral_ls.
+
+    This function calculates the Doppler shift in a spiral orbit, where the radial distance of the orbiting material
+    expands exponentially as a function of phase. The Doppler shift is computed based on the motion of the material
+    and can be returned in different units, such as keV, seconds, or wavelength (angstroms). The function allows
+    calculations either over discrete time points or extended time bins, based on the `method_` parameter.
+
+    Parameters
+    ----------
+    x_data : array-like
+        The input time data (or time bins) to compute the Doppler shift values.
+    iphase_spiral : float
+        The initial phase of the spiral orbit, typically as a fraction of the orbital period or in radians.
+    semimajor_spiral : float
+        The semi-major axis of the spiral orbit, in solar radii or other relevant units.
+    b : float
+        The exponential growth factor of the spiral, determining how the radius expands with phase.
+    omega : float
+        The angular velocity of the spiral, typically in radians per second.
+    inclination_spiral : float
+        The inclination of the spiral in degrees, relative to the plane of the sky.
+    feature : float
+        The spectral feature of interest, either in keV or another unit, that will be Doppler-shifted.
+    units : str
+        The units for the feature, such as "keV", "s" (seconds), or "amstrong" (angstroms). Determines how the feature is Doppler shifted.
+    method_ : str
+        The method used for calculation. Can be "extended" (for time bins) or "discrete" (for individual time points).
+    extended_binsize : float
+        The bin size for the extended method. This is used to average Doppler shifts and velocities over each time bin.
+
+    Returns
+    -------
+    equation : array-like
+        The Doppler-shifted values of the feature, depending on the `units` parameter.
+        This can be in keV, seconds, or wavelength (angstroms), depending on the chosen units.
+
+    Notes
+    -----
+    - The function simulates a spiral structure, where the radius grows exponentially as a function of the phase, defined by
+      the exponential growth factor `b` and the angular velocity `omega`.
+    - For the "extended" method, the function computes average Doppler shift values over time bins, while for the "discrete" method,
+      it computes Doppler shifts at individual time points.
+    - The Doppler shift is calculated based on the radial velocity of the orbiting material, and the output is returned in the specified units.
+    - The Doppler shift accounts for both the motion of the spiral and its inclination with respect to the observer.
+
+    """
 
     #...................................................
     feature_ = {
@@ -2907,7 +3110,7 @@ def _spiral(x_data, iphase_spiral, semimajor_spiral, b, omega, inclination_spira
 
 # PS FIT------------------------------------------------------------------------------------------------------
 def fit_spiral_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarmsize=100,
-                  units="keV", method_="extended", extended_binsize=0.01):
+                  units="keV", method_="extended", extended_binsize=0.01,load_directly=False):
     """
     Fits orbital modulation data by estimating parameters for a spiral orbit using particle swarm optimization (PSO).
 
@@ -2971,7 +3174,8 @@ def fit_spiral_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarm
         x_data = np.mean(t, axis=1)
     
     if len(np.shape(x_data)) == 1 and len(x_data) == len(y_data):
-        method_ == "discrete"
+        print("The number of time points does not allow an extended approach. Changing to discrete")
+        method_ = "discrete"
         
     #............................................Objective function
     def objective_function(params):
@@ -2985,7 +3189,7 @@ def fit_spiral_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarm
         return chi_squared
         
     #............................................ PS implementation
-    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "spiral_bounds")
+    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "spiral_bounds",load_directly=load_directly)
     best_params_list = []
     chi_list = []
     
@@ -3042,7 +3246,7 @@ def fit_spiral_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarm
 
     
 # LS FIT------------------------------------------------------------------------------------------------------
-def fit_spiral_ls(x_data, y_data, y_err=0, units="keV", method_="extended", extended_binsize=0.01):
+def fit_spiral_ls(x_data, y_data, y_err=0, units="keV", method_="extended", extended_binsize=0.01,load_directly=False):
     """
     Fits orbital modulation data by estimating parameters for a spiral orbit using a traditional least squares (LS) method.
     Although provided for completeness, the LS method may have limitations due to the complexity of the model.
@@ -3098,13 +3302,15 @@ def fit_spiral_ls(x_data, y_data, y_err=0, units="keV", method_="extended", exte
         x_data = np.mean(t, axis=1)
     
     if len(np.shape(x_data)) == 1 and len(x_data) == len(y_data):
-        method_ == "discrete"
+        print("The number of time points does not allow an extended approach. Changing to discrete")
+        method_ = "discrete"
     #............................................LS implementation
-    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "spiral")
+    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "spiral",load_directly=load_directly)
     
     model_func = lambda x_data, iphase_spiral, semimajor_spiral, b, omega, inclination_spiral, feature: _spiral(x_data,  iphase_spiral, semimajor_spiral, b, omega, inclination_spiral, feature, units=units, method_=method_,extended_binsize=extended_binsize)
+    
     try:
-        fit_params, fit_covariance = curve_fit(model_func, x_data, y_data, bounds=[lower_bounds, upper_bounds], maxfev=100000)
+        fit_params, fit_covariance = curve_fit(model_func, x_data, np.array(y_data), bounds=[lower_bounds, upper_bounds], maxfev=100000)
     except RuntimeError:
         raise RuntimeError("Curve fitting did not converge. Try adjusting the bounds.")
 
@@ -3149,7 +3355,75 @@ def fit_spiral_ls(x_data, y_data, y_err=0, units="keV", method_="extended", exte
 
 
 # SPIRAL IN ORBIT #############################################################################
-def _spiral_orbit(x_data, iphase_orbit, semimajor_orbit, orbitalperiod, eccentricity, periapsis, inclination_orbit, Rstar, Mstar1, Mstar2, iphase_spiral, semimajor_spiral, b, omega, inclination_spiral, feature, units, method_,extended_binsize):
+def _spiral_orbit(x_data, iphase_orbit, semimajor_orbit, orbitalperiod, eccentricity, periapsis, inclination_orbit, Rstar, Mstar1, Mstar2, iphase_spiral, semimajor_spiral, b, omega, inclination_spiral, feature, units, method_, extended_binsize):
+    """
+    Simulate the Doppler shifts for a system that includes both a main orbital motion and a spiral structure. This
+    private function is used in fit_spiral_in_orbit_ps and fit_spiral_in_orbit_ls.
+
+    This function calculates the Doppler shifts in a system that has both an elliptical orbit (main orbit)
+    and an expanding spiral structure. The Doppler shifts are computed for both the main orbital motion
+    and the spiral structure, and the results are combined. The Doppler shifts can be returned in various
+    units, such as keV, seconds, or wavelength (angstroms). The function supports both "extended" and "discrete"
+    calculation methods.
+
+    Parameters
+    ----------
+    x_data : array-like
+        The input time data (or time bins) to compute the Doppler shifts for both the main orbit and spiral structure.
+    iphase_orbit : float
+        The initial phase of the main orbit, typically as a fraction of the orbital period or in radians.
+    semimajor_orbit : float
+        The semi-major axis of the main orbit, in solar radii or other relevant units.
+    orbitalperiod : float
+        The orbital period of the main system in days.
+    eccentricity : float
+        The eccentricity of the main orbit, ranging from 0 (circular) to 1 (parabolic).
+    periapsis : float
+        The argument of periapsis of the main orbit, describing the orientation of the orbit in the plane of motion.
+    inclination_orbit : float
+        The inclination of the main orbit in degrees, relative to the plane of the sky.
+    Rstar : float
+        The radius of the star, typically in solar radii.
+    Mstar1 : float
+        The mass of the primary object (main star), typically in solar masses.
+    Mstar2 : float
+        The mass of the secondary object, typically in solar masses.
+    iphase_spiral : float
+        The initial phase of the spiral structure, typically as a fraction of the orbital period or in radians.
+    semimajor_spiral : float
+        The semi-major axis of the spiral, representing the initial distance from the center.
+    b : float
+        The exponential growth factor of the spiral, determining how the radius expands with phase.
+    omega : float
+        The angular velocity of the spiral, typically in radians per second.
+    inclination_spiral : float
+        The inclination of the spiral in degrees, relative to the plane of the sky.
+    feature : float
+        The spectral feature of interest, either in keV or another unit, that will be Doppler-shifted.
+    units : str
+        The units for the feature, such as "keV", "s" (seconds), or "amstrong" (angstroms). Determines how the feature is Doppler-shifted.
+    method_ : str
+        The method used for calculation. Can be "extended" (for time bins) or "discrete" (for individual time points).
+    extended_binsize : float
+        The bin size for the extended method. This is used to average Doppler shifts and velocities over each time bin.
+
+    Returns
+    -------
+    equation : array-like
+        The Doppler-shifted values of the feature, depending on the `units` parameter.
+        This can be in keV, seconds, or wavelength (angstroms), depending on the chosen units.
+
+    Notes
+    -----
+    - The function models two distinct components: the main elliptical orbit and a spiral structure that expands with time.
+    - For the "extended" method, the function computes average Doppler shift values over time bins, while for the "discrete" method,
+      it computes Doppler shifts at individual time points.
+    - The Doppler shifts are calculated for both the main orbit and the spiral, and their contributions are combined.
+    - The Doppler shifts account for the motion of both the spiral and the orbital system, as well as their respective inclinations.
+    - The final result is returned in the specified units (keV, seconds, or angstroms).
+
+    """
+    
 
     t=x_data
 
@@ -3203,8 +3477,8 @@ def _spiral_orbit(x_data, iphase_orbit, semimajor_orbit, orbitalperiod, eccentri
             
             if ( size_phase_bin_orbit[i] < extended_binsize):
 
-                R_puntual = abar * (1-eccentricity ** 2)/(1+eccentricity * np.cos((phase_puntual-periapsis/360) * 2 * np.pi)) #R of ellipse
-                vdop_puntual =  -R_puntual * Rstar * rsun_m * W_puntual * np.sin(2 * np.pi * phase_puntual) * np.sin(2 * np.pi * inclination_orbit )
+                R_puntual = abar * (1-eccentricity ** 2)/(1+eccentricity * np.cos((phase_puntual[i]-periapsis/360) * 2 * np.pi)) #R of ellipse
+                vdop_puntual =  -R_puntual * Rstar * rsun_m * W_puntual[i] * np.sin(2 * np.pi * phase_puntual[i]) * np.sin(2 * np.pi * inclination_orbit )
                 vdop_bin_orbit.append(vdop_puntual)
     
     #..................................................SPIRAL
@@ -3268,7 +3542,7 @@ def _spiral_orbit(x_data, iphase_orbit, semimajor_orbit, orbitalperiod, eccentri
 
 # PS FIT------------------------------------------------------------------------------------------------------
 def fit_spiral_in_orbit_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarmsize=100,
-                           units="keV", method_="extended", extended_binsize=0.01):
+                           units="keV", method_="extended", extended_binsize=0.01,load_directly=False):
     """
     Fits orbital modulation data by estimating parameters for a spiral orbit contained within a main orbit using
     particle swarm optimization (PSO).
@@ -3331,7 +3605,8 @@ def fit_spiral_in_orbit_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=10
         x_data = np.mean(t, axis=1)
     
     if len(np.shape(x_data)) == 1 and len(x_data) == len(y_data):
-        method_ == "discrete"
+        print("The number of time points does not allow an extended approach. Changing to discrete")
+        method_ = "discrete"
         
     #............................................Objective function
     def objective_function(params):
@@ -3344,7 +3619,7 @@ def fit_spiral_in_orbit_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=10
         return chi_squared
         
 #............................................ PS implementation
-    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "spiralorbit")
+    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "spiral_orbit",load_directly=load_directly)
     best_params_list = []
     chi_list = []
     
@@ -3416,7 +3691,7 @@ def fit_spiral_in_orbit_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=10
     return df_results_transposed, ph, predicted_data, chi_squared
 
 # PS FIT------------------------------------------------------------------------------------------------------
-def fit_spiral_in_orbit_ls(x_data, y_data, y_err=0, units="keV", method_="extended", extended_binsize=0.01):
+def fit_spiral_in_orbit_ls(x_data, y_data, y_err=0, units="keV", method_="extended", extended_binsize=0.01,load_directly=False):
     """
     Fits orbital modulation data by estimating parameters for a spiral orbit contained within a main orbit using
     a traditional least squares (LS) method. Although the LS method may be limited due to the complexity of the model,
@@ -3473,9 +3748,10 @@ def fit_spiral_in_orbit_ls(x_data, y_data, y_err=0, units="keV", method_="extend
         x_data = np.mean(t, axis=1)
     
     if len(np.shape(x_data)) == 1 and len(x_data) == len(y_data):
-        method_ == "discrete"
+        print("The number of time points does not allow an extended approach. Changing to discrete")
+        method_ = "discrete"
     #............................................ LS implementation
-    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "spiralorbit")
+    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "spiral_orbit",load_directly=load_directly)
     
     model_func = lambda x_data,iphase_orbit, semimajor_orbit, orbitalperiod, eccentricity, periapsis, inclination_orbit, Rstar, Mstar1, Mstar2, iphase_spiral, semimajor_spiral, b, omega, inclination_spiral, feature: _spiral_orbit( x_data,iphase_orbit, semimajor_orbit, orbitalperiod, eccentricity, periapsis, inclination_orbit, Rstar, Mstar1, Mstar2, iphase_spiral, semimajor_spiral, b, omega, inclination_spiral, feature, units=units, method_=method_, extended_binsize=extended_binsize)
     
@@ -3541,6 +3817,69 @@ def fit_spiral_in_orbit_ls(x_data, y_data, y_err=0, units="keV", method_="extend
      
 # Absorption colum #############################################################################
 def nh_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis, inclination, Rstar, Mstar1, Mstar2, Mass_loss_rate, wind_infinite_velocity, beta, method_, extended_binsize):
+    """
+    Calculate the hydrogen column density (NH) in an orbital system with a stellar wind. This private function is called by
+    fit_nh_ps.
+
+    This function calculates the hydrogen column density (NH) in a binary orbital system with a star that has a stellar wind.
+    The function integrates the mass density along the line of sight as the system moves through different orbital phases,
+    taking into account the orbital motion and wind velocity profile. It supports both "extended" and "discrete" methods for
+    calculation, where the "extended" method computes averaged values over time bins, and the "discrete" method computes
+    NH at individual time points.
+
+    Parameters
+    ----------
+    x_data : array-like
+        The input time data (or time bins) to compute NH values.
+    iphase : float
+        The initial phase of the orbit, typically as a fraction of the orbital period or in radians.
+    semimajor : float
+        The semi-major axis of the orbit, in solar radii.
+    orbitalperiod : float
+        The orbital period of the system in days.
+    eccentricity : float
+        The eccentricity of the orbit, ranging from 0 (circular) to 1 (parabolic).
+    periapsis : float
+        The argument of periapsis of the orbit, describing the orientation of the orbit in the plane of motion.
+    inclination : float
+        The inclination of the orbit in degrees, relative to the plane of the sky.
+    Rstar : float
+        The radius of the star, typically in solar radii.
+    Mstar1 : float
+        The mass of the primary star, typically in solar masses.
+    Mstar2 : float
+        The mass of the secondary object, typically in solar masses.
+    Mass_loss_rate : float
+        The mass loss rate from the star due to stellar wind, typically in solar masses per year.
+    wind_infinite_velocity : float
+        The terminal wind velocity of the stellar wind, typically in km/s.
+    beta : float
+        The velocity law exponent for the wind velocity profile (used in the beta-law to describe wind acceleration).
+    method_ : str
+        The method used for calculation. Can be "extended" (for time bins) or "discrete" (for individual time points).
+    extended_binsize : float
+        The bin size for the extended method. This is used to average NH values over each time bin.
+
+    Returns
+    -------
+    nh_bin : np.ndarray
+        The hydrogen column density (NH) values for each time bin or each time point, depending on the calculation method.
+        The output array is in units of 10^22 cm^-2.
+
+    Notes
+    -----
+    - The function computes NH based on the integration of mass density along the line of sight, taking into account
+      the orbital motion and wind profile. The wind velocity follows a beta-law, where the wind velocity increases as a
+      function of distance from the star.
+    - For the "extended" method, NH is computed over time bins, and the values are averaged for each bin. For the "discrete"
+      method, NH is computed at individual time points.
+    - The mass density is calculated using the mass loss rate and wind velocity, and NH is obtained by integrating the density
+      along the line of sight.
+    - The final NH values are returned in units of 10^22 cm^-2.
+
+    """
+    
+
 
     def nh_calc(th):
 
@@ -3613,7 +3952,7 @@ def nh_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis, 
     
 # PS FIT------------------------------------------------------------------------------------------------------
 def fit_nh_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=200, swarmsize=20,
-              method_="extended", extended_binsize=0.01):
+              method_="extended", extended_binsize=0.01,load_directly=False):
     """
     Fits the column density (NH1, x 10^22 cm^-2) encountered by radiation emitted at each orbital phase as
     it travels towards an observer, assuming a spherically distributed, neutral (unionized) stellar wind based
@@ -3667,7 +4006,7 @@ def fit_nh_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=200, swarmsize=
 
 
 #............................................Data prep.
-    advise()
+    _advise()
     parameter_names=["iphase", "semimajor", "orbitalperiod", "eccentricity", "periapsis" ,"inclination", "Rstar", "Mstar1", "Mstar2", "Mdot", "v_inf", "beta"]
     
     t = x_data
@@ -3677,7 +4016,8 @@ def fit_nh_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=200, swarmsize=
         x_data = np.mean(t, axis=1)
     
     if len(np.shape(x_data)) == 1 and len(x_data) == len(y_data):
-        method_ == "discrete"
+        print("The number of time points does not allow an extended approach. Changing to discrete")
+        method_ = "discrete"
 #............................................Objective function
 
     def objective_function(params):
@@ -3690,7 +4030,7 @@ def fit_nh_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=200, swarmsize=
          
         return chi_squared
 #............................................PS implementation
-    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "nh")
+    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "nh",load_directly=load_directly)
     best_params_list = []
     chi_list = []
 

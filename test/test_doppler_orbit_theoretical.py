@@ -1,31 +1,17 @@
 import pytest
 import numpy as np
+import sys
+
+sys.path.append('/Users/graci/Desktop/git/xraybinaryorbit/xraybinaryorbit')
 from xraybinaryorbit import *
 
-# Mock functions for _manage_parameters and _orbital_time_to_phase if they are used internally
-# We'll use placeholders for testing purposes if necessary
-
-def _mock_manage_parameters(parameter_names, context):
-    """Mock function to return dummy fixed values for parameters."""
-    return [0.1, 10, 100, 0.5, 30, 45, 1.2, 1.5, 0.8, 500, 6.4]  # Replace with reasonable defaults
-
-def _mock_orbital_time_to_phase(t, iphase, semimajor, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2, precision=0.01):
-    """Mock function to simulate phase calculation."""
-    x = np.linspace(0, 1, len(t))  # Simulate orbital phase values
-    W = 1.0  # A simple placeholder for W
-    return x, None, W
-
-# Example test for the default case (units in keV)
-def test_doppler_orbit_theoretical_keV(monkeypatch):
-    # Patch the internal functions that are not available for direct testing
-    monkeypatch.setattr('xraybinaryorbit._manage_parameters', _mock_manage_parameters)
-    monkeypatch.setattr('xraybinaryorbit._orbital_time_to_phase', _mock_orbital_time_to_phase)
-
-    # Time array (input) example
+# Test for the default case with units in keV
+def test_doppler_orbit_theoretical_keV():
+    # Example time array
     t = np.array([0, 100, 200, 300, 400])
 
-    # Run the function
-    t_out, x_out, equation_out = doppler_orbit_theoretical(t, units="keV")
+    # Run the function with keV units and load parameters directly from the file
+    t_out, x_out, equation_out = doppler_orbit_theoretical(t, units="keV", load_directly=True)
 
     # Assert outputs
     assert len(t_out) == len(t), "The output time array should match the input length."
@@ -33,45 +19,96 @@ def test_doppler_orbit_theoretical_keV(monkeypatch):
     assert len(equation_out) == len(t), "The Doppler variation array should match the input length."
     assert isinstance(equation_out, np.ndarray), "Doppler variation should be a NumPy array."
 
-# Test for "s" unit conversion
-def test_doppler_orbit_theoretical_seconds(monkeypatch):
-    # Patch the internal functions
-    monkeypatch.setattr('xraybinaryorbit._manage_parameters', _mock_manage_parameters)
-    monkeypatch.setattr('xraybinaryorbit._orbital_time_to_phase', _mock_orbital_time_to_phase)
 
-    # Example input time array
+# Test for "s" unit conversion
+def test_doppler_orbit_theoretical_seconds():
+    # Example time array
     t = np.array([0, 100, 200, 300])
 
-    # Run the function with units in seconds
-    t_out, x_out, equation_out = doppler_orbit_theoretical(t, units="s")
+    # Run the function with seconds as the unit and load parameters directly
+    t_out, x_out, equation_out = doppler_orbit_theoretical(t, units="s", load_directly=True)
 
     # Assert outputs
-    assert isinstance(equation_out, np.ndarray), "Output Doppler variation should be a NumPy array."
+    assert len(t_out) == len(t), "The output time array should match the input length."
+    assert len(x_out) == len(t), "The output orbital phase array should match the input length."
+    assert len(equation_out) == len(t), "The Doppler variation array should match the input length."
+    assert isinstance(equation_out, np.ndarray), "Doppler variation should be a NumPy array."
+
 
 # Test for invalid unit handling
-def test_doppler_orbit_theoretical_invalid_units(monkeypatch):
-    # Patch the internal functions
-    monkeypatch.setattr('xraybinaryorbit._manage_parameters', _mock_manage_parameters)
-    monkeypatch.setattr('xraybinaryorbit._orbital_time_to_phase', _mock_orbital_time_to_phase)
-
-    # Example input time array
+def test_doppler_orbit_theoretical_invalid_units():
+    # Example time array
     t = np.array([0, 100, 200])
 
+    # Expect a KeyError when an invalid unit is passed
     with pytest.raises(KeyError):
-        # The function should raise a KeyError when an unsupported unit is passed
-        doppler_orbit_theoretical(t, units="invalid_unit")
+        doppler_orbit_theoretical(t, units="invalid_unit", load_directly=True)
+
 
 # Test for plot generation
-def test_doppler_orbit_theoretical_plot(monkeypatch):
-    # Patch the internal functions
-    monkeypatch.setattr('xraybinaryorbit._manage_parameters', _mock_manage_parameters)
-    monkeypatch.setattr('xraybinaryorbit._orbital_time_to_phase', _mock_orbital_time_to_phase)
-
-    # Example input time array
+def test_doppler_orbit_theoretical_plot():
+    # Example time array
     t = np.array([0, 100, 200, 300])
 
-    # Run the function with show_plot=True (it should not raise any exceptions)
+    # Run the function with plot generation enabled (should not raise any exceptions)
     try:
-        doppler_orbit_theoretical(t, units="keV", show_plot=True)
+        doppler_orbit_theoretical(t, units="keV", show_plot=True, load_directly=True)
+    except Exception as e:
+        pytest.fail(f"Plot generation failed with error: {e}")
+import pytest
+import numpy as np
+import sys
+
+sys.path.append('/Users/graci/Desktop/git/xraybinaryorbit/xraybinaryorbit')
+from xraybinaryorbit import *
+
+# Test for the default case with units in keV
+def test_doppler_orbit_theoretical_keV():
+    # Example time array
+    t = np.array([0, 100, 200, 300, 400])
+
+    # Run the function with keV units and load parameters directly from the file
+    t_out, x_out, equation_out = doppler_orbit_theoretical(t, units="keV", load_directly=True)
+
+    # Assert outputs
+    assert len(t_out) == len(t), "The output time array should match the input length."
+    assert len(x_out) == len(t), "The output orbital phase array should match the input length."
+    assert len(equation_out) == len(t), "The Doppler variation array should match the input length."
+    assert isinstance(equation_out, np.ndarray), "Doppler variation should be a NumPy array."
+
+
+# Test for "s" unit conversion
+def test_doppler_orbit_theoretical_seconds():
+    # Example time array
+    t = np.array([0, 100, 200, 300])
+
+    # Run the function with seconds as the unit and load parameters directly
+    t_out, x_out, equation_out = doppler_orbit_theoretical(t, units="s", load_directly=True)
+
+    # Assert outputs
+    assert len(t_out) == len(t), "The output time array should match the input length."
+    assert len(x_out) == len(t), "The output orbital phase array should match the input length."
+    assert len(equation_out) == len(t), "The Doppler variation array should match the input length."
+    assert isinstance(equation_out, np.ndarray), "Doppler variation should be a NumPy array."
+
+
+# Test for invalid unit handling
+def test_doppler_orbit_theoretical_invalid_units():
+    # Example time array
+    t = np.array([0, 100, 200])
+
+    # Expect a KeyError when an invalid unit is passed
+    with pytest.raises(KeyError):
+        doppler_orbit_theoretical(t, units="invalid_unit", load_directly=True)
+
+
+# Test for plot generation
+def test_doppler_orbit_theoretical_plot():
+    # Example time array
+    t = np.array([0, 100, 200, 300])
+
+    # Run the function with plot generation enabled (should not raise any exceptions)
+    try:
+        doppler_orbit_theoretical(t, units="keV", show_plot=True, load_directly=True)
     except Exception as e:
         pytest.fail(f"Plot generation failed with error: {e}")
