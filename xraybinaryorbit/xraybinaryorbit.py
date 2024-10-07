@@ -688,11 +688,13 @@ def _manage_bounds(param_list, name, load_directly=False):
 
     # Try to load previous bounds if available
     try:
-        with open(f"bounds_{name}.txt", "r") as file:
+        with open(f"{name}.txt", "r") as file:
             lines = file.readlines()
+
             param_names = lines[0].strip().split(",")  # Extract parameter names
             lower_bounds_list = [float(val) for val in lines[1].strip().split(",")]
             upper_bounds_list = [float(val) for val in lines[2].strip().split(",")]
+            
     except FileNotFoundError:
         file_exists = False
         param_names = param_list
@@ -704,7 +706,7 @@ def _manage_bounds(param_list, name, load_directly=False):
         _load_bounds_to_interface(param_names, lower_bounds_list, upper_bounds_list, name)
 
     # Save updated bounds to the file
-    with open(f"bounds_{name}.txt", "w") as file:
+    with open(f"{name}.txt", "w") as file:
         file.write(",".join(map(str, param_names)) + "\n")  # Write parameter names
         file.write(",".join(map(str, lower_bounds_list)) + "\n")  # Write lower bounds
         file.write(",".join(map(str, upper_bounds_list)) + "\n")  # Write upper bounds
@@ -2237,7 +2239,9 @@ def fit_orbit_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarms
         return chi_squared
 
     #............................................PS implementation
-    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "orbit",load_directly=load_directly)
+    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "bounds_orbit", load_directly=load_directly)
+
+
     best_params_list = []
     chi_list = []
     
@@ -2370,7 +2374,7 @@ def fit_orbit_ls(x_data, y_data, y_err=0, units="keV", method_="extended", exten
         method_ = "discrete"
         
     #............................................LS implementation
-    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "orbit",load_directly=load_directly)
+    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "bounds_orbit",load_directly=load_directly)
     
     model_func = lambda x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis, inclination, Rstar, Mstar1, Mstar2,wind_vel, feature: _conic_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis, inclination, Rstar, Mstar1, Mstar2, wind_vel,feature, units=units, method_=method_,extended_binsize=extended_binsize)
     
@@ -2701,7 +2705,7 @@ def fit_disc_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarmsi
         return chi_squared
         
     #............................................PS implementation
-    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "disc",load_directly=load_directly)
+    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "bounds_disc",load_directly=load_directly)
     best_params_list = []
     chi_list = []
     
@@ -2855,7 +2859,7 @@ def fit_disc_ls(x_data, y_data, y_err=0, units="keV", method_="extended", extend
         method_ = "discrete"
         
     #............................................LS implementation
-    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "disc",load_directly=load_directly)
+    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "bounds_disc", load_directly=load_directly)
     
     model_func = lambda x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis ,inclination, Rstar, Mstar1, Mstar2, iphase2, semimajor2, orbitalperiod2, eccentricity2, periapsis2 ,inclination2, Mass3, feature, wind_vel : _disc_in_orbit(x_data,  iphase, semimajor, orbitalperiod, eccentricity, periapsis ,inclination, Rstar, Mstar1, Mstar2, iphase2, semimajor2, orbitalperiod2, eccentricity2, periapsis2 ,inclination2, Mass3, feature,wind_vel,units=units, method_=method_,extended_binsize=extended_binsize)
     
@@ -3126,7 +3130,7 @@ def fit_spiral_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarm
         return chi_squared
         
     #............................................ PS implementation
-    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "spiral",load_directly=load_directly)
+    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "bounds_spiral",load_directly=load_directly)
     best_params_list = []
     chi_list = []
     
@@ -3242,7 +3246,7 @@ def fit_spiral_ls(x_data, y_data, y_err=0, units="keV", method_="extended", exte
         print("The number of time points does not allow an extended approach. Changing to discrete")
         method_ = "discrete"
     #............................................LS implementation
-    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "spiral",load_directly=load_directly)
+    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "bounds_spiral",load_directly=load_directly)
     
     model_func = lambda x_data, iphase_spiral, semimajor_spiral, b, omega, inclination_spiral, feature: _spiral(x_data,  iphase_spiral, semimajor_spiral, b, omega, inclination_spiral, feature, units=units, method_=method_,extended_binsize=extended_binsize)
     
@@ -3424,7 +3428,7 @@ def _spiral_orbit(x_data, iphase_orbit, semimajor_orbit, orbitalperiod, eccentri
         minsizebin_spiral = min(size_phase_bin_spiral)
         maxph_spiral = max(phbins_spiral[-1])
         
-        phase_spiral = np.arange(0,maxph_spiral,minsizebin_spiral/10)
+        phase_spiral = np.arange(0,maxph_spiral,max(minsizebin_spiral/10,maxph_spiral/100000))
         
         R_spiral = semimajor_spiral * np.exp(b * 2 * np.pi * phase_spiral)
         vdop_spiral = -R_spiral * Rstar* rsun_m * omega * np.sin(2 * np.pi * phase_spiral ) * np.sin(2 * np.pi * inclination_spiral/360)
@@ -3556,7 +3560,7 @@ def fit_spiral_in_orbit_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=10
         return chi_squared
         
 #............................................ PS implementation
-    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "spiral_orbit",load_directly=load_directly)
+    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "bounds_spiral_orbit",load_directly=load_directly)
     best_params_list = []
     chi_list = []
     
@@ -3688,7 +3692,7 @@ def fit_spiral_in_orbit_ls(x_data, y_data, y_err=0, units="keV", method_="extend
         print("The number of time points does not allow an extended approach. Changing to discrete")
         method_ = "discrete"
     #............................................ LS implementation
-    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "spiral_orbit",load_directly=load_directly)
+    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "bounds_spiral_orbit",load_directly=load_directly)
     
     model_func = lambda x_data,iphase_orbit, semimajor_orbit, orbitalperiod, eccentricity, periapsis, inclination_orbit, Rstar, Mstar1, Mstar2, iphase_spiral, semimajor_spiral, b, omega, inclination_spiral, feature: _spiral_orbit( x_data,iphase_orbit, semimajor_orbit, orbitalperiod, eccentricity, periapsis, inclination_orbit, Rstar, Mstar1, Mstar2, iphase_spiral, semimajor_spiral, b, omega, inclination_spiral, feature, units=units, method_=method_, extended_binsize=extended_binsize)
     
@@ -3967,7 +3971,7 @@ def fit_nh_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=200, swarmsize=
          
         return chi_squared
 #............................................PS implementation
-    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "nh",load_directly=load_directly)
+    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "bounds_nh",load_directly=load_directly)
     best_params_list = []
     chi_list = []
 
