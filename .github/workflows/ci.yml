@@ -1,5 +1,3 @@
-name: CI
-
 on:
   push:
     branches:
@@ -8,10 +6,10 @@ on:
     branches:
       - 'main/test'
 
-
 jobs:
   test:
     runs-on: ubuntu-latest
+
     strategy:
       matrix:
         python-version: [3.8, 3.9]
@@ -28,25 +26,15 @@ jobs:
     - name: Install dependencies
       run: |
         pip install --upgrade pip
+        pip install --upgrade xraybinaryorbit
+        pip install pytest>=6.0 pytest-xvfb
         pip install -r requirements.txt
-        pip install xraybinaryorbit pytest>=6.0
-
-    - name: Install Xvfb
-      run: sudo apt-get install -y xvfb
-
-    - name: Start Xvfb
-      run: Xvfb :99 -screen 0 1024x768x24 &
-      env:
-        DISPLAY: :99
 
     - name: Clear pytest cache
-      run: pytest --cache-clear
+      run: pytest --cache-clear    
 
-    - name: Run tests
-      run: |
-        pytest test/ --verbose --junitxml=pytest_results.xml
-      env:
-        DISPLAY: :99
+    - name: Run tests with Xvfb
+      run: pytest test/ --verbose --junitxml=pytest_results.xml
 
     - name: Upload test results
       if: always()
