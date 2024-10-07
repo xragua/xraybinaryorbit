@@ -14,14 +14,14 @@ jobs:
 
     strategy:
       matrix:
-        python-version: [3.8, 3.9]  # Valid Python versions
+        python-version: [3.8, 3.9]
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3  # Updated action
+      uses: actions/checkout@v3
 
     - name: Set up Python
-      uses: actions/setup-python@v4  # Updated action
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
 
@@ -32,11 +32,26 @@ jobs:
         pip install pytest>=6.0
         pip install -r requirements.txt
 
-    # Clear pytest cache after installing dependencies
+    - name: Install Xvfb
+      run: sudo apt-get install -y xvfb
+
+    - name: Start Xvfb
+      run: Xvfb :99 -screen 0 1024x768x24 &
+      env:
+        DISPLAY: :99
+
     - name: Clear pytest cache
       run: pytest --cache-clear    
 
     - name: Run tests
       run: |
-        pytest --verbose
+        pytest test/ --verbose --junitxml=pytest_results.xml
+      env:
+        DISPLAY: :99
 
+    - name: Upload test results
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: pytest-results
+        path: pytest_results.xml
