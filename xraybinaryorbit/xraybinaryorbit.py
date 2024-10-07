@@ -562,68 +562,6 @@ def _manage_parameters(param_list, name, load_directly=False):
 
 #................................................... Easy way to manage bounds in fitting functions
 
-def _load_bounds_to_interface(param_list, lower_bounds, upper_bounds, name):
-    """
-    Create a graphical user interface (GUI) for inputting and updating lower and upper bounds for a list of parameters.
-
-    This function displays a Tkinter-based GUI where users can enter or modify both the lower and upper bounds for
-    a given list of parameters. It pre-populates the input fields with the previously provided `lower_bounds` and
-    `upper_bounds` values. Upon submission, the new bounds are saved and the GUI is closed.
-
-    Parameters
-    ----------
-    param_list : list of str
-        A list of parameter names for which the bounds are to be set.
-    lower_bounds : list of float
-        The initial lower bounds for the parameters, used to pre-fill the corresponding input fields.
-    upper_bounds : list of float
-        The initial upper bounds for the parameters, used to pre-fill the corresponding input fields.
-    name : str
-        The name for the form, used as the title of the Tkinter window.
-
-    Returns
-    -------
-    None
-        The function updates the global variables `lower_bounds_list` and `upper_bounds_list` with the new values
-        entered by the user.
-    """
-    
-    global lower_bounds_list, upper_bounds_list
-    
-    lower_bounds_list = lower_bounds
-    upper_bounds_list = upper_bounds
-
-    root = tk.Tk()
-    root.title("Bounds Input Form")
-
-    # Create entry fields for lower bounds
-    lower_entries = {}
-    for i, param in enumerate(param_list):
-        tk.Label(root, text=f"Lower {param}").grid(row=i, column=0)
-        lower_entries[param] = tk.Entry(root)
-        lower_entries[param].insert(0, str(lower_bounds_list[i]))  # Insert previous value
-        lower_entries[param].grid(row=i, column=1)
-
-    # Create entry fields for upper bounds
-    upper_entries = {}
-    for i, param in enumerate(param_list):
-        tk.Label(root, text=f"Upper {param}").grid(row=i, column=2)
-        upper_entries[param] = tk.Entry(root)
-        upper_entries[param].insert(0, str(upper_bounds_list[i]))  # Insert previous value
-        upper_entries[param].grid(row=i, column=3)
-
-    # Create submit button
-    def submit_form_bounds():
-        global lower_bounds_list, upper_bounds_list
-        lower_bounds_list = [float(lower_entries[param].get()) for param in param_list]
-        upper_bounds_list = [float(upper_entries[param].get()) for param in param_list]
-        root.withdraw()
-        root.destroy() # Close the root window after submitting the form
-
-    submit_button = tk.Button(root, text="Submit", command=submit_form_bounds)
-    submit_button.grid(row=len(param_list), columnspan=4)
-
-    root.mainloop()
     
 def _load_bounds_to_interface(param_list, lower_bounds, upper_bounds, name):
     """
@@ -644,7 +582,6 @@ def _load_bounds_to_interface(param_list, lower_bounds, upper_bounds, name):
         The name of the form or window, used as the title of the Tkinter window.
 
     """
-
 
     global lower_bounds_list, upper_bounds_list
     
@@ -2168,7 +2105,7 @@ def _conic_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periaps
         minsizebin = min(size_phase_bin)
         maxph = max(phbins[-1])
         
-        phase = np.arange(0,maxph+10,minsizebin/10)
+        phase = np.arange(0,maxph+10,max(minsizebin/10,maxph/100000))
         _,_,W = _orbital_phase_to_time(phase ,iphase, semimajor, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2,  precision=0.01)
         
         t_to_phase_puntual = np.mean(t , axis=1)
@@ -2300,7 +2237,7 @@ def fit_orbit_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarms
         return chi_squared
 
     #............................................PS implementation
-    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "orbit_bounds",load_directly=load_directly)
+    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "orbit",load_directly=load_directly)
     best_params_list = []
     chi_list = []
     
@@ -2433,7 +2370,7 @@ def fit_orbit_ls(x_data, y_data, y_err=0, units="keV", method_="extended", exten
         method_ = "discrete"
         
     #............................................LS implementation
-    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "orbit_bounds",load_directly=load_directly)
+    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "orbit",load_directly=load_directly)
     
     model_func = lambda x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis, inclination, Rstar, Mstar1, Mstar2,wind_vel, feature: _conic_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis, inclination, Rstar, Mstar1, Mstar2, wind_vel,feature, units=units, method_=method_,extended_binsize=extended_binsize)
     
@@ -2764,7 +2701,7 @@ def fit_disc_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarmsi
         return chi_squared
         
     #............................................PS implementation
-    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "disc_bounds",load_directly=load_directly)
+    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "disc",load_directly=load_directly)
     best_params_list = []
     chi_list = []
     
@@ -2918,7 +2855,7 @@ def fit_disc_ls(x_data, y_data, y_err=0, units="keV", method_="extended", extend
         method_ = "discrete"
         
     #............................................LS implementation
-    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "disc_bounds",load_directly=load_directly)
+    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "disc",load_directly=load_directly)
     
     model_func = lambda x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis ,inclination, Rstar, Mstar1, Mstar2, iphase2, semimajor2, orbitalperiod2, eccentricity2, periapsis2 ,inclination2, Mass3, feature, wind_vel : _disc_in_orbit(x_data,  iphase, semimajor, orbitalperiod, eccentricity, periapsis ,inclination, Rstar, Mstar1, Mstar2, iphase2, semimajor2, orbitalperiod2, eccentricity2, periapsis2 ,inclination2, Mass3, feature,wind_vel,units=units, method_=method_,extended_binsize=extended_binsize)
     
@@ -3066,7 +3003,7 @@ def _spiral(x_data, iphase_spiral, semimajor_spiral, b, omega, inclination_spira
         minsizebin = min(size_phase_bin)
         maxph = max(phbins[-1])
         
-        phase = np.arange(0,maxph,minsizebin/10)
+        phase = np.arange(0,maxph,max(minsizebin/10,maxph/100000))
         
         vdop_bin=[]
         
@@ -3189,7 +3126,7 @@ def fit_spiral_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarm
         return chi_squared
         
     #............................................ PS implementation
-    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "spiral_bounds",load_directly=load_directly)
+    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "spiral",load_directly=load_directly)
     best_params_list = []
     chi_list = []
     
@@ -3455,7 +3392,7 @@ def _spiral_orbit(x_data, iphase_orbit, semimajor_orbit, orbitalperiod, eccentri
         minsizebin = min(size_phase_bin_orbit)
         maxph = max(ph_from_t)
             
-        phase = np.arange(0,maxph+10,minsizebin/10)
+        phase = np.arange(0,maxph+10,max(minsizebin/10,maxph/100000))
         _,_,W = _orbital_phase_to_time(phase ,iphase_orbit, semimajor_orbit, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2,  precision=0.01)
             
         t_to_phase_puntual = np.mean(t , axis=1)
