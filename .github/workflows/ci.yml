@@ -11,7 +11,6 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
         python-version: [3.8, 3.9]
@@ -28,9 +27,8 @@ jobs:
     - name: Install dependencies
       run: |
         pip install --upgrade pip
-        pip install --upgrade xraybinaryorbit
-        pip install pytest>=6.0
         pip install -r requirements.txt
+        pip install xraybinaryorbit pytest>=6.0
 
     - name: Install Xvfb
       run: sudo apt-get install -y xvfb
@@ -41,7 +39,7 @@ jobs:
         DISPLAY: :99
 
     - name: Clear pytest cache
-      run: pytest --cache-clear    
+      run: pytest --cache-clear
 
     - name: Run tests
       run: |
@@ -55,3 +53,4 @@ jobs:
       with:
         name: pytest-results
         path: pytest_results.xml
+
