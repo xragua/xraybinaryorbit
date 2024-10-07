@@ -1,8 +1,5 @@
 import pytest
 import numpy as np
-import sys
-
-sys.path.append('/Users/graci/Desktop/git/xraybinaryorbit/xraybinaryorbit')
 from xraybinaryorbit import *
 
 # Test for doppler_disc_theoretical with keV units
