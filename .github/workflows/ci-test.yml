@@ -2,12 +2,6 @@ name: Run CI when ci.yml changes
 
 on:
   push:
-    paths:
-      - .github/workflows/ci-test.yml
-  pull_request:
-    paths:
-      - .github/workflows/ci-test.yml
-
 jobs:
   test:
     runs-on: ubuntu-latest
