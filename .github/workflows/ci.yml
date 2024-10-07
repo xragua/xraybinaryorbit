@@ -27,15 +27,14 @@ jobs:
       run: |
         pip install --upgrade pip
         pip install --upgrade xraybinaryorbit
-        pip install pytest>=6.0 pytest-xvfb
+        pip install pytest>=6.0 #pytest-xvfb
         pip install -r requirements.txt
 
-    - name: Clear pytest cache
-      run: pytest --cache-clear    
+    #- name: Clear pytest cache
+      #run: pytest --cache-clear    
 
     - name: Run tests with Xvfb
-      run: ls -lrt
-      #run: cd test & pytest --verbose --junitxml=pytest_results.xml
+      run: cd test & pytest --verbose --junitxml=pytest_results.xml
 
     - name: Upload test results
       if: always()
