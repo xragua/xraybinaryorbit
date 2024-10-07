@@ -1,4 +1,4 @@
-oname: Run CI when ci.yml changes
+name: Run CI-test
 
 on:
   push:
