@@ -1,0 +1,2 @@
+iphase,semimajor,orbitalperiod,eccentricity,periapsis,inclination,iphase_spiral,semimajor_spiral,b,omega,inclination_spiral,Rstar,Mstar1,Mstar2,wind_vel,feature
+0.0,2.0,2.1,0.2,100.0,67.0,0.0,10.0,-0.01,0.001,87.0,20.0,21.0,1.5,100.0,6.4

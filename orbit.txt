@@ -1,2 +1,0 @@
-iphase,semimajor,orbitalperiod,eccentricity,periapsis,inclination,Rstar,Mstar1,Mstar2,wind_vel,feature
-0.1,2.0,1.4,0.2,200.0,78.0,22.0,21.0,1.5,600.0,6.4
