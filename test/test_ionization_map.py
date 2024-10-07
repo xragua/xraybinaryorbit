@@ -1,10 +1,4 @@
 import pytest
-import numpy as np
-import os
-import sys
-import pandas as pd
-
-sys.path.append('/Users/graci/Desktop/git/xraybinaryorbit/xraybinaryorbit')
 from xraybinaryorbit import *
 
 

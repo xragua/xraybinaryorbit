@@ -1,12 +1,6 @@
 import pytest
-import numpy as np
-import sys
-import pandas as pd
-
-# Adding the system path for module imports
-sys.path.append('/Users/graci/Desktop/git/xraybinaryorbit/xraybinaryorbit')
 from xraybinaryorbit import *
-from xraybinaryorbit import _manage_parameters, _orbital_phase_to_time, _orbital_time_to_phase, _manage_bounds
+#from xraybinaryorbit import _manage_parameters, _orbital_phase_to_time, _orbital_time_to_phase, _manage_bounds
 
 # Test data
 x = np.array([[7.97000557e+08, 7.97002557e+08], [7.97004557e+08, 7.97006557e+08]])

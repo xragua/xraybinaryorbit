@@ -1,8 +1,4 @@
 import pytest
-import numpy as np
-import sys
-
-sys.path.append('/Users/graci/Desktop/git/xraybinaryorbit/xraybinaryorbit')
 from xraybinaryorbit import *
 
 # Fake light curve generation

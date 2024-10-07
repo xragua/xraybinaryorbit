@@ -1,8 +1,4 @@
 import pytest
-import numpy as np
-import sys
-
-sys.path.append('/Users/graci/Desktop/git/xraybinaryorbit/xraybinaryorbit')
 from xraybinaryorbit import *
 
 # Test for doppler_spiral_in_orbit_theoretical with keV units
