@@ -25,13 +25,9 @@ jobs:
         pip install --upgrade xraybinaryorbit
         pip install pytest>=6.0 #pytest-xvfb
         pip install -r requirements.txt
-    - name: ls
-      run: pwd ; ls
-    #- name: Clear pytest cache
-    # run: pytest --rootdir=./test/ -cache-clear    
 
-    - name: Run tests with Xvfb
-      run: cd test; ls; pytest --verbose --junitxml=pytest_results.xml
+    - name: Run tests
+      run: cd test; pytest --verbose --junitxml=pytest_results.xml
 
     - name: Upload test results
       if: always()
