@@ -32,8 +32,8 @@ jobs:
         pip install pytest>=6.0 #pytest-xvfb
         pip install -r requirements.txt
 
-    - name: Clear pytest cache
-      run: pytest --rootdir=./test/ -cache-clear    
+    #- name: Clear pytest cache
+    # run: pytest --rootdir=./test/ -cache-clear    
 
     - name: Run tests with Xvfb
       run: pytest --rootdir=./test/ --verbose --junitxml=pytest_results.xml
