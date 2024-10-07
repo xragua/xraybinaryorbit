@@ -1,10 +1,12 @@
+name: Run CI when ci.yml changes
+
 on:
   push:
-    branches:
-      - 'main/test'
+    paths:
+      - .github/workflows/ci-test.yml
   pull_request:
-    branches:
-      - 'main/test'
+    paths:
+      - .github/workflows/ci-test.yml
 
 jobs:
   test:
