@@ -34,7 +34,7 @@ jobs:
       run: pytest --cache-clear    
 
     - name: Run tests with Xvfb
-      run: pytest test/ --verbose --junitxml=pytest_results.xml
+      run: cd test & pytest --verbose --junitxml=pytest_results.xml
 
     - name: Upload test results
       if: always()
