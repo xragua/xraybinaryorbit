@@ -1535,10 +1535,112 @@ def absorption_column_through_orbit_theoretical(resolution=0.01, show_plot=True,
 
         plt.tight_layout()
         
-        plt.savefig("NH_through_the_orbir.png")
+        plt.savefig("NH_through_the_orbit.png")
     #...................................................
     
     return time, th, nh
+         
+         
+
+# DENSITY AND LOGCHI #############################################################################
+
+def density_and_ionizationpar_in_ophase_theoretical(resolution=0.01, size=10, show_plot=True, load_directly=False):
+    """
+    Calculates and visualizes the density and ionization parameter (log(ξ)) encountered by radiation emitted
+    at each orbital phase as it travels towards an observer. Assumes a spherically distributed, neutral stellar
+    wind based on the CAK (Castor, Abbott, Klein) model. The density profile and ionization parameter are calculated
+    along the path from a neutron star (NS) through the stellar wind of its companion.
+
+    Parameters
+    ----------
+    resolution : float, optional
+        The resolution for the phase array (orbital phase). Default is 0.01.
+    size : float, optional
+        The scaling factor for the size of the path from the NS through the stellar wind. Determines how far into
+        the wind the path is extended. Default is 10.
+    show_plot : bool, optional
+        If True, displays and saves plots of the density, ionization parameter, and orbital path. Default is True.
+    load_directly : bool, optional
+        If True, attempts to load previously saved orbital parameters from a file. If False, prompts the user to
+        input the parameters. Default is False.
+
+    Returns
+    -------
+    z : array-like
+        Array of distances along the path from the neutron star to the observer (in cm).
+    density : array-like
+        Density profile of the stellar wind (in cm$^{-3}$) along the path.
+    chi : array-like
+        Ionization parameter (log(ξ)) calculated at each point along the path.
+
+    """
+
+    parameter_names = [ "orb_phase", "luminosity","semimajor", "eccentricity", "periapsis", "inclination","Rstar", "Mstar1", "Mstar2", "wind_infinite_velocity", "Mass_loss_rate", "beta"]
+    
+    fixed_values = _manage_parameters(parameter_names, "den_chi_orbphase",load_directly=load_directly)
+    orb_phase, luminosity, semimajor, eccentricity, periapsis, inclination ,Rstar, Mstar1, Mstar2, wind_infinite_velocity, Mass_loss_rate, beta = fixed_values
+
+    th = np.arange(0, 1, resolution)
+    abar = semimajor * max(Mstar1, Mstar2) / (Mstar1 + Mstar2)#BARICENTER CORRECTION
+    
+    luminosity_ = luminosity * 1e+32
+    M_dot_grams = Mass_loss_rate * msun / (365 * 24 * 60 * 60)  # Mass loss rate in grams/s
+    vinf_cm_s = wind_infinite_velocity * 100000  # Wind velocity in cm/s
+    Rstar_cm = Rstar * rsun_cm  # Convert stellar radius to cm
+
+    # Calculate orbital radius
+    Rorb_plot = (abar * (1 - eccentricity**2) / (1 + eccentricity * np.cos((th - periapsis / 360) * 2 * np.pi))) * Rstar * rsun_cm  # In cm
+    Rorb = (abar * (1 - eccentricity**2) / (1 + eccentricity * np.cos((orb_phase - periapsis / 360) * 2 * np.pi))) * Rstar * rsun_cm  # In cm
+    
+    # Create path from the NS to some distance towards the observer (z=distrance travelled by the emitted radiation fromm the NS towards the observer)
+    z = np.arange(0, Rorb * size, Rorb * size / 10000)  # Range for distance in the wind
+
+    # Calculate the angle `alpha`
+    alpha = np.arccos(np.cos(orb_phase * 2 * np.pi) * np.cos(inclination * 2 * np.pi / 360))
+    
+    # Calculate x (distance from z points to donnor)
+    cosalpha = np.round(np.cos(alpha),10)
+    x = np.sqrt(Rorb**2 + z**2 - 2 * Rorb * z * cosalpha)
+    
+    # Velocity and density in the wind depending on distance to the donnor (depending on distance travelled from NS)
+    v = (vinf_cm_s * (1 - Rstar_cm / x)**beta)
+    density = (M_dot_grams / (4 * np.pi * v * x**2 * mp * mu))  # Renamed from rho to density
+    
+    # Calculate the chi parameter for each z
+    chi = np.log(luminosity_ / (density * 4 * np.pi * abs(z)**2))
+    #...................................................
+    if show_plot:
+    
+        fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(15, 5))
+        
+        ax1.errorbar(z/Rstar_cm, density,  label='Data', color='b')
+        ax1.set_xlabel("Path from NS (R*)")
+        ax1.set_ylabel("Density cm$^{-3}$)")
+        ax1.legend()
+        ax1.set_xscale("log")
+        ax1.set_yscale("log")
+        
+        ax2.errorbar(z/Rstar_cm, chi,  label='Data', color='b')
+        ax2.set_xlabel("Path from NS (R*)")
+        ax2.set_ylabel("Ionization Parameter (log(ξ))")
+        ax2.set_xscale("log")
+        ax2.set_yscale("log")
+        ax2.legend()
+
+        ax3 = plt.subplot(1, 3, 3, projection='polar')
+        ax3.plot(th * 2 * np.pi, Rorb_plot,"b")
+        ax3.set_theta_zero_location("N")
+        ax3.set_theta_direction(-1)
+        ax3.set_rlabel_position(90)
+
+        plt.tight_layout()
+        
+        plt.savefig("density_and_chi_orbital_phase.png")
+    #...................................................
+    
+    return z, density, chi
+         
+         
          
 # Ionization parameter map ###############################################################
 
