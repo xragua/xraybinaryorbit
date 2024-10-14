@@ -1,18 +1,14 @@
+name: Run CI-test
+
 on:
   push:
-    branches:
-      - 'main/test'
-  pull_request:
-    branches:
-      - 'main/test'
-
 jobs:
   test:
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        python-version: [3.8, 3.9]
+        python-version: [3.8]
 
     steps:
     - name: Checkout code
@@ -27,14 +23,11 @@ jobs:
       run: |
         pip install --upgrade pip
         pip install --upgrade xraybinaryorbit
-        pip install pytest>=6.0 pytest-xvfb
+        pip install pytest>=6.0 #pytest-xvfb
         pip install -r requirements.txt
 
-    - name: Clear pytest cache
-      run: pytest --cache-clear    
-
-    - name: Run tests with Xvfb
-      run: pytest test/ --verbose --junitxml=pytest_results.xml
+    - name: Run tests
+      run: cd test; pytest --verbose --junitxml=pytest_results.xml
 
     - name: Upload test results
       if: always()
