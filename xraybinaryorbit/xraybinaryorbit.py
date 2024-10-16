@@ -66,11 +66,13 @@ rsun_cm = 696340*1000*100 #cm
 kev_ams = 1.23984193
 
 na = 6.02214076*10**23/1.00797
+mp=0.5
 
 #Helper functions
 ##########################################################################################
 def _advise():
-    print("Nice! we are working on getting your parameters. It will take a while... please, grab a cup of coffe, go for a walk, go on some vacations... we might finish by Chistmast, unless is Christmast now, if thats the case, by Easter.")
+    print("This function may take a significant amount of time to complete. Please consider starting with a smaller swarm size (swarmsize) and fewer iterations (maxiter). You can gradually increase these parameters in subsequent runs if the results are not satisfactory enough.")
+
 
 def list_functions():
     print("""
@@ -1604,7 +1606,7 @@ def density_and_ionization_orbital_phase_theoretical(resolution=0.01, size=10, s
     
     # Velocity and density in the wind depending on distance to the donnor (depending on distance travelled from NS)
     v = (vinf_cm_s * (1 - Rstar_cm / x)**beta)
-    density = (M_dot_grams / (4 * np.pi * v * x**2 * mp * mu))  # Renamed from rho to density
+    density = (M_dot_grams / (4 * np.pi * v * x**2  * 1.67E-24* 0.5))  # Renamed from rho to density (mu, mp)
     
     # Calculate the chi parameter for each z
     chi = np.log(luminosity_ / (density * 4 * np.pi * abs(z)**2))
