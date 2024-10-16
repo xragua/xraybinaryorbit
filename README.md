@@ -186,7 +186,7 @@ absorption_column_through_orbit_theoretical
     - NH1 (array-like): Absorption column density (NH1, x 10^22 cm^-2) through the orbit.
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-density_and_ionizatio_orbital_phase_theoretical
+density_and_ionization_orbital_phase_theoretical
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     Calculates and visualizes the density and ionization parameter (log(ξ)) encountered by radiation emitted
     at each orbital phase as it travels towards an observer. Assumes a spherically distributed, neutral stellar
