@@ -1,0 +1,23 @@
+Metadata-Version: 2.1
+Name: xraybinaryorbit
+Version: 0.2.8
+Summary: A package for x-ray binary orbital modulations.
+Home-page: https://github.com/xragua/xraybinaryorbit/
+Download-URL: https://github.com/xragua/xraybinaryorbit/archive/refs/tags/one.tar.gz
+Author: LAEX
+Author-email: graciela.sanjurjo@ua.es
+License: MIT
+Keywords: astronomy,x-ray,binary,orbit
+Classifier: Development Status :: 1 - Planning
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+License-File: LICENSE
+License-File: LICENSE.txt
+Requires-Dist: numpy
+Requires-Dist: pandas
+Requires-Dist: scipy
+Requires-Dist: pyswarm
+Requires-Dist: matplotlib
+Requires-Dist: astropy

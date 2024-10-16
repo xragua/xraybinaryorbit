@@ -27,6 +27,7 @@ def test_density_and_ionization_orbital_phase_theoretical_high_resolution():
     assert len(density) >= 1000, "The density array should have at least 1000 points with higher resolution."
     assert len(chi) >= 1000, "The chi array should have at least 1000 points with higher resolution."
     assert density.min() >= 0, "The density values should be non-negative."
+    assert np.all(np.isfinite(chi)), "All chi values should be finite."
 
 
 # Test for plot generation (it should not raise any exceptions)
@@ -48,4 +49,5 @@ def test_density_and_ionization_orbital_phase_theoretical_custom_size():
     # Assert outputs
     assert len(z) == len(density) == len(chi), "The output arrays (z, density, chi) should have the same length."
     assert density.min() >= 0, "The density values should be non-negative."
+    assert np.all(np.isfinite(chi)), "All chi values should be finite."
     assert max(z) > 0, "The maximum z value should be greater than 0."

@@ -1504,7 +1504,7 @@ def absorption_column_through_orbit_theoretical(resolution=0.01, show_plot=True,
 
         def integrand(z):
         
-            alpha = np.arccos(np.cos(th[i]*2*np.pi)*np.sin(inclination*2*np.pi/360))
+            alpha = np.arccos(np.cos(th[i]*2*np.pi)*np.cos(inclination*2*np.pi/360))
             x = np.sqrt(Rorb**2+z**2-2*Rorb*z*np.cos(alpha))
             v = (vinf_cm_s*(1-Rstar_cm/x)**beta)
             rho = (M_dot_grams/(4 * np.pi * v * x**2))
@@ -1599,7 +1599,7 @@ def density_and_ionization_orbital_phase_theoretical(resolution=0.01, size=10, s
     z = np.arange(0, Rorb * size, Rorb * size / 10000)  # Range for distance in the wind
 
     # Calculate the angle `alpha`
-    alpha = np.arccos(np.cos(orb_phase * 2 * np.pi) * np.sin(inclination * 2 * np.pi / 360))
+    alpha = np.arccos(np.cos(orb_phase * 2 * np.pi) * np.cos(inclination * 2 * np.pi / 360))
     
     # Calculate x (distance from z points to donnor)
     cosalpha = np.round(np.cos(alpha),10)
@@ -3939,7 +3939,7 @@ def _nh_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis,
 
             def integrand(z):
             
-                alpha = np.arccos(np.cos(phase * 2 * np.pi) * np.sin(inclination * 2 * np.pi / 360))
+                alpha = np.arccos(np.cos(phase * 2 * np.pi) * np.cos(inclination * 2 * np.pi / 360))
                 x = np.sqrt(Rorb**2 + z**2 - 2 * Rorb * z * np.cos(alpha))
                 v = vinf_cm_s * (1 - Rstar_cm / x)**beta
                 rho = M_dot_grams / (4 * np.pi * v * x**2)
