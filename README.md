@@ -186,6 +186,35 @@ absorption_column_through_orbit_theoretical
     - NH1 (array-like): Absorption column density (NH1, x 10^22 cm^-2) through the orbit.
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+density_and_ionization_orbital_phase_theoretical
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    Calculates and visualizes the density and ionization parameter (log(ξ)) encountered by radiation emitted
+    at each orbital phase as it travels towards an observer. Assumes a spherically distributed, neutral stellar
+    wind based on the CAK (Castor, Abbott, Klein) model. The density profile and ionization parameter are calculated
+    along the path from a neutron star (NS) through the stellar wind of its companion.
+
+    Parameters:
+    resolution : float, optional
+        The resolution for the phase array (orbital phase). Default is 0.01.
+    size : float, optional
+        The scaling factor for the size of the path from the NS through the stellar wind. Determines how far into
+        the wind the path is extended. Default is 10.
+    show_plot : bool, optional
+        If True, displays and saves plots of the density, ionization parameter, and orbital path. Default is True.
+    load_directly : bool, optional
+        If True, attempts to load previously saved orbital parameters from a file. If False, prompts the user to
+        input the parameters. Default is False.
+
+    Returns:
+    z : array-like
+        Array of distances along the path from the neutron star to the observer (in cm).
+    density : array-like
+        Density profile of the stellar wind (in cm$^{-3}$) along the path.
+    chi : array-like
+        Ionization parameter (log(ξ)) calculated at each point along the path.
+    
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ionization_map_phase
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
