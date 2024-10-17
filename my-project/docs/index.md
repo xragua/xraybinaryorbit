@@ -1,4 +1,5 @@
 # xraybinaryorbit
+LAEX 
 
 **xraybinaryorbit** is a user-friendly Python package designed to facilitate the analysis of orbital modulations in X-ray binaries.
 
@@ -14,8 +15,8 @@ If you need something or have any doubts, please, write me: graciela.sanjurjo@ua
 
 You can install the package directly from PyPI using `pip`:
 pip install xraybinaryorbit 
-or dowload the code from (https://github.com/xragua/xraybinaryorbit/releases/tag/0.2.9)
-In (https://github.com/xragua/xraybinaryorbit/tree/main/examples) some examples of their usage are presented.
+or dowload the code from https://github.com/xragua/xraybinaryorbit/releases/tag/0.2.9
+In https://github.com/xragua/xraybinaryorbit/tree/main/examples some examples of their usage are presented.
 
 
 ## FUNCTIONS:
