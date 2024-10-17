@@ -19,9 +19,9 @@ Or download the code from [here](https://github.com/xragua/xraybinaryorbit/relea
 Some examples of their usage are presented [here](https://github.com/xragua/xraybinaryorbit/tree/main/examples).
 
 
-## FUNCTIONS:
+## FUNCTIONS
 
-###Theoretical Functions:
+###Theoretical Functions
 
 These functions will enable us to model the theoretical behavior of various astrophysical features influenced by orbital modulations with the aim of comparing our observational results with the expected.
 
@@ -223,7 +223,7 @@ These functions will enable us to model the theoretical behavior of various astr
     
     The increased orbital speed at periastron is primarily due to the conservation of angular momentum, which dictates that as the compact object moves closer to the central star, it must travel faster to maintain the total angular momentum of the system. This relationship is further influenced by Kepler’s laws of planetary motion, which describe how objects sweep out equal areas in equal times and the gravitational force between two bodies, which strengthens as they approach each other and weakens as they move apart.
 ----------------------------------------------------------------------------------
-###Fitting functions
+###Fitting 
 
 If we have real data from a feature (NS spin period, emission line...) affected by Doppler or absorption or stellar density affected by orbital modulations we can recover the orbital parameters with the following functions. Keep in mind that "_ps" referes to particle swarm while "_ls" to least squares fitting approaches. "_ls" might not allways converge and "_ps" might take a lot of time to complete.
 
@@ -491,7 +491,7 @@ If we have real data from a feature (NS spin period, emission line...) affected 
     - r_squared: Coefficient of determination (R-squared) indicating the quality of fit.
 
 ----------------------------------------------------------------------------------
-### Timing related functions
+### Timing related 
 
 In this section we collect some usefull timing functions. From them we can obtain NS pulses in a sliding window approach allowing us to observe if Doppler modulations are present and recover the orbital parameters using fitting functions.
 

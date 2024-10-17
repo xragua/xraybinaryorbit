@@ -44,9 +44,9 @@
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#functions">FUNCTIONS:</a>
+    <li class="toctree-l2"><a class="reference internal" href="#functions">FUNCTIONS</a>
         <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#theoretical-functions">Theoretical Functions:</a>
+    <li class="toctree-l3"><a class="reference internal" href="#theoretical-functions">Theoretical Functions</a>
         <ul>
     <li class="toctree-l4"><a class="reference internal" href="#doppler_orbit_theoretical">doppler_orbit_theoretical</a>
     </li>
@@ -70,7 +70,7 @@
     </li>
         </ul>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#fitting-functions">Fitting functions</a>
+    <li class="toctree-l3"><a class="reference internal" href="#fitting">Fitting</a>
         <ul>
     <li class="toctree-l4"><a class="reference internal" href="#fit_orbit_ps">fit_orbit_ps</a>
     </li>
@@ -92,7 +92,7 @@
     </li>
         </ul>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#timing-related-functions">Timing related functions</a>
+    <li class="toctree-l3"><a class="reference internal" href="#timing-related">Timing related</a>
         <ul>
     <li class="toctree-l4"><a class="reference internal" href="#hr">hr</a>
     </li>
@@ -148,8 +148,8 @@
 <p>You can install the package directly from PyPI using pip: **pip install xraybinaryorbit **</p>
 <p>Or download the code from <a href="https://github.com/xragua/xraybinaryorbit/releases/tag/0.2.9">here</a>.</p>
 <p>Some examples of their usage are presented <a href="https://github.com/xragua/xraybinaryorbit/tree/main/examples">here</a>.</p>
-<h2 id="functions">FUNCTIONS:</h2>
-<h3 id="theoretical-functions">Theoretical Functions:</h3>
+<h2 id="functions">FUNCTIONS</h2>
+<h3 id="theoretical-functions">Theoretical Functions</h3>
 <p>These functions will enable us to model the theoretical behavior of various astrophysical features influenced by orbital modulations with the aim of comparing our observational results with the expected.</p>
 <h4 id="doppler_orbit_theoretical">doppler_orbit_theoretical</h4>
 <hr />
@@ -354,7 +354,7 @@ Returns:
 The increased orbital speed at periastron is primarily due to the conservation of angular momentum, which dictates that as the compact object moves closer to the central star, it must travel faster to maintain the total angular momentum of the system. This relationship is further influenced by Kepler’s laws of planetary motion, which describe how objects sweep out equal areas in equal times and the gravitational force between two bodies, which strengthens as they approach each other and weakens as they move apart.
 </code></pre>
 <hr />
-<h3 id="fitting-functions">Fitting functions</h3>
+<h3 id="fitting">Fitting</h3>
 <p>If we have real data from a feature (NS spin period, emission line...) affected by Doppler or absorption or stellar density affected by orbital modulations we can recover the orbital parameters with the following functions. Keep in mind that "_ps" referes to particle swarm while "_ls" to least squares fitting approaches. "_ls" might not allways converge and "_ps" might take a lot of time to complete.</p>
 <h4 id="fit_orbit_ps">fit_orbit_ps</h4>
 <hr />
@@ -620,7 +620,7 @@ Outputs:
 - r_squared: Coefficient of determination (R-squared) indicating the quality of fit.
 </code></pre>
 <hr />
-<h3 id="timing-related-functions">Timing related functions</h3>
+<h3 id="timing-related">Timing related</h3>
 <p>In this section we collect some usefull timing functions. From them we can obtain NS pulses in a sliding window approach allowing us to observe if Doppler modulations are present and recover the orbital parameters using fitting functions.</p>
 <h4 id="hr">hr</h4>
 <hr />
@@ -822,5 +822,5 @@ Notes:
 
 <!--
 MkDocs version : 1.6.0
-Build Date UTC : 2024-10-17 13:19:58.526469+00:00
+Build Date UTC : 2024-10-17 13:27:27.068692+00:00
 -->
