@@ -10,6 +10,7 @@ conf.py
 dist/
 index.rst
 make.bat
+Makefile
 
 # Ignore macOS system files
 .DS_Store
