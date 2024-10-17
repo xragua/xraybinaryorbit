@@ -6,6 +6,10 @@ __pycache__/
 # Ignore build artifacts
 build/
 *.egg-info/
+conf.py
+dist/
+index.rst
+make.bat
 
 # Ignore macOS system files
 .DS_Store
