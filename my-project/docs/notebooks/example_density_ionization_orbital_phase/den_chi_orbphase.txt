@@ -1,0 +1,2 @@
+orb_phase,luminosity,semimajor,eccentricity,periapsis,inclination,Rstar,Mstar1,Mstar2,wind_infinite_velocity,Mass_loss_rate,beta
+0.05,1e+36,2.0,0.1,200.0,90.0,10.0,22.0,1.0,1200.0,1e-06,0.8

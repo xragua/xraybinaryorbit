@@ -9,10 +9,11 @@
     <link rel="stylesheet" href="css/theme.css" />
     <link rel="stylesheet" href="css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="css/custom.css" rel="stylesheet" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "xraybinaryorbit";
+        var mkdocs_page_name = "XRAYBINARYORBIT";
         var mkdocs_page_input_path = "index.md";
         var mkdocs_page_url = null;
       </script>
@@ -30,89 +31,49 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
     <div class="wy-side-scroll">
       <div class="wy-side-nav-search">
-          <a href="." class="icon icon-home"> XRAYBINARYORBIT
-        </a><div role="search">
-  <form id ="rtd-search-form" class="wy-form" action="./search.html" method="get">
-      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
-  </form>
-</div>
+          <a href=".">
+          <img src="images/logo.png" class="logo" alt="Logo"/>
+        </a>
       </div>
 
       <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
-                <li class="toctree-l1 current"><a class="reference internal current" href="#">xraybinaryorbit</a>
+                <li class="toctree-l1 current"><a class="reference internal current" href="#">XRAYBINARYORBIT</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#functions">FUNCTIONS</a>
+    <li class="toctree-l2"><a class="reference internal" href="#getting-started">Getting started</a>
         <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#theoretical-functions">Theoretical Functions</a>
-        <ul>
-    <li class="toctree-l4"><a class="reference internal" href="#doppler_orbit_theoretical">doppler_orbit_theoretical</a>
+    <li class="toctree-l3"><a class="reference internal" href="#installation">Installation</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#doppler_spiral_theoretical">doppler_spiral_theoretical</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#doppler_disc_theoretical">doppler_disc_theoretical</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#doppler_spiral_in_orbit_theoretical">doppler_spiral_in_orbit_theoretical</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#density_through_orbit_theoretical">density_through_orbit_theoretical</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#absorption_column_through_orbit_theoretical">absorption_column_through_orbit_theoretical</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#density_and_ionization_orbital_phase_theoretical">density_and_ionization_orbital_phase_theoretical</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#ionization_map_phase">ionization_map_phase</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#orbital_phase_to_time">orbital_phase_to_time</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#orbital_time_to_phase">orbital_time_to_phase</a>
+    <li class="toctree-l3"><a class="reference internal" href="#which-orbital-modulations-are-we-talking-about">Which orbital modulations are we talking about?</a>
     </li>
         </ul>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#fitting">Fitting</a>
-        <ul>
-    <li class="toctree-l4"><a class="reference internal" href="#fit_orbit_ps">fit_orbit_ps</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#fit_orbit_ls">fit_orbit_ls</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#fit_disc_ps">fit_disc_ps</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#fit_disc_ls">fit_disc_ls</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#fit_spiral_ps">fit_spiral_ps</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#fit_spiral_ls">fit_spiral_ls</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#fit_spiral_in_orbit_ps">fit_spiral_in_orbit_ps</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#fit_spiral_in_orbit_ls">fit_spiral_in_orbit_ls</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#fit_nh_ps">fit_nh_ps</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#timing-related">Timing related</a>
-        <ul>
-    <li class="toctree-l4"><a class="reference internal" href="#hr">hr</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#cr">cr</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#rebin_snr">rebin_snr</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#rebin_bins">rebin_bins</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#fold_pulse">fold_pulse</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#period_sliding_window">period_sliding_window</a>
-    </li>
-        </ul>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#references">REFERENCES</a>
     </li>
     </ul>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Notebooks</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="notebooks/example_NS_spin_shape_VelaX1/Pulse_shape_Velax1/">Ns pulse shape in Vela X-1</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="notebooks/example_density_NH_theoretical/Wind_density_and_NH/">Density Through the Orbit and Absorption Column</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="notebooks/example_density_ionization_orbital_phase/density_and_chi_orbital_phase/">Density and Ionization Parameter in the Orbital Path of Radiation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="notebooks/example_doppler_theoretical/Doppler_theoretical_functions/">Doppler Theoretical in four scenarios</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="notebooks/example_fexxv_doppler_shifts_CenX3/Fit_real_line_doppler_shifts/">Fe XXV Doppler Shifts Cen X-3</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="notebooks/example_ionization_map_4U0114%2B65/Ionization_map/">Ionization Map of 4U0114+65</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="notebooks/example_time_phase_relation_theoretical/time_phase_relation/">Time Phase Relation Theoretical</a>
+                  </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="functions/">FUNCTIONS</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="references/">REFERENCES</a>
                 </li>
               </ul>
       </div>
@@ -129,7 +90,7 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="." class="icon icon-home" aria-label="Docs"></a></li>
-      <li class="breadcrumb-item active">xraybinaryorbit</li>
+      <li class="breadcrumb-item active">XRAYBINARYORBIT</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -139,649 +100,30 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="xraybinaryorbit">xraybinaryorbit</h1>
-<p><strong>xraybinaryorbit</strong> is a user-friendly Python package designed to facilitate the analysis of orbital modulations in X-ray binaries.</p>
-<p>Although orbital modulations are well-documented, their analysis is complex and dependent on various parameters and geometrical considerations. This package is designed to be useful for nearly every X-ray binary analysis, aiming to facilitate its implementation for other astronomers.</p>
-<p>Looking ahead, <strong>high-resolution x-ray spectroscopy</strong> will significantly rely on these analyses to provide deep insights into the orbital dynamics of X-ray binary systems.</p>
-<p>Here, we propose a user-friendly "form" method to improve the package usability. These forms, once loaded and submited, are saved for future interactions.</p>
-<p>If you need something or have any doubts, please, write me: graciela.sanjurjo@ua.es</p>
+<p><strong>X-ray binaries are truly fascinating!</strong> In these extreme environments, a compact object—either a neutron star or black hole—draws in matter from a companion star, producing intense X-ray emissions. These systems offer a unique window into extreme physics, from the effects of strong gravity and relativistic jets to the presence of intense magnetic fields.</p>
+<p>Orbital modulations are observed in nearly all X-ray binary systems. These variations arise from the orbital motions of the system, driven by the relative velocities of the two stars and their changing configurations with respect to each other and the observer.</p>
+<p>To aid in the study of these modulations, we introduce <strong>xraybinaryorbit</strong> —a user-friendly Python package designed to simplify the analysis of orbital modulations in X-ray binaries. Whether you are studying the orbital parameters or working to refine your data analysis, this tool is built to help you extract the most from your observations.</p>
+<p>If you have any questions or need assistance, please feel free to reach out: graciela.sanjurjo@ua.es.</p>
+<h2 id="getting-started">Getting started</h2>
 <h3 id="installation">Installation</h3>
-<p>You can install the package directly from PyPI using pip: **pip install xraybinaryorbit **</p>
+<hr />
+<p>You can install the package directly from PyPI using pip: <strong>pip install xraybinaryorbit</strong>.</p>
 <p>Or download the code from <a href="https://github.com/xragua/xraybinaryorbit/releases/tag/0.2.9">here</a>.</p>
 <p>Some examples of their usage are presented <a href="https://github.com/xragua/xraybinaryorbit/tree/main/examples">here</a>.</p>
-<h2 id="functions">FUNCTIONS</h2>
-<h3 id="theoretical-functions">Theoretical Functions</h3>
-<p>These functions will enable us to model the theoretical behavior of various astrophysical features influenced by orbital modulations with the aim of comparing our observational results with the expected.</p>
-<h4 id="doppler_orbit_theoretical">doppler_orbit_theoretical</h4>
+<h3 id="which-orbital-modulations-are-we-talking-about">Which orbital modulations are we talking about?</h3>
 <hr />
-<pre><code>Computes the Doppler variation expected from orbital movement given a time array in seconds.
-
-Parameters:
-- t (array-like): Time array in seconds.
-- units (str, optional): Units for the output. Default is "keV". Can be "keV", "s", or "angstrom".
-- show_plot (bool, optional): If True, a plot of the orbit and Doppler evolution is shown and saved. Default is False.
-- precision_for_phase (float, optional): Precision for phase calculation. Default is 0.01.
-
-Returns:
-- t (array-like): Input time array.
-- x (array-like): Orbital phase array.
-- equation (array-like): Expected Doppler variation.
-</code></pre>
-<hr />
-<h4 id="doppler_spiral_theoretical">doppler_spiral_theoretical</h4>
-<hr />
-<pre><code>Computes the Doppler variation expected from a spiral movement given a time array in seconds.
-
-A logarithmic spiral is a type of spiral that grows in size by a constant factor with each turn. Its equation in polar coordinates is
-r = a * e^(b * θ), where:
-
-r is the distance from the origin (radius)
-omega is the angle from a reference direction (usually the positive x-axis)
-a is the scale factor that determines how quickly the spiral grows
-b is the rate of rotation, controlling the tightness or looseness of the spiral
-
-Computes the Doppler variation expected from a spiral movement given a time array in seconds.
-
-Parameters:
-- t (array-like): Time array in seconds.
-- units (str, optional): Units for the output. Default is "keV". Can be "keV", "s", or "angstrom".
-- show_plot (bool, optional): If True, a plot of the spiral and Doppler evolution is shown and saved. Default is False.
-- A form will appear to input the necessary orbital parameters. These parameters will be saved in a .txt file in the current directory and automatically loaded in subsequent runs. This avoids the need to re-enter all parameters; you can modify only those that require adjustment.
-
-Returns:
-- x (array-like): Orbital phase array.
-- equation (array-like): Expected Doppler variation.
-</code></pre>
-<hr />
-<h4 id="doppler_disc_theoretical">doppler_disc_theoretical</h4>
-<hr />
-<pre><code>Computes the Doppler variation expected from an orbital movement in a main orbit,
-assuming a ballistic movement of plasma around a compact object or the movement of a mass
-entering an accretion disc.
-
-Parameters:
-- t (array-like): Time array in seconds.
-- units (str, optional): Units for the output. Default is "keV". Can be "keV", "s", or "angstrom".
-- show_plot (bool, optional): If True, a plot of the disc and Doppler evolution is shown and saved. Default is False.
-- A form will appear to input the necessary orbital parameters. These parameters will be saved in a .txt file in the current directory and automatically loaded in subsequent runs. This avoids the need to re-enter all parameters; you can modify only those that require adjustment.
-
-Returns:
-- t (array-like): Time array.
-- x (array-like): Orbital phase array for the first orbit.
-- x2 (array-like): Orbital phase array for the second orbit.
-- equation (array-like): Expected Doppler variation.
-</code></pre>
-<hr />
-<h4 id="doppler_spiral_in_orbit_theoretical">doppler_spiral_in_orbit_theoretical</h4>
-<hr />
-<pre><code>This function requires a time array in seconds and returns the time, orbital phase, and Doppler variation
-expected under the assumption of an orbital movement with a logarithmic spiral component.
-
-Parameters:
-- t (array-like): Time array in seconds.
-- units (str, optional): Units for the output. Default is "keV". Can be "keV", "s", or "angstrom".
-- show_plot (bool, optional): If True, a plot of the spiral and Doppler evolution is shown and saved.
-                              Default is False.
-- A form will appear to input the necessary orbital parameters. These parameters will be saved in a .txt file in the current directory and automatically loaded in subsequent runs. This avoids the need to re-enter all parameters; you can modify only those that require adjustment.
-
-Returns:
-- x (array-like): Orbital phase array.
-- equation (array-like): Expected Doppler variation.
-
-Description:
-A logarithmic spiral grows in size by a constant factor with each turn, with the polar coordinates equation:
-r = a * e^(b * θ), where:
-- r is the distance from the origin (radius)
-- θ is the angle from a reference direction (usually the positive x-axis)
-- a is the scale factor that determines how quickly the spiral grows
-- b is the rate of rotation, controlling the tightness or looseness of the spiral
-</code></pre>
-<hr />
-<h4 id="density_through_orbit_theoretical">density_through_orbit_theoretical</h4>
-<hr />
-<p>This function helps visualize the density (gr/cm^2) encountered by a compact object along its orbit.
-    It assumes a spherically distributed stellar wind based on the CAK model.</p>
-<pre><code>The function returns a time array, an orbital phase array, and the density experienced by the compact
-object as it moves through its orbit.
-
-If "show_plot=True," a plot of the density through the orbit will be saved under the name
-"density_through_the_orbit.png."
-
-Parameters:
-- resolution (float, optional): Resolution for the phase array. Default is 0.01.
-- show_plot (bool, optional): If True, plots the density through the orbit. Default is False.
-- A form will appear to input the necessary orbital parameters. These parameters will be saved in a .txt file in the current directory and automatically loaded in subsequent runs. This avoids the need to re-enter all parameters; you can modify only those that require adjustment.
-
-Returns:
-- time (array-like): Time array.
-- phase (array-like): Orbital phase array.
-- density (array-like): Density through the orbit in gr/cm^2.
-</code></pre>
-<hr />
-<h4 id="absorption_column_through_orbit_theoretical">absorption_column_through_orbit_theoretical</h4>
-<hr />
-<pre><code>This function visualizes the column density (NH1, x 10^22 cm^-2) encountered by radiation emitted at each orbital phase as it travels towards an observer. It assumes a spherically distributed, neutral (unionized) stellar wind based on the CAK model.
-
-Parameters:
-- resolution (float, optional): Resolution for the phase array. Default is 0.01.
-- show_plot (bool, optional): If True, plots the absorption column density through the orbit. Default is False.
-- A form will appear to input the necessary orbital parameters. These parameters will be saved in a .txt file in the current directory and automatically loaded in subsequent runs. This avoids the need to re-enter all parameters; you can modify only those that require adjustment.
-
-Returns:
-- time (array-like): Time array.
-- phase (array-like): Orbital phase array.
-- NH1 (array-like): Absorption column density (NH1, x 10^22 cm^-2) through the orbit.
-</code></pre>
-<hr />
-<h4 id="density_and_ionization_orbital_phase_theoretical">density_and_ionization_orbital_phase_theoretical</h4>
-<hr />
-<pre><code>Calculates and visualizes the density and ionization parameter (log(ξ)) encountered by radiation emitted
-at each orbital phase as it travels towards an observer. Assumes a spherically distributed, neutral stellar
-wind based on the CAK (Castor, Abbott, Klein) model. The density profile and ionization parameter are calculated
-along the path from a neutron star (NS) through the stellar wind of its companion.
-
-Parameters:
-resolution : float, optional
-    The resolution for the phase array (orbital phase). Default is 0.01.
-size : float, optional
-    The scaling factor for the size of the path from the NS through the stellar wind. Determines how far into
-    the wind the path is extended. Default is 10.
-show_plot : bool, optional
-    If True, displays and saves plots of the density, ionization parameter, and orbital path. Default is True.
-load_directly : bool, optional
-    If True, attempts to load previously saved orbital parameters from a file. If False, prompts the user to
-    input the parameters. Default is False.
-
-Returns:
-z : array-like
-    Array of distances along the path from the neutron star to the observer (in cm).
-density : array-like
-    Density profile of the stellar wind (in cm$^{-3}$) along the path.
-chi : array-like
-    Ionization parameter (log(ξ)) calculated at each point along the path.
-</code></pre>
-<hr />
-<h4 id="ionization_map_phase">ionization_map_phase</h4>
-<hr />
-<pre><code>Generates a logarithmic ionization parameter map based on the stellar wind density
-and the ionization parameters influenced by the source luminosity and distance to the compact object.
-
-Parameters:
-- size_in_Rstar (float, optional): Extent of the map from the stellar center in stellar radii. Default is 3.
-- min_color (float, optional): Minimum color scale value for the ionization parameter. Default is None.
-- max_color (float, optional): Maximum color scale value for the ionization parameter. Default is None.
-- save_plot (bool, optional): Boolean to decide if the plot should be saved. Default is False.
-- name (str, optional): Name of the file to save the plot. Default is "ionization_map".
-- A form will appear to input the necessary orbital parameters. These parameters will be saved in a .txt file in the current directory and automatically loaded in subsequent runs. This avoids the need to re-enter all parameters; you can modify only those that require adjustment.
-
-
-Returns:
-- chi_result (pd.DataFrame): DataFrame containing the ionization parameter map.
-- area (float): The calculated area between bounds.
-</code></pre>
-<hr />
-<h4 id="orbital_phase_to_time">orbital_phase_to_time</h4>
-<hr />
-<pre><code>Converts orbital phase array to time array for a compact object orbiting a companion star.
-The compact object moves faster at periastron than at apoastro. The increased orbital speed at periastron is primarily due to the conservation of angular momentum, which dictates that as the compact object moves closer to the central star, it must travel faster to maintain the total angular momentum of the system. This relationship is further influenced by Kepler’s laws of planetary motion, which describe how objects sweep out equal areas in equal times and the gravitational force between two bodies, which strengthens as they approach each other and weakens as they move apart.
-
-Parameters:
-- ph (array-like): Orbital phase array.
-- precision (float, optional): Resolution for the phase array. Default is 0.01.
-- A form will appear to input the necessary orbital parameters. These parameters will be saved in a .txt file in the current directory and automatically loaded in subsequent runs. This avoids the need to re-enter all parameters; you can modify only those that require adjustment.
-
-Returns:
-- ph (array-like): Orbital phase array (same as input).
-- time (array-like): Time array corresponding to the orbital phase.
-- W (array-like): Angular velocity array corresponding to the orbital phase.
-</code></pre>
-<hr />
-<h4 id="orbital_time_to_phase">orbital_time_to_phase</h4>
-<hr />
-<pre><code>Converts orbital time array to phase array for a compact object orbiting a companion star.
-The compact object moves faster at periastron than at apoastro. The increased orbital speed at periastron is primarily due to the conservation of angular momentum, which dictates that as the compact object moves closer to the central star, it must travel faster to maintain the total angular momentum of the system. This relationship is further influenced by Kepler’s laws of planetary motion, which describe how objects sweep out equal areas in equal times and the gravitational force between two bodies, which strengthens as they approach each other and weakens as they move apart.
-
-Parameters:
-- ph (array-like): Orbital phase array.
-- precision (float, optional): Resolution for the phase array. Default is 0.01.
-- A form will appear to input the necessary orbital parameters. These parameters will be saved in a .txt file in the current directory and automatically loaded in subsequent runs. This avoids the need to re-enter all parameters; you can modify only those that require adjustment.
-
-Returns:
-- ph (array-like): Orbital phase array (same as input).
-- time (array-like): Time array corresponding to the orbital phase.
-- W (array-like): Angular velocity array corresponding to the orbital phase.
-
-
-The increased orbital speed at periastron is primarily due to the conservation of angular momentum, which dictates that as the compact object moves closer to the central star, it must travel faster to maintain the total angular momentum of the system. This relationship is further influenced by Kepler’s laws of planetary motion, which describe how objects sweep out equal areas in equal times and the gravitational force between two bodies, which strengthens as they approach each other and weakens as they move apart.
-</code></pre>
-<hr />
-<h3 id="fitting">Fitting</h3>
-<p>If we have real data from a feature (NS spin period, emission line...) affected by Doppler or absorption or stellar density affected by orbital modulations we can recover the orbital parameters with the following functions. Keep in mind that "_ps" referes to particle swarm while "_ls" to least squares fitting approaches. "_ls" might not allways converge and "_ps" might take a lot of time to complete.</p>
-<h4 id="fit_orbit_ps">fit_orbit_ps</h4>
-<hr />
-<pre><code>fit_orbit_ps fits observed orbital modulation data by estimating parameters such as phase, semi-major axis, orbital period, eccentricity, inclination, and periapsis.
-
-The fitting process utilizes a particle swarm optimization (PSO) algorithm, which iteratively improves parameter estimates by minimizing the chi-squared difference between observed and predicted data.
-
-The function can handle two fitting methods:
-
-- Discrete: Suitable for discrete data points (e.g., spectra with small orbital phase ranges, faster).
-- Extended: Suitable for data with varying or extended bin sizes, typical with current instrument resolutions (e.g., XMM-Newton and Chandra) and short X-ray binary (XRB) orbits.
-
-Inputs:
-- x_data: Time bins of the observed data.
-- y_data: Observed data points corresponding to each time bin.
-- y_err: Error associated with each observed data point (default is 0).
-- num_iterations: Number of iterations for PSO optimization (default is 3).
-- maxiter: Maximum number of iterations for each PSO run (default is 1000).
-- swarmsize: Number of particles in the PSO swarm (default is 100).
-- units: Units of the observed data (default is "keV").
-- method_: Fitting method to use, either "discrete" or "extended" (default is "extended").
-- extended_binsize: Bin size for extended method (default is 0.01).
-- A form will appear to input the necessary bounds for the orbital parameters. These parameters will be saved in a .txt file in the current directory and automatically loaded in subsequent runs. This avoids the need to re-enter all parameters; you can modify only those that require adjustment.
-
-
-Outputs:
-- DataFrame of the best-fit parameters and their standard deviations.
-- ph: Array of phases corresponding to the predicted data.
-- predicted_data: Predicted data based on the best-fit parameters.
-- r_squared: Coefficient of determination (R-squared) indicating the quality of fit.
-</code></pre>
-<hr />
-<h4 id="fit_orbit_ls">fit_orbit_ls</h4>
-<hr />
-<pre><code>fit_orbit_ls fits orbital modulation data by estimating parameters such as phase, semi-major axis, orbital period, eccentricity, inclination, and periapsis.
-
-The fitting process utilizes a traditional Least Squares (LS) method, which fits the observed data by minimizing the squared differences between observed and predicted values.
-
-The function can handle two fitting methods:
-
-- Discrete: Suitable for discrete data points (e.g., spectra with small orbital phase ranges, faster).
-- Extended: Suitable for data with varying or extended bin sizes, typical with current instrument resolutions (e.g., XMM-Newton and Chandra) and short X-ray binary (XRB) orbits.
-
-Inputs:
-- x_data: Time bins of the observed data.
-- y_data: Observed data points corresponding to each time bin.
-- y_err: Error associated with each observed data point (default is 0).
-- units: Units of the observed data (default is "keV").
-- method_: Fitting method to use, either "discrete" or "extended" (default is "extended").
-- extended_binsize: Bin size for extended method (default is 0.01).
-- A form will appear to input the necessary bounds for the orbital parameters. These parameters will be saved in a .txt file in the current directory and automatically loaded in subsequent runs. This avoids the need to re-enter all parameters; you can modify only those that require adjustment.
-
-
-Outputs:
-- DataFrame of the best-fit parameters and their errors.
-- ph: Array of phases corresponding to the predicted data.
-- predicted_data: Predicted data based on the best-fit parameters.
-- r_squared: Coefficient of determination (R-squared) indicating the quality of fit.
-</code></pre>
-<hr />
-<h4 id="fit_disc_ps">fit_disc_ps</h4>
-<hr />
-<pre><code>fit_disc_ps fits orbital modulation data by estimating parameters such as phase, semi-major axis, orbital period, eccentricity, inclination for the main orbit, and corresponding parameters for a secondary orbit (e.g., ballistic capture of matter around a compact object or an accretion disk).
-
-The fitting process uses a particle swarm optimization (PSO) algorithm, which iteratively improves parameter estimates by minimizing the chi-squared difference between observed and predicted data.
-
-The function can handle two fitting methods:
-
-- Discrete: Suitable for discrete data points (e.g., spectra with small orbital phase ranges, faster).
-- Extended: Suitable for data with varying or extended bin sizes, typical with current instrument resolutions (e.g., XMM-Newton and Chandra) and short X-ray binary (XRB) orbits.
-
-Inputs:
-- x_data: Time bins of the observed data.
-- y_data: Observed data points corresponding to each time bin.
-- y_err: Error associated with each observed data point (default is 0).
-- num_iterations: Number of iterations for the PSO algorithm (default is 3).
-- maxiter: Maximum number of iterations for each PSO run (default is 1000).
-- swarmsize: Number of particles in the PSO swarm (default is 100).
-- units: Units of the observed data (default is "keV").
-- method_: Fitting method to use, either "discrete" or "extended" (default is "extended").
-- extended_binsize: Bin size for extended method (default is 0.01).
-- A form will appear to input the necessary bounds for the orbital parameters. These parameters will be saved in a .txt file in the current directory and automatically loaded in subsequent runs. This avoids the need to re-enter all parameters; you can modify only those that require adjustment.
-
-
-Outputs:
-- DataFrame of the best-fit parameters and their standard deviations.
-- ph: Array of phases corresponding to the predicted data for the main orbit.
-- ph2: Array of phases corresponding to the predicted data for the secondary orbit.
-- predicted_data: Predicted data based on the best-fit parameters.
-- r_squared: Coefficient of determination (R-squared) indicating the quality of fit.
-</code></pre>
-<hr />
-<h4 id="fit_disc_ls">fit_disc_ls</h4>
-<hr />
-<pre><code>fit_disc_ls fits orbital modulation data by estimating parameters such as phase, semi-major axis, orbital period, eccentricity, inclination for the main orbit, and corresponding parameters for a secondary orbit (e.g., ballistic capture of matter around a compact object or an accretion disk).
-
-The fitting process uses a traditional least squares (LS) method, provided here for completeness despite its potential limitations due to the model's complexity.
-
-The function can handle two fitting methods:
-
-- Discrete: Suitable for discrete data points (e.g., spectra with small orbital phase ranges, faster).
-- Extended: Suitable for data with varying or extended bin sizes, typical with current instrument resolutions (e.g., XMM-Newton and Chandra) and short X-ray binary (XRB) orbits.
-
-Inputs:
-- x_data: Time bins of the observed data.
-- y_data: Observed data points corresponding to each time bin.
-- y_err: Error associated with each observed data point (default is 0).
-- units: Units of the observed data (default is "keV").
-- method_: Fitting method to use, either "discrete" or "extended" (default is "extended").
-- extended_binsize: Bin size for extended method (default is 0.01).
-- A form will appear to input the necessary bounds for the orbital parameters. These parameters will be saved in a .txt file in the current directory and automatically loaded in subsequent runs. This avoids the need to re-enter all parameters; you can modify only those that require adjustment.
-
-
-Outputs:
-- DataFrame of the best-fit parameters and their errors.
-- ph: Array of phases corresponding to the predicted data.
-- predicted_data: Predicted data based on the best-fit parameters.
-- r_squared: Coefficient of determination (R-squared) indicating the quality of fit.
-</code></pre>
-<hr />
-<h4 id="fit_spiral_ps">fit_spiral_ps</h4>
-<hr />
-<pre><code>fit_spiral_ps fits orbital modulation data by estimating parameters for a spiral orbit.
-
-The fitting process uses a particle swarm optimization (PSO) algorithm, which iteratively improves the parameter estimates by minimizing the chi-squared difference between the observed and predicted data.
-
-The function can handle two fitting methods:
-
-- Discrete: Suitable for discrete data points (e.g., spectra with small orbital phase ranges, faster).
-- Extended: Suitable for data with varying or extended bin sizes, typical with current instrument resolutions (e.g., XMM-Newton and Chandra) and short X-ray binary (XRB) orbits.
-
-Inputs:
-- x_data: Time bins of the observed data.
-- y_data: Observed data points corresponding to each time bin.
-- y_err: Error associated with each observed data point (default is 0).
-- num_iterations: Number of PSO iterations to perform (default is 3).
-- maxiter: Maximum number of iterations for PSO (default is 1000).
-- swarmsize: Number of particles in the swarm for PSO (default is 100).
-- units: Units of the observed data (default is "keV").
-- method_: Fitting method to use, either "discrete" or "extended" (default is "extended").
-- extended_binsize: Bin size for extended method (default is 0.01).
-- A form will appear to input the necessary bounds for the orbital parameters. These parameters will be saved in a .txt file in the current directory and automatically loaded in subsequent runs. This avoids the need to re-enter all parameters; you can modify only those that require adjustment.
-
-
-Outputs:
-- DataFrame of the best-fit parameters and their standard deviations.
-- ph: Array of phases corresponding to the predicted data.
-- predicted_data: Predicted data based on the best-fit parameters.
-- r_squared: Coefficient of determination (R-squared) indicating the quality of fit.
-</code></pre>
-<hr />
-<h4 id="fit_spiral_ls">fit_spiral_ls</h4>
-<hr />
-<pre><code>fit_spiral_ls fits orbital modulation data by estimating parameters for a spiral orbit.
-
-The fitting process uses a traditional least squares (LS) method, provided for completeness due to the complexity of the model.
-
-The function can handle two fitting methods:
-
-- Discrete: Suitable for discrete data points (e.g., spectra with small orbital phase ranges, faster).
-- Extended: Suitable for data with varying or extended bin sizes, typical with current instrument resolutions (e.g., XMM-Newton and Chandra) and short X-ray binary (XRB) orbits.
-
-Inputs:
-- x_data: Time bins of the observed data.
-- y_data: Observed data points corresponding to each time bin.
-- y_err: Error associated with each observed data point (default is 0).
-- units: Units of the observed data (default is "keV").
-- method_: Fitting method to use, either "discrete" or "extended" (default is "extended").
-- extended_binsize: Bin size for extended method (default is 0.01).
-- A form will appear to input the necessary bounds for the orbital parameters. These parameters will be saved in a .txt file in the current directory and automatically loaded in subsequent runs. This avoids the need to re-enter all parameters; you can modify only those that require adjustment.
-
-
-Outputs:
-- DataFrame of the best-fit parameters and their errors.
-- ph: Array of phases corresponding to the predicted data.
-- predicted_data: Predicted data based on the best-fit parameters.
-- r_squared: Coefficient of determination (R-squared) indicating the quality of fit.
-</code></pre>
-<hr />
-<h4 id="fit_spiral_in_orbit_ps">fit_spiral_in_orbit_ps</h4>
-<hr />
-<pre><code>fit_spiral_in_orbit_ps fits orbital modulation data by estimating parameters for a spiral orbit contained in a main orbit.
-
-The fitting process uses a particle swarm optimization (PSO) algorithm, which iteratively improves the parameter estimates by minimizing the chi-squared difference between the observed and predicted data.
-
-The function can handle two fitting methods:
-
-- Discrete: Suitable for discrete data points (e.g., spectra with small orbital phase ranges, faster).
-- Extended: Suitable for data with varying or extended bin sizes, typical with current instrument resolutions (e.g., XMM-Newton and Chandra) and short X-ray binary (XRB) orbits.
-
-Inputs:
-- x_data: Time bins of the observed data.
-- y_data: Observed data points corresponding to each time bin.
-- y_err: Error associated with each observed data point (default is 0).
-- units: Units of the observed data (default is "keV").
-- method_: Fitting method to use, either "discrete" or "extended" (default is "extended").
-- extended_binsize: Bin size for extended method (default is 0.01).
-- A form will appear to input the necessary bounds for the orbital parameters. These parameters will be saved in a .txt file in the current directory and automatically loaded in subsequent runs. This avoids the need to re-enter all parameters; you can modify only those that require adjustment.
-
-
-Outputs:
-- DataFrame of the best-fit parameters and their errors.
-- ph: Array of phases corresponding to the predicted data.
-- predicted_data: Predicted data based on the best-fit parameters.
-- r_squared: Coefficient of determination (R-squared) indicating the quality of fit.
-</code></pre>
-<hr />
-<h4 id="fit_spiral_in_orbit_ls">fit_spiral_in_orbit_ls</h4>
-<hr />
-<pre><code>fit_spiral_in_orbit_ps fits orbital modulation data by estimating parameters for a spiral orbit contained in a main orbit.
-
-The fitting process uses a traditional least squares (LS) method, provided for completeness due to the complexity of the model.
-
-The function can handle two fitting methods:
-
-- Discrete: Suitable for discrete data points (e.g., spectra with small orbital phase ranges, faster).
-- Extended: Suitable for data with varying or extended bin sizes, typical with current instrument resolutions (e.g., XMM-Newton and Chandra) and short X-ray binary (XRB) orbits.
-
-Inputs:
-- x_data: Time bins of the observed data.
-- y_data: Observed data points corresponding to each time bin.
-- y_err: Error associated with each observed data point (default is 0).
-- units: Units of the observed data (default is "keV").
-- method_: Fitting method to use, either "discrete" or "extended" (default is "extended").
-- extended_binsize: Bin size for extended method (default is 0.01).
-- A form will appear to input the necessary bounds for the orbital parameters. These parameters will be saved in a .txt file in the current directory and automatically loaded in subsequent runs. This avoids the need to re-enter all parameters; you can modify only those that require adjustment.
-
-
-Outputs:
-- DataFrame of the best-fit parameters and their errors.
-- ph: Array of phases corresponding to the predicted data.
-- predicted_data: Predicted data based on the best-fit parameters.
-- r_squared: Coefficient of determination (R-squared) indicating the quality of fit.
-</code></pre>
-<hr />
-<h4 id="fit_nh_ps">fit_nh_ps</h4>
-<hr />
-<pre><code>fit_nh_ps fits the column density (NH1, x 10^22 cm^-2) encountered by radiation emitted at each orbital phase as it travels towards an observer. It assumes a spherically distributed, neutral (unionized) stellar wind based on the CAK model.
-
-The fitting process uses a particle swarm optimization (PSO) algorithm to minimize the chi-squared difference between observed and predicted data points.
-
-The function supports two fitting methods:
-
-- Discrete: Suitable for discrete data points (e.g., spectra with small orbital phase ranges, faster).
-- Extended: Suitable for data with varying or extended bin sizes, typical for current instrument resolutions (e.g., XMM-Newton and Chandra) and short X-ray binary (XRB) orbits.
-
-Inputs:
-- x_data: Time bins of the observed data.
-- y_data: Observed data points corresponding to each time bin.
-- y_err: Error associated with each observed data point (default is 0).
-- num_iterations: Number of iterations for the PSO algorithm (default is 3).
-- maxiter: Maximum number of iterations for each PSO run (default is 200).
-- swarmsize: Number of particles in the PSO swarm (default is 20).
-- method_: Fitting method to use, either "discrete" or "extended" (default is "extended").
-- extended_binsize: Bin size for the extended method (default is 0.01).
-- A form will appear to input the necessary bounds for the orbital parameters. These parameters will be saved in a .txt file in the current directory and automatically loaded in subsequent runs. This avoids the need to re-enter all parameters; you can modify only those that require adjustment.
-
-
-Outputs:
-- df_results_transposed: Transposed DataFrame of the best-fit parameters and their standard deviations.
-- ph: Array of phases corresponding to the predicted data.
-- predicted_data: Predicted data based on the best-fit parameters.
-- r_squared: Coefficient of determination (R-squared) indicating the quality of fit.
-</code></pre>
-<hr />
-<h3 id="timing-related">Timing related</h3>
-<p>In this section we collect some usefull timing functions. From them we can obtain NS pulses in a sliding window approach allowing us to observe if Doppler modulations are present and recover the orbital parameters using fitting functions.</p>
-<h4 id="hr">hr</h4>
-<hr />
-<pre><code>Calculates hardness ratio and errors.
-
-hr = (h - l) / (h + l)
-
-Parameters:
--Count rate or flux in a hard band.
--Count rate or flux in a soft band.
--Errors in the hard band
--Errors in the soft band
-
-Returns:
--Hardness ratio.
--Error in the hardness ratio.
-</code></pre>
-<hr />
-<h4 id="cr">cr</h4>
-<hr />
-<pre><code>Calculates color ratio and errors.
-
-cr = h / l
-
-Parameters:
--Count rate or flux in a hard band.
--Count rate or flux in a soft band.
--Errors in the hard band
--Errors in the soft band
-
-Returns:
--Hardness ratio.
--Error in the hardness ratio.
-</code></pre>
-<hr />
-<h4 id="rebin_snr">rebin_snr</h4>
-<hr />
-<pre><code>Calculates a rebinned signal-to-noise lightcurve
-
-Parameters:
--Time array
--Count rate or flux
--Errors
--Minumun required signal to noise ratio (tipically 0.2-0.05)
-
-Returns:
--Time array
--Rebined lightcurve
--Errors
-</code></pre>
-<hr />
-<h4 id="rebin_bins">rebin_bins</h4>
-<hr />
-<pre><code>Calculates a rebinned lightcurve
-
-Parameters:
--Time array
--Count rate or flux
--Errors
--Time bin (equires a larger time bin compared to the one we currently have).
-
-Returns:
--Time array
--Rebined lightcurve
--Errors
-</code></pre>
-<hr />
-<h4 id="fold_pulse">fold_pulse</h4>
-<hr />
-<pre><code>Folds a lightcurve data array based on a given period and optionally rebins it.
-
-Parameters:
-- t: Time array of the lightcurve.
-- c: Count rate or flux array corresponding to the time array.
-- sc: Errors (standard deviation) associated with the count rate or flux.
-- period: Period to fold the lightcurve, in the same units as 't'.
-
-Optional Parameters (one at least should be specified):
-- snr: Minimum signal-to-noise ratio threshold. If provided, applies signal-to-noise rebinning using `rebin_snr`.
-- rebin: Number of bins to rebin the folded lightcurve. If provided, applies uniform time binning using `rebin_bins`.
-
-Returns:
-- Depending on the optional parameters:
-  - If `snr` is specified: Time array, rebinned folded lightcurve, rebinned errors after signal-to-noise ratio rebinning.
-  - If `rebin` is specified: Time array, rebinned folded lightcurve, rebinned errors after uniform time binning.
-
-Notes:
-- Either `snr` or `rebin` must be specified to proceed with the function.
-</code></pre>
-<hr />
-<h4 id="period_sliding_window">period_sliding_window</h4>
-<hr />
-<pre><code>Performs period analysis using a sliding window approach on a lightcurve dataset.
-
-Parameters:
-- t: Time array of the lightcurve.
-- c: Count rate or flux array corresponding to the time array.
-- sc: Errors (standard deviation) associated with the count rate or flux.
-- window_sec: Size of the sliding window in seconds for period analysis.
-- step_sec: Step size in seconds between consecutive windows.
-- max_period: Maximum period to consider in the periodogram analysis (optional).
-- min_period: Minimum period to consider in the periodogram analysis (optional).
-- false_alarm_threshold: Threshold value for false alarm probability in Lomb-Scargle periodogram.
-- rel_high_for_error: Relative height for error estimation in peak_widths function.
-- folded_pulses: If True, folds the lightcurve using `fold_pulse` for each identified period.
-- snr_pulse: Minimum signal-to-noise ratio threshold for folding using `fold_pulse`.
-- nbin_pulse: Number of bins for uniform time binning in folding using `fold_pulse`.
-
-Returns:
-- result: DataFrame containing the results of the period analysis, including periods, frequencies, powers,
-          errors in period, errors in power, false alarm probabilities, and time range.
-- pulses: Dictionary containing folded pulse data for each identified period if `folded_pulses` is True.
-
-Notes:
-- The function performs Lomb-Scargle periodogram analysis within each sliding window of the specified size.
-- It filters the periods based on false alarm probability and sorts them by power.
-- If `folded_pulses` is True, it folds the lightcurve for each identified period using `fold_pulse` and stores the results.
-</code></pre>
-<hr />
-<h2 id="references">REFERENCES</h2>
-<ol>
-<li>
-<p>Bonyadi, M. R., &amp; Michalewicz, Z. (2017). Particle Swarm Optimization for Single Objective Continuous Space Problems: A Review. <em>Evolutionary Computation, 25</em>(1), 1-54. <a href="https://doi.org/10.1162/EVCO_r_00180">https://doi.org/10.1162/EVCO_r_00180</a></p>
-</li>
-<li>
-<p>Sanjurjo-Ferrín, G., Torrejón, J. M., Postnov, K., Oskinova, L., Rodes-Roca, J. J., &amp; Bernabeu, G. (2021). X-ray variability of the HMXB Cen X-3: evidence for inhomogeneous accretion flows. <em>Monthly Notices of the Royal Astronomical Society, 501</em>(4), 5892-5909. <a href="https://doi.org/10.1093/mnras/staa3953">https://doi.org/10.1093/mnras/staa3953</a></p>
-</li>
-<li>
-<p>Barret, D., Lam Trong, T., den Herder, J.-W., &amp; Piro. (2016). The Athena X-ray Integral Field Unit (X-IFU). In J.-W. A. den Herder, T. Takahashi, &amp; M. Bautz (Eds.), <em>Space Telescopes and Instrumentation 2016: Ultraviolet to Gamma Ray</em> (Vol. 9905, p. 99052F). Society of Photo-Optical Instrumentation Engineers (SPIE). <a href="https://doi.org/10.1117/12.2232432">https://doi.org/10.1117/12.2232432</a></p>
-</li>
-<li>
-<p>Virtanen, P., Gommers, R., Oliphant, T. E., Haberland, M., Reddy, T., Cournapeau, D., Burovski, E., Peterson, P., Weckesser, W., Bright, J., van der Walt, S. J., Brett, M., Wilson, J., Jarrod Millman, K., Mayorov, N., Nelson, A. R. J., Jones, E., Kern, R., Larson, E., Carey, C. J., Polat, İ., Feng, Y., Moore, E. W., VanderPlas, J., Laxalde, D., Perktold, J., Cimrman, R., Henriksen, I., Quintero, E. A., Harris, C. R., Archibald, A. M., Ribeiro, A. H., Pedregosa, F., van Mulbregt, P., &amp; Contributors, S. (2020). SciPy 1.0: Fundamental Algorithms for Scientific Computing in Python. <em>Nature Methods, 17</em>, 261-272. <a href="https://doi.org/10.1038/s41592-019-0686-2">https://doi.org/10.1038/s41592-019-0686-2</a></p>
-</li>
-<li>
-<p>PySwarms: A Python-Based Swarm Optimization Library. (2022). Retrieved from <a href="https://pythonhosted.org/pyswarm/">https://pythonhosted.org/pyswarm/</a></p>
-</li>
-<li>
-<p>Castor, J. I., Abbott, D. C., &amp; Klein, R. I. (1975). Radiation-driven winds in Of stars. <em>The Astrophysical Journal, 195</em>, 157-174. <a href="https://doi.org/10.1086/153315">https://doi.org/10.1086/153315</a></p>
-</li>
-<li>
-<p>Scargle, J. D. (1982). Studies in astronomical time series analysis. II - Statistical aspects of spectral analysis of unevenly spaced data. <em>The Astrophysical Journal, 263</em>, 835-853. <a href="https://doi.org/10.1086/160554">https://doi.org/10.1086/160554</a></p>
-</li>
-<li>
-<p>Frank, J., King, A., &amp; Raine, D. (2002). <em>Accretion Power in Astrophysics</em> (3rd ed.). Cambridge University Press.</p>
-</li>
-<li>
-<p>Abbott, B. P., Abbott, R., Abbott, T. D., Acernese, F., Ackley, K., Adams, C., Adams, T., Addesso, P., Adhikari, R. X., Adya, V. B., et al. (2017). GW170817: Observation of Gravitational Waves from a Binary Neutron Star Inspiral. <em>Physical Review Letters, 119</em>(16), 161101. <a href="https://doi.org/10.1103/PhysRevLett.119.161101">https://doi.org/10.1103/PhysRevLett.119.161101</a></p>
-</li>
-<li>
-<p>Carroll, B. W., &amp; Ostlie, D. A. (2006). <em>An introduction to modern astrophysics and cosmology</em>. </p>
-</li>
-<li>
-<p>Sanjurjo-Ferrín, G., Torrejón, J. M., &amp; Rodes-Roca, J. J. (2022). The first X-ray spectrum of the high-mass X-ray binary XTE J1855-026 during the compact object eclipse. <em>Monthly Notices of the Royal Astronomical Society, 512</em>(1), 304-314. <a href="https://doi.org/10.1093/mnras/stac352">https://doi.org/10.1093/mnras/stac352</a></p>
-</li>
-<li>
-<p>XRISM Science Team. (2022). XRISM Quick Reference. <em>arXiv e-prints</em>. <a href="https://doi.org/10.48550/arXiv.2202.05399">https://doi.org/10.48550/arXiv.2202.05399</a></p>
-</li>
-</ol>
+<p>We can observe how the center of an emission line slightly changes during a phase resolved analysis, or how the NS spin period slightly varies following a trend. These phenomena can be caused by Doppler effect. Our code will help you turn these observations into the orbital parameters that cause those Doppler shifts.</p>
+<p>But this simple idea can get tricky when you consider all the factors involved. Inclination, eccentricity, periapsis, distance to the barycenter (which depends on the masses of the stars involved), and orbital phases really matter in this analysis. Plus, if there’s eccentricity different than 0, the velocity around the orbit isn’t constant. So, it’s not as straightforward as it might seem, right?.</p>
+<p>If we think about stellar wind (the matter accreted by our compact objects) there are many combinations that can result into orbital modulations. With the eccentricity the density around the orbit changes, and thus, the accreted matter. With eccentricity and inclination the absorption column faced by the emitted radiation varies depending on the orbital phase, so does the ionization of the wind.</p>
+<p>These orbital modulations are easy to grasp but not so straightforward to analyze—yet that’s where our tools come in.</p>
+<p>The primary challenge in this type of analysis has long been the lack of sufficient resolution for detailed phase-resolved observations. However, upcoming high-resolution missions, such as <strong>XRISM</strong> and <strong>New Athena</strong>, promise to take these analyses to the next level. But it’s not just about improved resolution—advances in computational power are equally crucial. Many of these tools have already been successfully applied in studies using <strong>XMM-Newton</strong> and <strong>Chandra</strong> data, enabling analyses that would have been impossible just a few years ago.</p>
+<p>So, dive in out <strong>NOTEBOOKS</strong> where we show some interesting examples, theoretial and real data, and start exploring the fascinating world of X-ray binaries with our tools!</p>
               
             </div>
           </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="notebooks/example_NS_spin_shape_VelaX1/Pulse_shape_Velax1/" class="btn btn-neutral float-right" title="Ns pulse shape in Vela X-1">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
 
   <hr/>
 
@@ -804,13 +146,14 @@ Notes:
     
     
     
+      <span><a href="notebooks/example_NS_spin_shape_VelaX1/Pulse_shape_Velax1/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
   </span>
 </div>
     <script src="js/jquery-3.6.0.min.js"></script>
     <script>var base_url = ".";</script>
     <script src="js/theme_extra.js"></script>
     <script src="js/theme.js"></script>
-      <script src="search/main.js"></script>
     <script>
         jQuery(function () {
             SphinxRtdTheme.Navigation.enable(true);
@@ -822,5 +165,5 @@ Notes:
 
 <!--
 MkDocs version : 1.6.0
-Build Date UTC : 2024-10-17 13:27:27.068692+00:00
+Build Date UTC : 2024-10-19 21:00:08.331700+00:00
 -->
