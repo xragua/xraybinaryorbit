@@ -40,13 +40,16 @@ Some examples of their usage are presented https://github.com/xragua/xraybinaryo
 
 The following Python libraries are required:
 
-- Python >= 3.7
-- NumPy >= 1.19
-- SciPy >= 1.5
-- Matplotlib >= 3.2 (optional, for plotting)
-- Astropy >= 4.0 (for astronomical time and coordinate handling)
-- PySwarms >= 1.1 (for particle swarm optimization)
-- Tinker 
+-- numpy
+-- pandas
+-- scipy
+-- pyswarm
+-- matplotlib
+-- tk
+-- astropy
+-- pytest>=6.0
+-- xraybinaryorbit
+
 ---
 
 ## Usage
@@ -74,7 +77,7 @@ Detailed documentation, including function references and tutorials, can be foun
 
 ## Contributing
 
-Contributions are welcome! Please check the [CONTRIBUTING.md](link-to-contributing) for details on how to contribute.
+Contributions are welcome! Please check the [CONTRIBUTING FILE](https://github.com/xragua/xraybinaryorbit/blob/main/contributing.md) for details on how to contribute.
 
 ---
 

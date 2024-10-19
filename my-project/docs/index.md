@@ -42,5 +42,21 @@ The primary challenge in this type of analysis has long been the lack of suffici
 
 So, dive in out **NOTEBOOKS** where we show some interesting examples, theoretial and real data, and start exploring the fascinating world of X-ray binaries with our tools!
 
+## Usage
+
+### For all Functions:
+In this code, a user-friendly form is used to handle the various parameters that influence orbital modulations. The user inputs are saved in a file in the running directory, which is automatically loaded during future runs to avoid re-entering parameters. If the file doesn’t exist, the form will load for new inputs. However, if "load_directly=True" and the file exists, the code will run using the saved parameters.
+
+
+### For Fitting Functions:
+For fitting the orbital parameters, two approaches are available: least squares (LS) and particle swarm (PSO), named *_ls and *_ps respectively. The least squares method is faster but doesn’t always converge, while the particle swarm method is more reliable but computationally expensive. Key parameters for particle swarm include num_iterations, maxiter, and swarmsize. It’s recommended to start with smaller values for these parameters (e.g., num_iterations=3, maxiter=250, and swarmsize=50) to gauge the computational demand and adjust as needed.
+
+For each of these fiting approaches we have two different methods: extended and discrete. In order to fit our data to some orbital modulation we have a list of "values" corresponding to a list of "time sections" (the duration of our phase resolved spectra, lightcurve section etc...). 
+When we are triying to fit an orbital modulation with for example, a short period, taking into account that orbital modulations are in general sinusoidal, is not possible to just use the center of the "time section" but we have to consider the average of the orbital modulation during the extent of the "time sections" and fit that to our "values".
+
+As this highly complicates the calculus, the parameter "extended_binsize" gives us a value from which we will consider the point to be discrete or extended (i.e. if extended_binsize=0.01, if the size of our time section covers more than 0.01 orbital phases, it will be trated as extended, and if less as discrete). 
+To use the extended approach we can provide our list of times as pairs (see Fe XXV Doppler Shifts Cen X-3 example) or we can provide a list of "times", one component longer than the "values" list and the pairs will be created authomatically. If the list of "times" is the same length of the list of "values" the discrete approach will be used.
+
+
 
 
