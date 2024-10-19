@@ -1,7 +1,7 @@
 
 # Contributing to XRAYBINARYORBIT
 
-First off, thank you for taking the time to contribute! 🎉 We appreciate your effort in helping to improve the XRAYBINARYORBIT package.
+First off, thank you for taking the time to contribute! 🎉 We appreciate your effort in helping to improve the **xraybinaryorbit** package.
 
 ## How to Contribute
 
