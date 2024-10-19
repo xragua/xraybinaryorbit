@@ -1,5 +1,5 @@
 
-# XRAYBINARYORBIT: A Python Package for analyzing X-ray binaries orbital modulations
+# XRAYBINARYORBIT: A Python Package for Analyzing Orbital Modulations in X-ray Binaries
 
 
 **X-ray binaries are truly fascinating!** In these extreme environments, a compact object—either a neutron star or black hole—draws in matter from a companion star, producing intense X-ray emissions. These systems offer a unique window into extreme physics, from the effects of strong gravity and relativistic jets to the presence of intense magnetic fields.
