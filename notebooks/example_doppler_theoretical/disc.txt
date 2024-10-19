@@ -1,0 +1,2 @@
+iphase,semimajor,orbitalperiod,eccentricity,periapsis,inclination,Rstar,Mstar1,Mstar2,iphase2,semimajor2,orbitalperiod2,eccentricity2,periapsis2,inclination2,Mass3,wind_vel,feature
+0.0,2.0,2.0,0.1,200.0,60.0,12.0,20.0,1.4,0.3,0.3,0.06,0.2,200.0,60.0,0.01,0.0,6.7
