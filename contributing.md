@@ -7,7 +7,7 @@ First off, thank you for taking the time to contribute! 🎉 We appreciate your 
 
 ### 1. Reporting Bugs
 
-If you find a bug, please open an issue [here](https://github.com/username/XRAYBINARYORBIT/issues). When reporting a bug, please include:
+If you find a bug, please open an issue [here](https://github.com/xragua/XRAYBINARYORBIT/issues). When reporting a bug, please include:
 - A clear and descriptive title.
 - A detailed description of the issue, including steps to reproduce it.
 - Any relevant error messages or stack traces.
@@ -16,7 +16,7 @@ If you find a bug, please open an issue [here](https://github.com/username/XRAYB
 
 ### 2. Suggesting Enhancements
 
-Have a feature request or improvement idea? Please open a feature request [here](https://github.com/username/XRAYBINARYORBIT/issues) with:
+Have a feature request or improvement idea? Please open a feature request [here](https://github.com/xragua/XRAYBINARYORBIT/issues) with:
 - A detailed description of the feature/enhancement.
 - Why it would be helpful to the project.
 - Any alternatives or considerations to keep in mind.
