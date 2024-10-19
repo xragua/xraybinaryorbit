@@ -23,6 +23,8 @@ Or download the code from [here](https://github.com/xragua/xraybinaryorbit/relea
 
 Some examples of their usage are presented [here](https://github.com/xragua/xraybinaryorbit/tree/main/examples).
 
+And here [here](https://github.com/xragua/xraybinaryorbit) is the page of this package 
+
 
 ### Which orbital modulations are we talking about?
 ---------------------------------------------------------
