@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="description" content="None" />
       <link rel="shortcut icon" href="img/favicon.ico" />
-    <title>XRAYBINARYORBIT</title>
+    <title>GETTING STARTED</title>
     <link rel="stylesheet" href="css/theme.css" />
     <link rel="stylesheet" href="css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
@@ -48,6 +48,14 @@
     </li>
         </ul>
     </li>
+    <li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#for-all-functions">For all Functions:</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#for-fitting-functions">For Fitting Functions:</a>
+    </li>
+        </ul>
+    </li>
     </ul>
                 </li>
               </ul>
@@ -73,6 +81,10 @@
                 </li>
               </ul>
               <ul>
+                <li class="toctree-l1"><a class="reference internal" href="contribute/">CONTRIBUTE</a>
+                </li>
+              </ul>
+              <ul>
                 <li class="toctree-l1"><a class="reference internal" href="references/">REFERENCES</a>
                 </li>
               </ul>
@@ -83,7 +95,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
       <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href=".">XRAYBINARYORBIT</a>
+          <a href=".">GETTING STARTED</a>
         
       </nav>
       <div class="wy-nav-content">
@@ -110,6 +122,7 @@
 <p>You can install the package directly from PyPI using pip: <strong>pip install xraybinaryorbit</strong>.</p>
 <p>Or download the code from <a href="https://github.com/xragua/xraybinaryorbit/releases/tag/0.2.9">here</a>.</p>
 <p>Some examples of their usage are presented <a href="https://github.com/xragua/xraybinaryorbit/tree/main/examples">here</a>.</p>
+<p>And here <a href="https://github.com/xragua/xraybinaryorbit">here</a> is the page of this package </p>
 <h3 id="which-orbital-modulations-are-we-talking-about">Which orbital modulations are we talking about?</h3>
 <hr />
 <p>We can observe how the center of an emission line slightly changes during a phase resolved analysis, or how the NS spin period slightly varies following a trend. These phenomena can be caused by Doppler effect. Our code will help you turn these observations into the orbital parameters that cause those Doppler shifts.</p>
@@ -118,6 +131,15 @@
 <p>These orbital modulations are easy to grasp but not so straightforward to analyze—yet that’s where our tools come in.</p>
 <p>The primary challenge in this type of analysis has long been the lack of sufficient resolution for detailed phase-resolved observations. However, upcoming high-resolution missions, such as <strong>XRISM</strong> and <strong>New Athena</strong>, promise to take these analyses to the next level. But it’s not just about improved resolution—advances in computational power are equally crucial. Many of these tools have already been successfully applied in studies using <strong>XMM-Newton</strong> and <strong>Chandra</strong> data, enabling analyses that would have been impossible just a few years ago.</p>
 <p>So, dive in out <strong>NOTEBOOKS</strong> where we show some interesting examples, theoretial and real data, and start exploring the fascinating world of X-ray binaries with our tools!</p>
+<h2 id="usage">Usage</h2>
+<h3 id="for-all-functions">For all Functions:</h3>
+<p>In this code, a user-friendly form is used to handle the various parameters that influence orbital modulations. The user inputs are saved in a file in the running directory, which is automatically loaded during future runs to avoid re-entering parameters. If the file doesn’t exist, the form will load for new inputs. However, if "load_directly=True" and the file exists, the code will run using the saved parameters.</p>
+<h3 id="for-fitting-functions">For Fitting Functions:</h3>
+<p>For fitting the orbital parameters, two approaches are available: least squares (LS) and particle swarm (PSO), named <em>_ls and </em>_ps respectively. The least squares method is faster but doesn’t always converge, while the particle swarm method is more reliable but computationally expensive. Key parameters for particle swarm include num_iterations, maxiter, and swarmsize. It’s recommended to start with smaller values for these parameters (e.g., num_iterations=3, maxiter=250, and swarmsize=50) to gauge the computational demand and adjust as needed.</p>
+<p>For each of these fiting approaches we have two different methods: extended and discrete. In order to fit our data to some orbital modulation we have a list of "values" corresponding to a list of "time sections" (the duration of our phase resolved spectra, lightcurve section etc...). 
+When we are triying to fit an orbital modulation with for example, a short period, taking into account that orbital modulations are in general sinusoidal, is not possible to just use the center of the "time section" but we have to consider the average of the orbital modulation during the extent of the "time sections" and fit that to our "values".</p>
+<p>As this highly complicates the calculus, the parameter "extended_binsize" gives us a value from which we will consider the point to be discrete or extended (i.e. if extended_binsize=0.01, if the size of our time section covers more than 0.01 orbital phases, it will be trated as extended, and if less as discrete). 
+To use the extended approach we can provide our list of times as pairs (see Fe XXV Doppler Shifts Cen X-3 example) or we can provide a list of "times", one component longer than the "values" list and the pairs will be created authomatically. If the list of "times" is the same length of the list of "values" the discrete approach will be used.</p>
               
             </div>
           </div><footer>
@@ -165,5 +187,5 @@
 
 <!--
 MkDocs version : 1.6.0
-Build Date UTC : 2024-10-19 21:12:06.206563+00:00
+Build Date UTC : 2024-10-20 13:50:06.397315+00:00
 -->
