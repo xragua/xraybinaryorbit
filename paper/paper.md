@@ -49,7 +49,7 @@ The package functions are based on the following key theories:
 
 ### Conservation of Angular Momentum
 
-In systems with non-zero eccentricity, the orbital phase varies non-linearly with observational time due to increased speed at periastron, governed by the conservation of angular momentum. Kepler’s laws further explain that objects sweep out equal areas in equal times (see [@2006ima..book.....C]).
+In systems with non-zero eccentricity, the orbital phase varies non-linearly with observational time due to increased speed at periastron, governed by the conservation of angular momentum. Kepler’s laws further explain that objects sweep out equal areas in equal times (see [@2006imabookC]).
 
 $$ r^2 \cdot \omega = h $$
 
