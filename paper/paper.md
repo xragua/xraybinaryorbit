@@ -61,7 +61,7 @@ The CAK model [@1975ApJ195157C] describes radiation-driven winds in massive star
 
 $$ \rho = \frac{\dot{M}}{4 \pi v R^2} $$
 
-Here, $\rho$  is wind density, $\dot{M}$ is the mass accretion rate, $\v$ is orbital speed, and $\R$ is the distance to the star. We assume a spherical, un-ionized wind distribution.
+Here, $\rho$  is wind density, $\dot{M}$ is the mass accretion rate, v is orbital speed, and R is the distance to the star. We assume a spherical, un-ionized wind distribution.
 
 ### Accretion Luminosity and Ionization
 
