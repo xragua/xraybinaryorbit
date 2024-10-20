@@ -44,70 +44,84 @@ The xraybinaryoorbit package helps to unveil X-Ray binary orbital dynamics based
 
 # Science behind
 
-The functions contained in this package rely in the following theories:
+The package functions are based on the following key theories:
 
-## Conservation of angular momentum in orbital mechanics:
+### Conservation of Angular Momentum:
 
-If the eccentricity of our system is different than 0, the orbital phase will not vary linearly with the observational time, as the speed will increase at periastron primarily due to the conservation of angular momentum, which dictates that as the compact object moves closer to the central star, it must travel faster to maintain the total angular momentum of the system. This relationship is further influenced by Kepler’s laws of planetary motion, which describe how objects sweep out equal areas in equal times (see [@2006ima..book.....C] as an example).
+In systems with non-zero eccentricity, orbital phase varies non-linearly with observational time due to increased speed at periastron, governed by the conservation of angular momentum. Kepler’s laws further explain that objects sweep out equal areas in equal times (see [@2006ima..book.....C]).
 
 $$ r^2 \cdot \omega = h $$
 
-We will take this fact into consideration in all our functions and provide dedicated functions to transform phase into time and vice versa.
+We account for this in all functions and provide tools to convert phase to time and vice versa.
 
-## CAK model:
+### CAK Model:
 
-The CAK model, proposed by Castor, Abbott, and Klein in 1975 [@1975ApJ195157C], is a theoretical framework used to describe radiation-driven winds in massive stars. These stars have strong stellar winds driven by the interaction between their radiation and the surrounding material.
-
-The CAK model provides a quantitative description of how the wind velocity, density, and ionization state vary with distance from the companion.
+The CAK model [@1975ApJ195157C] describes radiation-driven winds in massive stars, with wind velocity, density, and ionization state varying with distance from the companion star.
 
 $$ \rho = \frac{\dot{M}}{4 \pi v R^2} $$
 
-where $\rho$ is the density of the wind at a given distance R $\dot{M}$ is the mass accretion rate in units of mass per unit of time, v is the orbital speed at distances greater than the stellar radius and R is the distance to the star.
-In this package, we assume that the wind is spherically distributed and unionized.
+Here, \(\rho\) is wind density, \(\dot{M}\) is the mass accretion rate, \(v\) is orbital speed, and \(R\) is distance to the star. We assume a spherical, unionized wind distribution.
 
-## Accretion Luminosity and Ionization Parameter:
+### Accretion Luminosity and Ionization:
 
-Accretion is the process by which gravitational potential energy is extracted from material accreting onto a gravitating body  (see [@Frank_King_Raine_2002]). This phenomenon serves as the primary power source in various types of close binary systems and is also believed to fuel active galactic nuclei and quasars. When considering a flux of matter with an accretion rate $\dot{M}$, the resulting luminosity (assuming all mechanical energy is radiated) is defined as the accretion luminosity:
+Accretion powers many close binary systems. The accretion luminosity is:
 
 $$ L_{ac} = \frac{GM \dot{M}}{R} $$
 
-where $L_{ac}$ is the accretion luminosity, G is the gravitational constant, M is the mass of the gravitating body, $\dot{M}$ is the accretion rate, and R is the characteristic radius associated with the accretion process.
-
-The ionization parameter $\xi$ is defined as:
+where \(L_{ac}\) is the luminosity, \(G\) is the gravitational constant, \(M\) is mass, and \(R\) is the accretion radius. The ionization parameter \(\xi\) is:
 
 $$ \xi = \frac{L_{\rm X}}{n(r_{\rm X}) r_{\rm X}^{2}} $$
 
-where $L_{\rm X}$ is the X-ray luminosity, $n(r_{\rm X})$ is the local particle density at a distance  $ r_{\rm X}$ from the X-ray source (such as a neutron star), $r_{\rm X}$ is the distance from the X-ray source.
+We calculate the ionization map within the system plane based on these calculations.
 
-This parameter quantifies the ionization state of the surrounding medium due to X-ray radiation from the neutron star. We provide a function which calculates the ionization map if the binary system plane taking into account these calculations within the CAK frame.
+### Doppler Effect:
 
-## Doppler Effect:
-
-The Doppler effect, named after the Austrian physicist Christian Doppler who first proposed it in 1842, is the change in frequency or wavelength of a wave in relation to an observer moving relative to the source of the wave.
-
-In astronomy, the Doppler effect is used to analyze the motion of celestial objects by observing shifts in their emitted light. By measuring Doppler shifts in the spectra of stars and galaxies, astronomers determine radial velocities, study galactic rotation, identify exoplanets, and explore the expansion of the universe through cosmological redshift. The Doppler effect plays a pivotal role in deciphering cosmic motions and unraveling the mysteries of the cosmos.
-
-In the context of X-ray binaries, the Doppler effect is evident in the pulsations of a neutron star (NS) orbiting its companion, allowing precise determination of orbital parameters like radius, mass, inclination, and eccentricity. Additionally, the Doppler effect influences emission line energies when the emitting plasma is in motion.
-
-The general equation for the Doppler velocity in terms of the orbital phase is:
+The Doppler effect helps determine orbital parameters in X-ray binaries, affecting emission line energies and enabling the analysis of radial velocities.
 
 $$ v_{D} = (-r\omega \sin\phi \sin i) $$
 
 $$ \lambda_{D} = \lambda_{\text{rest}}\left(1+\frac{v_{D}}{c}\right) $$
 
-where r is the orbital radius, a is the semimajor axis, b is the distance to the barycenter (the semimajor axis corrected by the reduced mass of the stellar system), e is the eccentricity, \phi is the orbital phase,  W is the angle to the periapsis, $\omega$ is the angular velocity, i is the inclination, and $\lambda_{\rm D}$ and $\lambda_{\rm rest}$ are the center of the emission line, Doppler shifted and at rest, respectively, in wavelength units.
-
+where \(r\) is orbital radius, \(\omega\) is angular velocity, \(i\) is inclination, and \(\lambda_{\rm D}\) and \(\lambda_{\rm rest}\) are the Doppler-shifted and rest wavelengths, respectively.
 
 Within the Fitting functions, we use a particle swarm approach ([@pyswarms], [@10.1162/EVCO_r_00180]) as a classical least squares algorithm does not always converge.
 
 ![Some results obtained with the functions contained in this package.](joss.jpg){#sylt width="100%"}
 
+## Technical Details of Software Usage
+
+### General Usage:
+
+The software provides a **user-friendly interface** for managing the various parameters that influence orbital modulations. Upon first use, the user inputs parameters through a form, which are then saved in a file within the running directory. This file is **automatically loaded** in future runs, eliminating the need to re-enter parameters. If the file is absent, the form will reappear for new inputs. Alternatively, setting `load_directly=True` will bypass the form and run the code using previously saved parameters (if the file exists).
+
+### Fitting Functions:
+
+For fitting orbital parameters, the software offers two approaches: **least squares (LS)** and **particle swarm optimization (PSO)**, denoted by `_ls` and `_ps`, respectively. The **least squares method** is faster but may fail to converge in certain cases, whereas the **particle swarm method** is more robust but computationally intensive. Key parameters for PSO include `num_iterations`, `maxiter`, and `swarmsize`. It is recommended to start with smaller values for these parameters (e.g., `num_iterations=3`, `maxiter=250`, and `swarmsize=50`) to evaluate computational demand and adjust accordingly.
+
+### Extended vs. Discrete Fitting:
+
+The software provides two fitting methods: **extended** and **discrete**. When fitting data to orbital modulation, a list of "values" corresponding to "time sections" (e.g., phase-resolved spectra or lightcurve segments) is required. For short-period orbital modulations, which are often sinusoidal, the **center of the time section** may not fully represent the modulation. Instead, it’s necessary to consider the **average modulation** across the time section and fit that to the observed values.
+
+To handle this complexity, the `extended_binsize` parameter is used. If the size of the time section covers more than `extended_binsize` orbital phases (e.g., `extended_binsize=0.01`), the point is treated as **extended**; otherwise, it is treated as **discrete**. 
+
+The extended approach can be utilized by providing a list of time pairs, or alternatively, a single list of times with one extra element compared to the "values" list, from which pairs will be created automatically. If the list of "times" is the same length as the "values" list, the **discrete approach** will be used.
+
+
+
 # Statement of Need
 
-The study of orbital modulations in X-ray binaries is crucial for understanding their physical properties and dynamics. Upcoming telescopes, such as Athena's X-IFU [@2016SPIE9905E2FB] and XRISM [@2022arXiv220205399X], with their significantly higher resolution, are expected to greatly enhance these analyses, providing deeper insights into the intricate dynamics of X-ray systems.
 
-However, it's not just the next-generation instruments that will advance our understanding. New analytical techniques and improved computing capacities will allow us to revisit and reanalyze existing data from current telescopes from a different point of view. This approach has already been successfully applied to data from Chandra and XMM, as demonstrated in recent studies [@2022MNRAS512304S; @2021MNRAS.501.5892S], and is also the focus of ongoing research currently under review.
+## Statement of Need
 
+Within our observations, we might detect slight oscillating shifts in the center of emission lines and/or small variations in a NS's spin period in a trend. This phenomenon is likely caused by the Doppler effect. Our code helps translate this data into the orbital parameters responsible for such Doppler shifts.
+
+However, this seemingly simple process becomes complex when accounting for several factors: inclination, eccentricity, periapsis, and distance to the barycenter (which depends on the masses of the stars involved) all play crucial roles. If the eccentricity is greater than zero, the velocity around the orbit is not constant, making the analysis even more intricate.
+
+When considering stellar wind (the matter accreted by compact objects), various combinations of these factors result in orbital modulations. Eccentricity causes changes in wind density throughout the orbit, affecting the amount of accreted matter. Both eccentricity and inclination influence the absorption column faced by the emitted radiation and the ionization of the stellar wind, which also vary with orbital phase.
+
+Although these orbital modulations are conceptually simple, they are challenging to analyze. At the same time, they can provide tremendous insights into the orbital mechanics and wind properties of our systems, helping to complete the puzzle when we already have some pieces of information. This is where our tools provide critical support.
+
+Historically, the primary limitation in this type of analysis has been the lack of sufficient resolution for detailed phase-resolved observations. However, upcoming high-resolution missions like XRISM [@2022arXiv220205399X] and New Athena [@2016SPIE9905E2FB] promise to significantly improve the quality of these analyses. In addition to better resolution, advances in computational power have been crucial. Many of these tools have already been successfully applied to studies using XMM-Newton and Chandra data [@2022MNRAS512304S; @2021MNRAS.501.5892S], enabling analyses that were previously impossible.
 
 
 # Acknowledgements
