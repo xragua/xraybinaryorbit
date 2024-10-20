@@ -1,4 +1,4 @@
-site_name: XRAYBINARYORBIT
+site_name: GETTING STARTED
 
 theme:
     palette:
@@ -34,5 +34,7 @@ nav:
         
         - Time Phase Relation Theoretical: notebooks/example_time_phase_relation_theoretical/time_phase_relation.ipynb
         
+
     - FUNCTIONS: functions.md
+    - CONTRIBUTE: contribute.md
     - REFERENCES: references.md
