@@ -59,4 +59,3 @@ To use the extended approach we can provide our list of times as pairs (see Fe X
 
 
 
-
