@@ -40,7 +40,7 @@ These orbital modulations are easy to grasp but not so straightforward to analyz
 The primary challenge in this type of analysis has long been the lack of sufficient resolution for detailed phase-resolved observations. However, upcoming high-resolution missions, such as **XRISM** and **New Athena**, promise to take these analyses to the next level. But it’s not just about improved resolution—advances in computational power are equally crucial. Many of these tools have already been successfully applied in studies using **XMM-Newton** and **Chandra** data, enabling analyses that would have been impossible just a few years ago.
 
 
-So, dive in out **NOTEBOOKS** where we show some interesting examples, theoretial and real data, and start exploring the fascinating world of X-ray binaries with our tools!
+So, dive in our **EXAMPLES** where we show some interesting uses cases, theoretial and real data, and start exploring the fascinating world of X-ray binaries with our tools!
 
 ## Usage
 
