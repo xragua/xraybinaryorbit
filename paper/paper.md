@@ -4,7 +4,7 @@ tags:
   - Python
   - x-ray astronomy
   - dynamics
-  - doppler effectt
+  - doppler effect
   - Binary stars
   - Neutron stars
   - Black holes
@@ -35,7 +35,7 @@ bibliography: paper.bib
 
 # Summary
 
-X-ray astronomy is a young discipline, spanning no more than a few decades. The Earth's atmosphere is opaque to this type of radiation, so observations in this part of the spectrum had to wait until the beginning of the space era, when rocket launchers carrying X-ray telescopes revealed the universe from a brand-new point of view.
+X-ray astronomy is a young discipline, spanning no more than a few decades. The Earth's atmosphere is opaque to this type of radiation, so observations in this part of the spectrum were delayed until the space era began, when rocket launchers carrying X-ray telescopes revealed the universe from a brand-new point of view.
 
 X-ray binaries are tremendously interesting systems. In these extreme environments, a compact object—either a neutron star or black hole—draws in matter from a companion star, producing intense X-ray emissions. These systems offer a unique window into extreme physics, from the effects of strong gravity and relativistic jets to the presence of intense magnetic fields.
 
@@ -115,11 +115,11 @@ The `extended` approach can be utilized by providing a list of `time pairs`, or 
 
 Within our observations, we might detect slight oscillating shifts in the center of emission lines and/or small variations in a neutron star's spin period. This phenomenon is likely caused by the Doppler effect. Our code helps translate this data into the orbital parameters responsible for such Doppler shifts.
 
-However, this seemingly simple process becomes complex when accounting for the several factors involved: inclination, eccentricity, periapsis, and distance to the barycenter (which depends on the masses of the stars involved). If the eccentricity is greater than zero, the velocity around the orbit is not constant, making the analysis even more intricate.
+However, this seemingly simple process becomes complex when accounting for the several factors involved: inclination, eccentricity, periapsis, and distance to the barycenter (which depend on the masses of the stars involved). If the eccentricity is greater than zero, the velocity around the orbit is not constant, making the analysis even more intricate.
 
 When considering stellar wind (the matter accreted by compact objects), various combinations of these factors result in orbital modulations. Eccentricity causes changes in wind density throughout the orbit, affecting the amount of accreted matter. Both eccentricity and inclination influence the absorption column faced by the emitted radiation and the ionization of the stellar wind, which also varies with orbital phase.
 
-Although these orbital modulations are conceptually simple, they are challenging to analyze. At the same time, they can provide tremendous insights into the orbital mechanics and wind properties of our systems, may be helping to complete the puzzle when we already have some pieces of information or to give us a list of possible scenarios compatible with our data. This is where our tools provide valuable support.
+Although these orbital modulations are conceptually simple, they are challenging to analyze. At the same time, they can provide tremendous insights into the orbital mechanics and wind properties of our systems, may help to complete the puzzle when we already have some pieces of information or to give us a list of possible scenarios compatible with our data. This is where our tools provide valuable support.
 
 Historically, the primary limitation in this type of analysis has been the lack of resolution for detailed phase-resolved observations. However, upcoming high-resolution missions like XRISM [@2022arXiv220205399X] and New Athena [2016SPIE.9905E..2FB] promise to significantly improve the quality of these analyses. In addition to better resolution, advances in computational power have been crucial. Many of these tools have already been successfully applied to studies using XMM-Newton and Chandra data, enabling analyses that were previously impossible. [@2022MNRAS512304S; 2021MNRAS.501.5892S]
 
@@ -129,4 +129,4 @@ Historically, the primary limitation in this type of analysis has been the lack 
 This research has been funded by the ASFAE/2022/02 project from the Generalitat Valenciana. 
 
 
-#References
+# References
