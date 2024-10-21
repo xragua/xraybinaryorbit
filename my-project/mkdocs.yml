@@ -15,7 +15,7 @@ plugins:
     - mkdocs-jupyter
 
 nav:
-    -  GUETTING STARTED: index.md
+    -  GETTING STARTED: index.md
     
     - EXAMPLES:
     
