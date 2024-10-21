@@ -54,18 +54,22 @@ The following Python libraries are required:
 
 ## Usage
 
-### For all Functions:
-In this code, a user-friendly form is used to handle the various parameters that influence orbital modulations. The user inputs are saved in a file in the running directory, which is automatically loaded during future runs to avoid re-entering parameters. If the file doesn’t exist, the form will load for new inputs. However, if "load_directly=True" and the file exists, the code will run using the saved parameters.
+### General Usage
 
+The software provides a user-friendly interface for managing the various parameters that influence orbital modulations. Upon first use, the user inputs parameters through a form, which are then saved in a file within the running directory. This file is automatically loaded in future runs, eliminating the need to re-enter all parameters.
+ If the file is absent, the form will reappear for new inputs. Alternatively, setting `load_directly=True` will bypass the form and run the code using previously saved parameters (only if the file exists).
 
-### For Fitting Functions:
-For fitting the orbital parameters, two approaches are available: least squares (LS) and particle swarm (PSO), named *_ls and *_ps respectively. The least squares method is faster but doesn’t always converge, while the particle swarm method is more reliable but computationally expensive. Key parameters for particle swarm include num_iterations, maxiter, and swarmsize. It’s recommended to start with smaller values for these parameters (e.g., num_iterations=3, maxiter=250, and swarmsize=50) to gauge the computational demand and adjust as needed.
+### Fitting Functions
 
-For each of these fiting approaches we have two different methods: extended and discrete. In order to fit our data to some orbital modulation we have a list of "values" corresponding to a list of "time sections" (the duration of our phase resolved spectra, lightcurve section etc...). 
-When we are triying to fit an orbital modulation with for example, a short period, taking into account that orbital modulations are in general sinusoidal, is not possible to just use the center of the "time section" but we have to consider the average of the orbital modulation during the extent of the "time sections" and fit that to our "values".
+For fitting orbital parameters, the software offers two approaches: least squares (LS) and particle swarm optimization (PSO) denoted by `_ls` and `_ps`, within the functions name respectively. The LS methods is faster but may fail to converge in certain cases, whereas the PS0 is more robust but computationally intensive. Key parameters for PSO include `num_iterations`, `maxiter`, and `swarmsize`. It is recommended to start with smaller values for these parameters (e.g., `num_iterations=3`, `maxiter=100`, and `swarmsize=20`) to evaluate computational demand and adjust accordingly. 
 
-As this highly complicates the calculus, the parameter "extended_binsize" gives us a value from which we will consider the point to be discrete or extended (i.e. if extended_binsize=0.01, if the size of our time section covers more than 0.01 orbital phases, it will be trated as extended, and if less as discrete). 
-To use the extended approach we can provide our list of times as pairs (see Fe XXV Doppler Shifts Cen X-3 example) or we can provide a list of "times", one component longer than the "values" list and the pairs will be created authomatically. If the list of "times" is the same length of the list of "values" the discrete approach will be used.
+### Extended vs. Discrete Fitting
+
+The software provides two fitting methods: `extended` and `discrete`. When fitting data to a certain orbital modulation, a list of `values` (either energies, pulses or wave lengths) corresponding to `time sections` (e.g., phase-resolved spectra or lightcurve segments, wich have a defined time lenght) will be our data to fit. For short-period orbital modulations, which are often sinusoidal, the center of the time section may not properly represent the modulation (that would be a discrete approach, i.e. an discrete time/orbital phase for a discrete value). Instead, it’s necessary to consider the average modulation across the entire `time section` and fit that to the observed `values`.
+
+To handle this complexity, the `extended_binsize` parameter is used. If the size of the time section covers more than `extended_binsize` orbital phases (e.g., `extended_binsize=0.01`), the point is treated as extended; otherwise, it is treated as discrete authomatically, within the `extended` mode, which is the default. 
+
+The `extended` approach can be utilized by providing a list of `time pairs`, or alternatively, a single list of `times` with one extra element compared to the `values` list, from which `time pairs` will be automatically created. If the list of `times` is the same length as the `values` list, the `discrete` approach will be used instead, even if the `extended` method was selected (a warnig will appear indicating it so).
 
 ---
 
