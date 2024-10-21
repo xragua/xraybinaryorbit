@@ -50,9 +50,11 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a>
         <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#for-all-functions">For all Functions:</a>
+    <li class="toctree-l3"><a class="reference internal" href="#general-usage">General Usage</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#for-fitting-functions">For Fitting Functions:</a>
+    <li class="toctree-l3"><a class="reference internal" href="#fitting-functions">Fitting Functions</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#extended-vs-discrete-fitting">Extended vs. Discrete Fitting</a>
     </li>
         </ul>
     </li>
@@ -132,14 +134,15 @@
 <p>The primary challenge in this type of analysis has long been the lack of sufficient resolution for detailed phase-resolved observations. However, upcoming high-resolution missions, such as <strong>XRISM</strong> and <strong>New Athena</strong>, promise to take these analyses to the next level. But it’s not just about improved resolution—advances in computational power are equally crucial. Many of these tools have already been successfully applied in studies using <strong>XMM-Newton</strong> and <strong>Chandra</strong> data, enabling analyses that would have been impossible just a few years ago.</p>
 <p>So, dive in out <strong>NOTEBOOKS</strong> where we show some interesting examples, theoretial and real data, and start exploring the fascinating world of X-ray binaries with our tools!</p>
 <h2 id="usage">Usage</h2>
-<h3 id="for-all-functions">For all Functions:</h3>
-<p>In this code, a user-friendly form is used to handle the various parameters that influence orbital modulations. The user inputs are saved in a file in the running directory, which is automatically loaded during future runs to avoid re-entering parameters. If the file doesn’t exist, the form will load for new inputs. However, if "load_directly=True" and the file exists, the code will run using the saved parameters.</p>
-<h3 id="for-fitting-functions">For Fitting Functions:</h3>
-<p>For fitting the orbital parameters, two approaches are available: least squares (LS) and particle swarm (PSO), named <em>_ls and </em>_ps respectively. The least squares method is faster but doesn’t always converge, while the particle swarm method is more reliable but computationally expensive. Key parameters for particle swarm include num_iterations, maxiter, and swarmsize. It’s recommended to start with smaller values for these parameters (e.g., num_iterations=3, maxiter=250, and swarmsize=50) to gauge the computational demand and adjust as needed.</p>
-<p>For each of these fiting approaches we have two different methods: extended and discrete. In order to fit our data to some orbital modulation we have a list of "values" corresponding to a list of "time sections" (the duration of our phase resolved spectra, lightcurve section etc...). 
-When we are triying to fit an orbital modulation with for example, a short period, taking into account that orbital modulations are in general sinusoidal, is not possible to just use the center of the "time section" but we have to consider the average of the orbital modulation during the extent of the "time sections" and fit that to our "values".</p>
-<p>As this highly complicates the calculus, the parameter "extended_binsize" gives us a value from which we will consider the point to be discrete or extended (i.e. if extended_binsize=0.01, if the size of our time section covers more than 0.01 orbital phases, it will be trated as extended, and if less as discrete). 
-To use the extended approach we can provide our list of times as pairs (see Fe XXV Doppler Shifts Cen X-3 example) or we can provide a list of "times", one component longer than the "values" list and the pairs will be created authomatically. If the list of "times" is the same length of the list of "values" the discrete approach will be used.</p>
+<h3 id="general-usage">General Usage</h3>
+<p>The software provides a user-friendly interface for managing the various parameters that influence orbital modulations. Upon first use, the user inputs parameters through a form, which are then saved in a file within the running directory. This file is automatically loaded in future runs, eliminating the need to re-enter all parameters.
+ If the file is absent, the form will reappear for new inputs. Alternatively, setting <code>load_directly=True</code> will bypass the form and run the code using previously saved parameters (only if the file exists).</p>
+<h3 id="fitting-functions">Fitting Functions</h3>
+<p>For fitting orbital parameters, the software offers two approaches: least squares (LS) and particle swarm optimization (PSO) denoted by <code>_ls</code> and <code>_ps</code>, within the functions name respectively. The LS methods is faster but may fail to converge in certain cases, whereas the PS0 is more robust but computationally intensive. Key parameters for PSO include <code>num_iterations</code>, <code>maxiter</code>, and <code>swarmsize</code>. It is recommended to start with smaller values for these parameters (e.g., <code>num_iterations=3</code>, <code>maxiter=100</code>, and <code>swarmsize=20</code>) to evaluate computational demand and adjust accordingly. </p>
+<h3 id="extended-vs-discrete-fitting">Extended vs. Discrete Fitting</h3>
+<p>The software provides two fitting methods: <code>extended</code> and <code>discrete</code>. When fitting data to a certain orbital modulation, a list of <code>values</code> (either energies, pulses or wave lengths) corresponding to <code>time sections</code> (e.g., phase-resolved spectra or lightcurve segments, wich have a defined time lenght) will be our data to fit. For short-period orbital modulations, which are often sinusoidal, the center of the time section may not properly represent the modulation (that would be a discrete approach, i.e. an discrete time/orbital phase for a discrete value). Instead, it’s necessary to consider the average modulation across the entire <code>time section</code> and fit that to the observed <code>values</code>.</p>
+<p>To handle this complexity, the <code>extended_binsize</code> parameter is used. If the size of the time section covers more than <code>extended_binsize</code> orbital phases (e.g., <code>extended_binsize=0.01</code>), the point is treated as extended; otherwise, it is treated as discrete authomatically, within the <code>extended</code> mode, which is the default. </p>
+<p>The <code>extended</code> approach can be utilized by providing a list of <code>time pairs</code>, or alternatively, a single list of <code>times</code> with one extra element compared to the <code>values</code> list, from which <code>time pairs</code> will be automatically created. If the list of <code>times</code> is the same length as the <code>values</code> list, the <code>discrete</code> approach will be used instead, even if the <code>extended</code> method was selected (a warnig will appear indicating it so).</p>
               
             </div>
           </div><footer>
@@ -187,5 +190,5 @@ To use the extended approach we can provide our list of times as pairs (see Fe X
 
 <!--
 MkDocs version : 1.6.0
-Build Date UTC : 2024-10-20 14:36:22.978043+00:00
+Build Date UTC : 2024-10-21 10:05:00.873955+00:00
 -->
