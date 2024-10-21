@@ -49,7 +49,7 @@ The package functions are based on the following key theories:
 
 ### Conservation of Angular Momentum
 
-In systems with non-zero eccentricity, the orbital phase varies non-linearly with observational time due to increased speed at periastron, governed by the conservation of angular momentum. Kepler’s laws further explain that objects sweep out equal areas in equal times (see ---).
+In systems with non-zero eccentricity, the orbital phase varies non-linearly with observational time due to increased speed at periastron, governed by the conservation of angular momentum. Kepler’s laws further explain that objects sweep out equal areas in equal times (see [@2006ima..book.....C]).
 
 $$ r^2 \cdot \omega = Area $$
 
@@ -57,7 +57,7 @@ We account for this in all functions and provide tools to convert phase to time 
 
 ### CAK Model
 
-The CAK model --- describes radiation-driven winds in massive stars, with wind velocity, density, and ionization state varying with distance from the companion star.
+The CAK model ([@1975ApJ195157C]) describes radiation-driven winds in massive stars, with wind velocity, density, and ionization state varying with distance from the companion star.
 
 $$ \rho = \frac{\dot{M}}{4 \pi v R^2} $$
 
@@ -65,7 +65,7 @@ Here, $\rho$  is wind density, $\dot{M}$ is the mass loss rate, v is the wind ve
 
 ### Accretion Luminosity and Ionization
 
-Accretion powers many close binary systems. The accretion luminosity is given by:
+Accretion powers many close binary systems (see [@Frank_King_Raine_2002]). The accretion luminosity is given by:
 
 $$ L_{ac} = \frac{G M \dot{M}}{R} $$
 
@@ -87,7 +87,7 @@ The doppler length wave affected by Doppler effect be written as:
 
 $$ \lambda_{D} = \lambda_{\text{rest}}\left(1+\frac{v_{D}}{c}\right) $$
 
-where r is the orbital radius, $\omega$ is angular velocity, $\i$ is inclination, and $\lambda_{\rm D}$ and $\\lambda_{\rm rest}$ are the Doppler-shifted and rest wavelengths, respectively.
+where r is the orbital radius, $\omega$ is angular velocity, $\i$ is inclination, and $\lambda_{\rm D}$ and $\lambda_{\rm rest}$ are the Doppler-shifted and rest wavelengths, respectively.
 
 Within the fitting functions, we use a particle swarm approach (---, ---) as a classical least squares algorithm does not always converge.
 
@@ -102,7 +102,7 @@ The software provides a user-friendly interface for managing the various paramet
 
 ### Fitting Functions
 
-For fitting orbital parameters, the software offers two approaches: least squares (LS) and particle swarm optimization (PSO), denoted by `_ls` and `_ps`, within the functions name respectively. The LS methods is faster but may fail to converge in certain cases, whereas the PS0 is more robust but computationally intensive. Key parameters for PSO include `num_iterations`, `maxiter`, and `swarmsize`. It is recommended to start with smaller values for these parameters (e.g., `num_iterations=3`, `maxiter=100`, and `swarmsize=20`) to evaluate computational demand and adjust accordingly. 
+For fitting orbital parameters, the software offers two approaches: least squares (LS) and particle swarm optimization (PSO) (see [@pyswarms] and [@10.1162/EVCO_r_00180]), denoted by `_ls` and `_ps`, within the functions name respectively. The LS methods is faster but may fail to converge in certain cases, whereas the PS0 is more robust but computationally intensive. Key parameters for PSO include `num_iterations`, `maxiter`, and `swarmsize`. It is recommended to start with smaller values for these parameters (e.g., `num_iterations=3`, `maxiter=100`, and `swarmsize=20`) to evaluate computational demand and adjust accordingly. 
 
 ### Extended vs. Discrete Fitting
 
@@ -122,7 +122,7 @@ When considering stellar wind (the matter accreted by compact objects), various 
 
 Although these orbital modulations are conceptually simple, they are challenging to analyze. At the same time, they can provide tremendous insights into the orbital mechanics and wind properties of our systems, may be helping to complete the puzzle when we already have some pieces of information or to give us a list of possible parameter combinations. This is where our tools provide valuable support.
 
-Historically, the primary limitation in this type of analysis has been the lack of resolution for detailed phase-resolved observations. However, upcoming high-resolution missions like XRISM --- and New Athena --- promise to significantly improve the quality of these analyses. In addition to better resolution, advances in computational power have been crucial. Many of these tools have already been successfully applied to studies using XMM-Newton and Chandra data ---, enabling analyses that were previously impossible.
+Historically, the primary limitation in this type of analysis has been the lack of resolution for detailed phase-resolved observations. However, upcoming high-resolution missions like XRISM [@2022arXiv220205399X] and New Athena [@2016SPIE9905E2FB] promise to significantly improve the quality of these analyses. In addition to better resolution, advances in computational power have been crucial. Many of these tools have already been successfully applied to studies using XMM-Newton and Chandra data ([@2022MNRAS512304S; @2021MNRAS.501.5892S], and others currently under review), enabling analyses that were previously impossible.
 
 
 # Acknowledgements
