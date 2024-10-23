@@ -45,12 +45,12 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v4
       with:
-        name: pytest-results-${{ github.run_id }}
+        name: pytest-results-${{ github.run_id }}-python-${{ matrix.python-version }}  # Include Python version
         path: test/pytest_results.xml  # Ensure correct path for the test results
 
     - name: Upload coverage report
       if: always()
       uses: actions/upload-artifact@v4
       with:
-        name: coverage-report-${{ github.run_id }}
+        name: coverage-report-${{ github.run_id }}-python-${{ matrix.python-version }}  # Include Python version
         path: test/coverage.xml  # Upload coverage.xml from the test directory
