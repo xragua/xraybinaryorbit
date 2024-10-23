@@ -51,5 +51,5 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v3
       with:
-        name: coverage-report
-        path: coverage.xml
+        name: tests/coverage-report
+        path: tests/coverage.xml
