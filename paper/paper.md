@@ -41,12 +41,14 @@ X-ray binaries are tremendously interesting systems. In these extreme environmen
 
 Orbital modulations are observed in nearly all X-ray binary systems. These variations arise from the orbital motions of the system, driven by the relative velocities of the two stars and their changing configurations with respect to each other and the observer.
 
-To aid in the study of these modulations, we introduce **xraybinaryorbit** , a user-friendly Python package designed to simplify the analysis of orbital modulations in X-ray binaries. Some results obtained with this packages are shown in Figure 1. 
+To aid in the study of these modulations, we introduce **xraybinaryorbit** , a user-friendly Python package designed to simplify the analysis of orbital modulations in X-ray binaries.
+There are three groups of funtions within this package, theoretical, fitting and timing. The software provides a user-friendly interface for managing the various parameters that influence orbital modulations. Upon first use, the user inputs parameters through a form, which are then saved in a file within the running directory. This file is automatically loaded in future runs, eliminating the need to re-enter all parameters. The software offers two fitting approaches: least squares (LS) and particle swarm optimization (PSO) [@10.1162/EVCO_r_00180,@pyswarms]. The LS methods is faster but may fail to converge in certain cases, whereas the PS0 is more robust but computationally intensive.  Some results obtained with this packages are shown in Figure 1. 
+
+There are many software that can be applied to X-ray binary system analysis, including **Stingray** [@2019ApJ88139H] which focus on timing analysis of astronomical data, **Jaxspec** which specializes in spectral fitting using Bayesian inference. **Lightkurve**,  facilitates the analysis of time-series data from space missions like Kepler and TESS. 
+A well know comprehensive package for general astronomy computations and data handling is **Astropy** [@astropy:2022]. 
+In contrast **xraybinaryorbit** is highly specialized, providing detailed insights into orbital modulations within X-ray binary systems. 
 
 # Science Behind
-
-The package functions are based on the following key theories:
-
 ### Conservation of Angular Momentum
 In systems with non-zero eccentricity, the orbital phase varies non-linearly with observational time due to increased speed at periastron, governed by the conservation of angular momentum. Kepler’s laws further explain that objects sweep out equal areas in equal times [@2006imabookC].
 
@@ -83,28 +85,9 @@ $$ \lambda_{D} = \lambda_{\text{rest}}\left(1+\frac{v_{D}}{c}\right) $$
 
 where r is the orbital radius, $\omega$ is angular velocity, $\i$ is inclination, and $\lambda_{\rm D}$ and $\lambda_{\rm rest}$ are the Doppler-shifted and rest wavelengths, respectively.
 
-## Similar software
-
-There are many software that can be applied to X-ray binary system analysis, including **Stingray** [@2019ApJ88139H] which focus on timing analysis of astronomical data, **Jaxspec** which specializes in spectral fitting using Bayesian inference.  Another valuable tool is **Lightkurve** , which facilitates the analysis of time-series data from space missions like Kepler and TESS. 
-A well know comprehensive package for general astronomy computations and data handling is **Astropy** [@astropy:2022]. 
-In contrast **xraybinaryorbit** is highly specialized, providing detailed insights into orbital modulations within X-ray binary systems. 
-Together, these software packages form a robust ecosystem for X-ray binary analysis, enhancing our understanding of these complex astronomical systems.
-
-
 
 ![Some results obtained with the functions contained in this package.](joss.jpg){#sylt width="100%"}
 
-
-## Some technical Details
-
-There are three groups of funtions within this package, theoretical, fitting and timing.
-
-### General Usage
-
-The software provides a user-friendly interface for managing the various parameters that influence orbital modulations. Upon first use, the user inputs parameters through a form, which are then saved in a file within the running directory. This file is automatically loaded in future runs, eliminating the need to re-enter all parameters.
-
-### Fitting Functions
-The software offers two fitting approaches: least squares (LS) and particle swarm optimization (PSO) [@10.1162/EVCO_r_00180,@pyswarms]. The LS methods is faster but may fail to converge in certain cases, whereas the PS0 is more robust but computationally intensive. 
 
 # Statement of Need
 
