@@ -48,14 +48,14 @@ To aid in the study of these modulations, we introduce **xraybinaryorbit** , a u
 The package functions are based on the following key theories:
 
 ### Conservation of Angular Momentum
-In systems with non-zero eccentricity, the orbital phase varies non-linearly with observational time due to increased speed at periastron, governed by the conservation of angular momentum. Kepler’s laws further explain that objects sweep out equal areas in equal times [@2006ima..book.....C].
+In systems with non-zero eccentricity, the orbital phase varies non-linearly with observational time due to increased speed at periastron, governed by the conservation of angular momentum. Kepler’s laws further explain that objects sweep out equal areas in equal times [@2006imabookC].
 
 $$ r^2 \cdot \omega = Area $$
 
 We account for this in all functions and provide tools to convert phase to time and vice versa.
 
 ### CAK Model
-The CAK model [@1975ApJ...195..157C] describes radiation-driven winds in massive stars, with wind velocity, density, and ionization state varying with distance to the companion star.
+The CAK model [@1975ApJ195157C] describes radiation-driven winds in massive stars, with wind velocity, density, and ionization state varying with distance to the companion star.
 
 $$ \rho = \frac{\dot{M}}{4 \pi v R^2} $$
 
@@ -83,14 +83,17 @@ $$ \lambda_{D} = \lambda_{\text{rest}}\left(1+\frac{v_{D}}{c}\right) $$
 
 where r is the orbital radius, $\omega$ is angular velocity, $\i$ is inclination, and $\lambda_{\rm D}$ and $\lambda_{\rm rest}$ are the Doppler-shifted and rest wavelengths, respectively.
 
+## Similar software
+
+There are many software that can be applied to X-ray binary system analysis, including **Stingray** [@2019ApJ88139H] and **HENDRICS** [@2018ascl.soft05019B], which focus on timing analysis of astronomical data. **Jaxspec** specializes in spectral fitting using Bayesian inference. On the other hand, **Astropy** [@astropy:2022] is a comprehensive package for general astronomy computations and data handling. In contrast, **xraybinaryorbit** is highly specialized, providing detailed insights into orbital modulations within X-ray binary systems. 
+
 
 ![Some results obtained with the functions contained in this package.](joss.jpg){#sylt width="100%"}
 
-## Similar software
 
-There are many software that can be applied to X-ray binary system analysis, including **Stingray** [@2019ApJ...881...39H] and **HENDRICS** [@2018ascl.soft05019B], which focus on timing analysis of astronomical data. **Jaxspec**, which specializes in spectral fitting  using Bayesian inference. On the other hand, **Astropy** [@astropy:2022] is a comprehensive package for general astronomy computations and data handling. In contrast, **xraybinaryorbit** is highly specialized, providing detailed insights into orbital modulations within X-ray binary systems. 
+## Some technical Details
 
-## Technical Details of Software Usage
+There are three groups of funtions within this package, theoretical, fitting and timing.
 
 ### General Usage
 
@@ -109,7 +112,7 @@ When considering stellar wind (the matter accreted by compact objects), various 
 
 Although these orbital modulations are conceptually simple, they are challenging to analyze. At the same time, they can provide tremendous insights into the orbital mechanics and wind properties of our systems, may help to complete the puzzle when we already have some pieces of information or to give us a list of possible scenarios compatible with our data. This is where our tools provide valuable support.
 
-Historically, the primary limitation in this type of analysis has been the lack of resolution for detailed phase-resolved observations. However, upcoming high-resolution missions like XRISM [@2022arXiv220205399X] and New Athena [2016SPIE.9905E..2FB] promise to significantly improve the quality of these analyses. In addition to better resolution, advances in computational power have been crucial. Many of these tools have already been successfully applied to studies using XMM-Newton and Chandra data, enabling analyses that were previously impossible. [@2022MNRAS512304S; @2021MNRAS.501.5892S; @refId0]
+Historically, the primary limitation in this type of analysis has been the lack of resolution for detailed phase-resolved observations. However, upcoming high-resolution missions like XRISM [@2022arXiv220205399X] and New Athena [2016SPIE.9905E..2FB] promise to significantly improve the quality of these analyses. In addition to better resolution, advances in computational power have been crucial. Many of these tools have already been successfully applied to studies using XMM-Newton and Chandra data, enabling analyses that were previously impossible. [@2022MNRAS512304S;@2021MNRAS.501.5892S;@newcenx3]
 
 
 # Acknowledgements
