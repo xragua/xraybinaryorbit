@@ -19,10 +19,10 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v3
 
     - name: Set up Python
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
 
@@ -35,22 +35,21 @@ jobs:
 
     - name: Run tests with coverage
       run: |
-        cd tests
+        cd test
         coverage run -m pytest --verbose
-        coverage xml -o coverage.xml  # Save coverage XML in 'tests' folder
+        coverage xml
         coverage report
 
     - name: Upload test results
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v3
       with:
         name: pytest-results
-        path: tests/pytest_results.xml  # Upload test results from 'tests' folder
+        path: pytest_results.xml
 
     - name: Upload coverage report
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v3
       with:
         name: coverage-report
-        path: tests/coverage.xml  # Upload coverage report from 'tests' folder
-
+        path: coverage.xml
