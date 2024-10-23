@@ -79,7 +79,7 @@ We calculate the ionization map within the system plane based on these calculati
 
 The Doppler effect helps determine orbital parameters in X-ray binaries, affecting emission line energies and enabling the analysis of radial velocities.
 
-The Doppler velocity can be calculated as:
+The Doppler velocity provoked by orbital motion can be calculated as:
 
 $$ v_{D} = (-r\omega \sin\phi \sin i) $$
 
@@ -91,6 +91,12 @@ where r is the orbital radius, $\omega$ is angular velocity, $\i$ is inclination
 
 
 ![Some results obtained with the functions contained in this package.](joss.jpg){#sylt width="100%"}
+
+## Similar software
+
+Other software packages that can be applied to X-ray binary system analysis include Stingray [2019ApJ...881...39H] and HENDRICS [2018ascl.soft05019B], which focus on timing analysis of astronomical data. Jaxspec specializes in spectral analysis using Bayesian inference techniques. On the other hand, Astropy [astropy:2022] is a comprehensive package for general astronomy computations and data handling. In contrast, xraybinaryorbit is highly specialized, providing detailed insights into orbital modulations within X-ray binary systems. Each of these packages offers distinct tools, complementing one another based on the focus—whether it's timing, spectral, or orbital analysis.
+
+
 
 ## Technical Details of Software Usage
 
