@@ -19,10 +19,10 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4  # Updated to v4 to avoid Node.js deprecation warnings
 
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5  # Updated to v5 for compatibility
       with:
         python-version: ${{ matrix.python-version }}
 
@@ -35,21 +35,22 @@ jobs:
 
     - name: Run tests with coverage
       run: |
-        cd test
-        coverage run -m pytest --verbose
-        coverage html
-        coverage report
+        cd tests
+        coverage run -m pytest --verbose  # Run tests and collect coverage
+        coverage xml -o coverage.xml  # Save the coverage report in XML format in 'tests' folder
+        coverage html  # Generate HTML coverage report
+        coverage report  # Display the coverage report in the console
 
     - name: Upload test results
       if: always()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4  # Updated to v4 for Node.js 20 compatibility
       with:
         name: pytest-results
-        path: pytest_results.xml
+        path: tests/pytest_results.xml  # Ensure correct path for pytest results in 'tests' folder
 
     - name: Upload coverage report
       if: always()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4  # Updated to v4 for Node.js 20 compatibility
       with:
-        name: tests/coverage-report
-        path: tests/coverage.xml
+        name: coverage-report
+        path: tests/coverage.xml  # Upload coverage.xml from 'tests' folder
