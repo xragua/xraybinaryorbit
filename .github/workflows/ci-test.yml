@@ -37,7 +37,7 @@ jobs:
       run: |
         cd test
         coverage run -m pytest --verbose
-        coverage xml
+        coverage xml -o coverage.xml
         coverage report
 
     - name: Upload test results
