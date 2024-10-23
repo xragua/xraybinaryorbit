@@ -53,4 +53,4 @@ jobs:
       uses: actions/upload-artifact@v4  # Updated to v4 for Node.js 20 compatibility
       with:
         name: coverage-report
-        path: tests/coverage.xml  # Upload coverage.xml from 'tests' folder
+        path: test/coverage.xml  # Upload coverage.xml from 'tests' folder
