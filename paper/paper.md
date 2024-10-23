@@ -48,7 +48,6 @@ To aid in the study of these modulations, we introduce **xraybinaryorbit** , a u
 The package functions are based on the following key theories:
 
 ### Conservation of Angular Momentum
-
 In systems with non-zero eccentricity, the orbital phase varies non-linearly with observational time due to increased speed at periastron, governed by the conservation of angular momentum. Kepler’s laws further explain that objects sweep out equal areas in equal times [@2006ima..book.....C].
 
 $$ r^2 \cdot \omega = Area $$
@@ -56,15 +55,13 @@ $$ r^2 \cdot \omega = Area $$
 We account for this in all functions and provide tools to convert phase to time and vice versa.
 
 ### CAK Model
-
-The CAK model [@1975ApJ...195..157C] describes radiation-driven winds in massive stars, with wind velocity, density, and ionization state varying with distance from the companion star.
+The CAK model [@1975ApJ...195..157C] describes radiation-driven winds in massive stars, with wind velocity, density, and ionization state varying with distance to the companion star.
 
 $$ \rho = \frac{\dot{M}}{4 \pi v R^2} $$
 
 Here, $\rho$  is wind density, $\dot{M}$ is the mass loss rate, v is the wind velocity and R is the distance to the companion. We assume a spherical, smooth and un-ionized wind distribution.
 
 ### Accretion Luminosity and Ionization
-
 Accretion powers many close binary systems [@Frank_King_Raine_2002]. The accretion luminosity is given by:
 
 $$ L_{ac} = \frac{G M \dot{M}}{R} $$
@@ -73,17 +70,14 @@ where L$_{ac}$ is the luminosity, G is the gravitational constant, M is the comp
 
 $$ \xi = \frac{L_{\rm X}}{n(r_{\rm X}) r_{\rm X}^{2}} $$
 
-We calculate the ionization map within the system plane based on these calculations.
-
 ### Doppler Effect
-
-The Doppler effect helps determine orbital parameters in X-ray binaries, affecting emission line energies and enabling the analysis of radial velocities.
+The Doppler effect refers to the change in frequency or wavelength of a wave (such as sound or light) in relation to an observer moving relative to the source. 
 
 The Doppler velocity provoked by orbital motion can be calculated as:
 
 $$ v_{D} = (-r\omega \sin\phi \sin i) $$
 
-The doppler length wave affected by Doppler effect be written as:
+The observed Doppler length wave can be written as:
 
 $$ \lambda_{D} = \lambda_{\text{rest}}\left(1+\frac{v_{D}}{c}\right) $$
 
@@ -94,8 +88,7 @@ where r is the orbital radius, $\omega$ is angular velocity, $\i$ is inclination
 
 ## Similar software
 
-Other software packages that can be applied to X-ray binary system analysis include Stingray [2019ApJ...881...39H] and HENDRICS [2018ascl.soft05019B], which focus on timing analysis of astronomical data. Jaxspec specializes in spectral analysis using Bayesian inference techniques. On the other hand, Astropy [astropy:2022] is a comprehensive package for general astronomy computations and data handling. In contrast, xraybinaryorbit is highly specialized, providing detailed insights into orbital modulations within X-ray binary systems. Each of these packages offers distinct tools, complementing one another based on the focus—whether it's timing, spectral, or orbital analysis.
-
+Other software packages that can be applied to X-ray binary system analysis include **Stingray** [@2019ApJ...881...39H] and **HENDRICS** [@2018ascl.soft05019B], which focus on timing analysis of astronomical data. **Jaxspec** specializes in spectral analysis using Bayesian inference techniques. On the other hand, **Astropy** [@astropy:2022] is a comprehensive package for general astronomy computations and data handling. In contrast, xraybinaryorbit is highly specialized, providing detailed insights into orbital modulations within X-ray binary systems. Each of these packages offers distinct tools, complementing one another based on the focus—whether it's timing, spectral, or orbital analysis.
 
 
 ## Technical Details of Software Usage
@@ -103,19 +96,10 @@ Other software packages that can be applied to X-ray binary system analysis incl
 ### General Usage
 
 The software provides a user-friendly interface for managing the various parameters that influence orbital modulations. Upon first use, the user inputs parameters through a form, which are then saved in a file within the running directory. This file is automatically loaded in future runs, eliminating the need to re-enter all parameters.
- If the file is absent, the form will reappear for new inputs. Alternatively, setting `load_directly=True` will bypass the form and run the code using previously saved parameters (only if the file exists).
+
 
 ### Fitting Functions
-
-For fitting orbital parameters, the software offers two approaches: least squares (LS) and particle swarm optimization (PSO) (see [@10.1162/EVCO_r_00180,@pyswarms]), denoted by `_ls` and `_ps`, within the functions name respectively. The LS methods is faster but may fail to converge in certain cases, whereas the PS0 is more robust but computationally intensive. Key parameters for PSO include `num_iterations`, `maxiter`, and `swarmsize`. It is recommended to start with smaller values for these parameters (e.g., `num_iterations=3`, `maxiter=100`, and `swarmsize=20`) to evaluate computational demand and adjust accordingly. 
-
-### Extended vs. Discrete Fitting
-
-The software provides two fitting methods: `extended` and `discrete`. When fitting data to a certain orbital modulation, a list of `values` (either energies, pulses or wave lengths) corresponding to `time sections` (e.g., phase-resolved spectra or lightcurve segments, wich have a defined time lenght) will be our data to fit. For short-period orbital modulations, which are often sinusoidal, the center of the time section may not properly represent the modulation (that would be a discrete approach, i.e. an discrete time/orbital phase for a discrete value). Instead, it’s necessary to consider the average modulation across the entire `time section` and fit that to the observed `values`.
-
-To handle this complexity, the `extended_binsize` parameter is used. If the size of the time section covers more than `extended_binsize` orbital phases (e.g., `extended_binsize=0.01`), the point is treated as extended; otherwise, it is treated as discrete authomatically, within the `extended` mode, which is the default. 
-
-The `extended` approach can be utilized by providing a list of `time pairs`, or alternatively, a single list of `times` with one extra element compared to the `values` list, from which `time pairs` will be automatically created. If the list of `times` is the same length as the `values` list, the `discrete` approach will be used instead, even if the `extended` method was selected (a warnig will appear indicating it so).
+For fitting orbital parameters, the software offers two approaches: least squares (LS) and particle swarm optimization (PSO) (see [@10.1162/EVCO_r_00180,@pyswarms]). The LS methods is faster but may fail to converge in certain cases, whereas the PS0 is more robust but computationally intensive. 
 
 # Statement of Need
 
@@ -127,7 +111,7 @@ When considering stellar wind (the matter accreted by compact objects), various 
 
 Although these orbital modulations are conceptually simple, they are challenging to analyze. At the same time, they can provide tremendous insights into the orbital mechanics and wind properties of our systems, may help to complete the puzzle when we already have some pieces of information or to give us a list of possible scenarios compatible with our data. This is where our tools provide valuable support.
 
-Historically, the primary limitation in this type of analysis has been the lack of resolution for detailed phase-resolved observations. However, upcoming high-resolution missions like XRISM [@2022arXiv220205399X] and New Athena [2016SPIE.9905E..2FB] promise to significantly improve the quality of these analyses. In addition to better resolution, advances in computational power have been crucial. Many of these tools have already been successfully applied to studies using XMM-Newton and Chandra data, enabling analyses that were previously impossible. [@2022MNRAS512304S; 2021MNRAS.501.5892S]
+Historically, the primary limitation in this type of analysis has been the lack of resolution for detailed phase-resolved observations. However, upcoming high-resolution missions like XRISM [@2022arXiv220205399X] and New Athena [2016SPIE.9905E..2FB] promise to significantly improve the quality of these analyses. In addition to better resolution, advances in computational power have been crucial. Many of these tools have already been successfully applied to studies using XMM-Newton and Chandra data, enabling analyses that were previously impossible. [@2022MNRAS512304S; @2021MNRAS.501.5892S; @refId0]
 
 
 # Acknowledgements
