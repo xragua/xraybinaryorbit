@@ -35,7 +35,7 @@ jobs:
 
     - name: Run tests with coverage
       run: |
-        cd tests
+        cd test
         coverage run -m pytest --verbose  # Run tests and collect coverage
         coverage xml -o coverage.xml  # Save the coverage report in XML format in 'tests' folder
         coverage html  # Generate HTML coverage report
@@ -46,7 +46,7 @@ jobs:
       uses: actions/upload-artifact@v4  # Updated to v4 for Node.js 20 compatibility
       with:
         name: pytest-results
-        path: tests/pytest_results.xml  # Ensure correct path for pytest results in 'tests' folder
+        path: test/pytest_results.xml  # Ensure correct path for pytest results in 'tests' folder
 
     - name: Upload coverage report
       if: always()
