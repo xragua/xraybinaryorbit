@@ -8,6 +8,7 @@ on:
   schedule:
     # run every Monday at 6am UTC
     - cron: '0 6 * * 1'
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -29,11 +30,15 @@ jobs:
       run: |
         pip install --upgrade pip
         pip install --upgrade xraybinaryorbit
-        pip install pytest>=6.0 #pytest-xvfb
+        pip install pytest>=6.0 coverage
         pip install -r requirements.txt
 
-    - name: Run tests
-      run: cd test; pytest --verbose --junitxml=pytest_results.xml
+    - name: Run tests with coverage
+      run: |
+        cd test
+        coverage run -m pytest --verbose
+        coverage xml
+        coverage report
 
     - name: Upload test results
       if: always()
@@ -41,4 +46,11 @@ jobs:
       with:
         name: pytest-results
         path: pytest_results.xml
+
+    - name: Upload coverage report
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: coverage-report
+        path: coverage.xml
 
