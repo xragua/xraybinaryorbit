@@ -85,7 +85,11 @@ where r is the orbital radius, $\omega$ is angular velocity, $\i$ is inclination
 
 ## Similar software
 
-There are many software that can be applied to X-ray binary system analysis, including **Stingray** [@2019ApJ88139H] and **HENDRICS** [@2018ascl.soft05019B], which focus on timing analysis of astronomical data. **Jaxspec** specializes in spectral fitting using Bayesian inference. On the other hand, **Astropy** [@astropy:2022] is a comprehensive package for general astronomy computations and data handling. In contrast, **xraybinaryorbit** is highly specialized, providing detailed insights into orbital modulations within X-ray binary systems. 
+There are many software that can be applied to X-ray binary system analysis, including **Stingray** [@2019ApJ88139H] which focus on timing analysis of astronomical data, **Jaxspec** which specializes in spectral fitting using Bayesian inference.  Another valuable tool is **Lightkurve** , which facilitates the analysis of time-series data from space missions like Kepler and TESS. 
+A well know comprehensive package for general astronomy computations and data handling is **Astropy** [@astropy:2022]. 
+In contrast **xraybinaryorbit** is highly specialized, providing detailed insights into orbital modulations within X-ray binary systems. 
+Together, these software packages form a robust ecosystem for X-ray binary analysis, enhancing our understanding of these complex astronomical systems.
+
 
 
 ![Some results obtained with the functions contained in this package.](joss.jpg){#sylt width="100%"}
