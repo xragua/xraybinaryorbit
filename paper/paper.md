@@ -41,7 +41,7 @@ X-ray binaries are tremendously interesting systems. In these extreme environmen
 
 Orbital modulations are observed in nearly all X-ray binary systems. These variations arise from the orbital motions of the system, driven by the relative velocities of the two stars and their changing configurations with respect to each other and the observer.
 
-To aid in the study of these modulations, we introduce **xraybinaryorbit** , a user-friendly Python package designed to simplify the analysis of orbital modulations in X-ray binaries. 
+To aid in the study of these modulations, we introduce **xraybinaryorbit** , a user-friendly Python package designed to simplify the analysis of orbital modulations in X-ray binaries. Some results obtained with this packages are shown in Figure 1. 
 
 # Science Behind
 
@@ -71,7 +71,7 @@ where L$_{ac}$ is the luminosity, G is the gravitational constant, M is the comp
 $$ \xi = \frac{L_{\rm X}}{n(r_{\rm X}) r_{\rm X}^{2}} $$
 
 ### Doppler Effect
-The Doppler effect refers to the change in frequency or wavelength of a wave (such as sound or light) in relation to an observer moving relative to the source. 
+The Doppler effect refers to the change in frequency or wavelength of a wave in relation to an observer moving relative to the source. 
 
 The Doppler velocity provoked by orbital motion can be calculated as:
 
@@ -88,8 +88,7 @@ where r is the orbital radius, $\omega$ is angular velocity, $\i$ is inclination
 
 ## Similar software
 
-Other software packages that can be applied to X-ray binary system analysis include **Stingray** [@2019ApJ...881...39H] and **HENDRICS** [@2018ascl.soft05019B], which focus on timing analysis of astronomical data. **Jaxspec** specializes in spectral analysis using Bayesian inference techniques. On the other hand, **Astropy** [@astropy:2022] is a comprehensive package for general astronomy computations and data handling. In contrast, xraybinaryorbit is highly specialized, providing detailed insights into orbital modulations within X-ray binary systems. Each of these packages offers distinct tools, complementing one another based on the focus—whether it's timing, spectral, or orbital analysis.
-
+There are many software that can be applied to X-ray binary system analysis, including **Stingray** [@2019ApJ...881...39H] and **HENDRICS** [@2018ascl.soft05019B], which focus on timing analysis of astronomical data. **Jaxspec**, which specializes in spectral fitting  using Bayesian inference. On the other hand, **Astropy** [@astropy:2022] is a comprehensive package for general astronomy computations and data handling. In contrast, **xraybinaryorbit** is highly specialized, providing detailed insights into orbital modulations within X-ray binary systems. 
 
 ## Technical Details of Software Usage
 
@@ -97,9 +96,8 @@ Other software packages that can be applied to X-ray binary system analysis incl
 
 The software provides a user-friendly interface for managing the various parameters that influence orbital modulations. Upon first use, the user inputs parameters through a form, which are then saved in a file within the running directory. This file is automatically loaded in future runs, eliminating the need to re-enter all parameters.
 
-
 ### Fitting Functions
-For fitting orbital parameters, the software offers two approaches: least squares (LS) and particle swarm optimization (PSO) (see [@10.1162/EVCO_r_00180,@pyswarms]). The LS methods is faster but may fail to converge in certain cases, whereas the PS0 is more robust but computationally intensive. 
+The software offers two fitting approaches: least squares (LS) and particle swarm optimization (PSO) [@10.1162/EVCO_r_00180,@pyswarms]. The LS methods is faster but may fail to converge in certain cases, whereas the PS0 is more robust but computationally intensive. 
 
 # Statement of Need
 
