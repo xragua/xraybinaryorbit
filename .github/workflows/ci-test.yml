@@ -40,17 +40,3 @@ jobs:
         coverage xml -o coverage.xml  # Save the coverage report in XML format in 'tests' folder
         coverage html  # Generate HTML coverage report
         coverage report  # Display the coverage report in the console
-
-    - name: Upload test results
-      if: always()
-      uses: actions/upload-artifact@v4  # Updated to v4 for Node.js 20 compatibility
-      with:
-        name: pytest-results
-        path: test/pytest_results.xml  # Ensure correct path for pytest results in 'tests' folder
-
-    - name: Upload coverage report
-      if: always()
-      uses: actions/upload-artifact@v4  # Updated to v4 for Node.js 20 compatibility
-      with:
-        name: coverage-report-${{ github.run_id }} 
-        path: test/coverage.xml  # Upload coverage.xml from 'tests' folder
