@@ -1,0 +1,2 @@
+semimajor,orbitalperiod,eccentricity,periapsis,inclination,Rstar,Mstar1,Mstar2,wind_infinite_velocity,Mass_loss_rate,beta
+nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan

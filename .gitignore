@@ -13,7 +13,6 @@ index.rst
 make.bat
 Makefile
 my-project/site
-my-project/mkdocs.yml
 
 # Ignore macOS system files
 .DS_Store
@@ -27,4 +26,5 @@ my-project/mkdocs.yml
 tmp/
 temp/
 .ipynb_checkpoints/
-.ipynb_checkpoints/
+*checkpoints*
+
