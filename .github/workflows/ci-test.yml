@@ -32,25 +32,9 @@ jobs:
         pip install --upgrade xraybinaryorbit
         pip install pytest>=6.0 coverage
         pip install -r requirements.txt
+        pip install coverage         
 
     - name: Run tests with coverage
       run: |
         cd test  # Ensure that this directory exists
-        coverage run -m pytest --verbose --junitxml=pytest_results.xml  # Generate test results
-        coverage xml -o coverage.xml  # Save the coverage report in XML format
-        coverage html  # Generate HTML coverage report
-        coverage report  # Display the coverage report in the console
-
-    - name: Upload test results
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: pytest-results-python-${{ matrix.python-version }}.xml  # Include Python version
-        path: test/pytest_results.xml  # Ensure correct path for the test results
-
-    - name: Upload coverage report
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: coverage-report-python-${{ matrix.python-version }}.xml  # Include Python version
-        path: test/coverage.xml  # Upload coverage.xml from the test directory
+        coverage run pytest --cov .
