@@ -2,6 +2,7 @@
 __pycache__/
 *.pyc
 *.pyo
+.ipynb_checkpoints
 
 # Ignore build artifacts
 build/
@@ -11,6 +12,7 @@ dist/
 index.rst
 make.bat
 Makefile
+my-project/site
 
 # Ignore macOS system files
 .DS_Store
