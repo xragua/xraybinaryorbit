@@ -1,3 +1,0 @@
-iphase_spiral,semimajor_spiral,b,omega,inclination_spiral,feature
-0.0,1.0,-1.0,0.0,0.0,6.63
-1.0,100.0,0.0,1.0,90.0,6.7
