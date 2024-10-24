@@ -32,13 +32,21 @@ jobs:
       run: |
         pip install --upgrade pip
         pip install --upgrade xraybinaryorbit
-        pip install pytest>=6.0 coverage
-        pip install -r requirements.txt
-        pip install coverage         
+        pip install pytest
+        pip install pytest-cov
 
     - name: Run tests with coverage
       run: |
-        echo "hello"  # Use echo instead of print
-        cd test  
-        coverage run pytest --cov .
+        cd test  # Navigate to the test directory
+        pytest --cov=./ --cov-report=xml  # Generate the coverage report
 
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v4
+      with:
+        file: ./coverage.xml  # Ensure this matches the actual coverage report file
+        env_vars: OS,PYTHON
+        fail_ci_if_error: true
+        flags: unittests
+        name: codecov-umbrella
+        token: ${{ secrets.CODECOV_TOKEN }}  # Ensure you have this secret set in your repository
+        verbose: true
