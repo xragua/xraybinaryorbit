@@ -25,3 +25,5 @@ my-project/site
 *.log
 tmp/
 temp/
+.ipynb_checkpoints/
+.ipynb_checkpoints/

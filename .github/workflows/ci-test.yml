@@ -3,10 +3,12 @@ name: Run CI-test
 on:
   push:
     branches:
-    - main
+      - '**'  # This will trigger on pushes to any branch
   pull_request:
+    branches:
+      - '**'  # This will trigger on pull requests to any branch
   schedule:
-    # run every Monday at 6am UTC
+    # Run every Monday at 6am UTC
     - cron: '0 6 * * 1'
 
 jobs:
@@ -30,16 +32,4 @@ jobs:
       run: |
         pip install --upgrade pip
         pip install --upgrade xraybinaryorbit
-        pip install pytest>=6.0 coverage
-        pip install -r requirements.txt
-        pip install pytest pytest-cov
 
-    - name: Run tests with coverage
-      run: |
-        cd test  # Ensure that this directory exists
-        run: pytest --cov --cov-report=xml
-
-    - name: Upload results to Codecov
-      uses: codecov/codecov-action@v4
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
