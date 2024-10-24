@@ -40,5 +40,5 @@ jobs:
       run: |
         echo "hello"  # Use echo instead of print
         cd test  
-        coverage run -m pytest --cov .
+        coverage run pytest --cov .
 
