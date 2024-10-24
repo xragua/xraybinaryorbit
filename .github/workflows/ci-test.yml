@@ -3,10 +3,12 @@ name: Run CI-test
 on:
   push:
     branches:
-    - main
+      - '**'  # This will trigger on pushes to any branch
   pull_request:
+    branches:
+      - '**'  # This will trigger on pull requests to any branch
   schedule:
-    # run every Monday at 6am UTC
+    # Run every Monday at 6am UTC
     - cron: '0 6 * * 1'
 
 jobs:
@@ -36,5 +38,7 @@ jobs:
 
     - name: Run tests with coverage
       run: |
-        cd test  # Ensure that this directory exists
-        coverage run pytest --cov .
+        echo "hello"  # Use echo instead of print
+        cd test  
+        coverage run -m pytest --cov .
+
