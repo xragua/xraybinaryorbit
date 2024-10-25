@@ -12,7 +12,7 @@ dist/
 index.rst
 make.bat
 Makefile
-#my-project/site
+my-project/site
 
 # Ignore macOS system files
 .DS_Store
