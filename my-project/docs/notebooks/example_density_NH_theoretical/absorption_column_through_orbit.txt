@@ -1,0 +1,2 @@
+semimajor,orbitalperiod,eccentricity,periapsis,inclination,Rstar,Mstar1,Mstar2,wind_infinite_velocity,Mass_loss_rate,beta
+1.51,2.0,0.0,70.0,40.0,50.0,22.0,1.4,1200.0,1e-06,0.8
