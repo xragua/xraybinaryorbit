@@ -86,6 +86,7 @@ $$ \lambda_{D} = \lambda_{\text{rest}}\left(1+\frac{v_{D}}{c}\right) $$
 
 where r is the orbital radius, $\omega$ is angular velocity, $\i$ is inclination, and $\lambda_{\rm D}$ and $\lambda_{\rm rest}$ are the Doppler-shifted and rest wavelengths, respectively.
 
+# Examples of Package Performance
 
 ![Some results obtained with the functions contained in this package.](joss.jpg){#sylt width="100%"}
 
