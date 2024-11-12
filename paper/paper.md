@@ -60,7 +60,7 @@ The software offers two fitting methods: least squares (LS) and particle swarm o
 This package primarily relies on the following theoretical frameworks:
 
 ### Conservation of Angular Momentum
-In systems with non-zero eccentricity, the orbital phase varies non-linearly with observational time due to increased speed at periastron, governed by the conservation of angular momentum. Kepler’s laws further explain that objects sweep out equal areas in equal times [@2006imabookC].
+In systems with non-zero eccentricity, the orbital phase varies non-linearly with observational time due to increased speed at periastron, governed by the conservation of angular momentum. Kepler’s laws further explain that objects sweep out equal areas in equal times [@2006imabookC]. 
 
 $$ r^2 \cdot \omega = Area $$
 
@@ -84,13 +84,10 @@ $$ \xi = \frac{L_{\rm X}}{n(r_{\rm X}) r_{\rm X}^{2}} $$
 
 ### Doppler Effect
 
-The Doppler effect refers to the change in frequency or wavelength of a wave as observed by someone who is moving relative to the wave source. The Doppler velocity induced by orbital motion is given by:
+The Doppler effect refers to the change in frequency or wavelength of a wave as observed by someone who is moving relative to the wave source. The Doppler velocity induced by orbital motion and the observed Doppler-shifted wavelength can be written as:
 
-$$ v_{D} = (-r\omega \sin\phi \sin i) $$
+$$ v_{D} = (-r\omega \sin\phi \sin i);  \lambda_{D} = \lambda_{\text{rest}}\left(1+\frac{v_{D}}{c}\right)$$
 
-The observed Doppler-shifted wavelength can be written as:
-
-$$ \lambda_{D} = \lambda_{\text{rest}}\left(1+\frac{v_{D}}{c}\right) $$
 
 where r is the orbital radius, $\omega$ is angular velocity, $\i$ is inclination, and $\lambda_{\rm D}$ and $\lambda_{\rm rest}$ are the Doppler-shifted and rest wavelengths, respectively.
 
