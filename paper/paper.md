@@ -59,12 +59,6 @@ The software offers two fitting methods: least squares (LS) and particle swarm o
 
 This package primarily relies on the following theoretical frameworks:
 
-### Conservation of Angular Momentum
-In systems with non-zero eccentricity, the orbital phase varies non-linearly with observational time due to increased speed at periastron, governed by the conservation of angular momentum. Kepler’s laws further explain that objects sweep out equal areas in equal times [@2006imabookC]. 
-
-$$ r^2 \cdot \omega = Area $$
-
-We account for this in all functions and provide tools to convert phase to time and vice versa.
 
 ### CAK Model
 The CAK model [@1975ApJ195157C] describes radiation-driven winds in massive stars, with wind velocity, density, and ionization state varying with distance to the companion star.
