@@ -1,5 +1,5 @@
 ---
-title: 'Orbital Dynamics in X-RAY stellar binary systems'
+title: 'XRAYBINARYORBIT: A Python Package for Analyzing Orbital Modulations in X-ray Binaries'
 tags:
   - Python
   - x-ray astronomy
@@ -92,7 +92,7 @@ where r is the orbital radius, $\omega$ is angular velocity, $\i$ is inclination
 
 # Statement of Need
 
-Several software packages are available for the analysis of X-ray astronomy. Some notable Python-based options include **Stingray** [@2019ApJ88139H], which is dedicated to the timing analysis of astronomical data, and **Jaxspec**, which specializes in spectral fitting using Bayesian inference. **Lightkurve** simplifies the analysis of time-series data from space missions like Kepler and TESS. A well-known and widely used comprehensive package for general astronomy computations and data handling is **Astropy** [@astropy:2022].
+Several software packages are available for the analysis of X-ray astronomy. Some notable Python-based options include **Stingray** [@2019ApJ88139H], which is dedicated to the timing analysis of astronomical data, and **Jaxspec** [@2024A&A.690A.317D], which specializes in spectral fitting using Bayesian inference. **Lightkurve** simplifies the analysis of time-series data from space missions like Kepler and TESS. A well-known and widely used comprehensive package for general astronomy computations and data handling is **Astropy** [@astropy:2022].
 
 **xraybinaryorbit** is designed specifically for the analysis of orbital modulations in X-ray binary systems. These analyses has the potential to reveal profound insights into the orbital mechanics and wind properties of X-ray binary systems, helping to piece together incomplete information or generate a range of scenarios that align with our observations. This is precisely where our tools become valuable.
 
