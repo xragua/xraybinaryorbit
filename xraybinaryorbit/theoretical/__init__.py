@@ -1,11 +1,10 @@
-# __init__.py in xraybinaryorbit
+from ..main import *
 
-# Import submodules
-from .timing import *
-from .fitting import *
-from .theoretical import *
+from .density_related import *
+from .doppler_related import *
+from .orbital_velocity_related import *
 
-from .helpers.data_helpers import (
+from ..helpers.data_helpers import (
     _define_x_y_sy,
     _copy_fields,
     _load_values_to_interface,
@@ -14,7 +13,7 @@ from .helpers.data_helpers import (
     _manage_bounds
 )
 
-from .helpers.math_helpers import (
+from ..helpers.math_helpers import (
     _gaussian,
     _time_pairs,
     _interpolate_pchip,
@@ -23,7 +22,5 @@ from .helpers.math_helpers import (
     _orbital_phase_to_time,
     _orbital_time_to_phase
 )
-
-
 
 
