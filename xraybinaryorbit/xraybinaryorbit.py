@@ -513,16 +513,11 @@ def _load_values_to_interface(param_list, fixed_values, name):
 
     root.mainloop()
     
-
-def _manage_parameters(param_list, name, load_directly=False):
+def _manage_parameters(param_list, name, load_directly=False, parameter_list=None):
     """
     Manage parameter values by loading from a file, displaying a user input form for modification,
-    and saving the updated values back to the file.
-
-    This function first attempts to load previously saved parameter values from a file named `name.txt`.
-    If the file is not found, it initializes the values to `NaN`. After loading the values,
-    it displays a graphical user interface (GUI) using the `_load_values_to_interface` function
-    to allow the user to update the parameter values. Finally, it saves the updated values back to the same file.
+    and saving the updated values back to the file. This version also allows loading parameters
+    from a given array.
 
     Parameters
     ----------
@@ -532,28 +527,68 @@ def _manage_parameters(param_list, name, load_directly=False):
     name : str
         The base name for the text file where the parameters will be saved and loaded from.
         The file is expected to be named `{name}.txt`.
+    load_directly : bool, optional
+        If True, loads parameters directly from the file without displaying the GUI.
+    parameter_list : list of float, optional
+        If provided, this array of values will be used as the parameter values instead of loading from a file,
+        and no form will be displayed.
 
     Returns
     -------
     fixed_values_list : list of float
-        A list of the final parameter values, either loaded from the file or updated through user input.
+        A list of the final parameter values, either loaded from the file, provided as an array,
+        or updated through user input.
     """
 
     global fixed_values_list
 
-    # Try to load previous fixed values if available
+    # Initialize the flag to ensure it is always defined
+    should_print_after_modification = False
+
+    # If parameter_list is provided, load values directly and skip the form
+    if parameter_list is not None:
+        fixed_values_list = parameter_list
+        print("Loaded parameters from the provided array:")
+        for param, value in zip(param_list, fixed_values_list):
+            print(f"{param}: {value}")
+
+        # Save the provided parameters directly to the file
+        with open(f"{name}.txt", "w") as file:
+            file.write(",".join(map(str, param_list)) + "\n")  # Write parameter names
+            file.write(",".join(map(str, fixed_values_list)) + "\n")  # Write fixed values
+
+        # Skip displaying the form
+        return fixed_values_list
+
+    # If parameter_list is not provided, proceed with loading from the file or showing the form
     file_exists = True
     try:
         with open(f"{name}.txt", "r") as file:
             lines = file.readlines()
             fixed_values_list = [float(val) for val in lines[1].strip().split(",")]
+            if load_directly:
+                print("Loaded parameters from file:")
+                for param, value in zip(param_list, fixed_values_list):
+                    print(f"{param}: {value}")
+            else:
+                should_print_after_modification = True
     except FileNotFoundError:
         file_exists = False
         fixed_values_list = [np.nan] * len(param_list)
+        print("File not found. Initializing parameters to NaN:")
+        for param in param_list:
+            print(f"{param}: NaN")
 
-    # If load_directly is True but file does not exist, still display the GUI
+    # If load_directly is False or the file does not exist, display the GUI
     if not load_directly or not file_exists:
         _load_values_to_interface(param_list, fixed_values_list, name)
+        should_print_after_modification = True
+
+    # Print the parameters after modification if needed
+    if should_print_after_modification:
+        print("Parameters after modification or user input:")
+        for param, value in zip(param_list, fixed_values_list):
+            print(f"{param}: {value}")
 
     # Save fixed values to file
     with open(f"{name}.txt", "w") as file:
@@ -561,6 +596,7 @@ def _manage_parameters(param_list, name, load_directly=False):
         file.write(",".join(map(str, fixed_values_list)) + "\n")  # Write fixed values
 
     return fixed_values_list
+
 
 
 #................................................... Easy way to manage bounds in fitting functions
@@ -655,15 +691,10 @@ def _load_bounds_to_interface(param_list, lower_bounds, upper_bounds, name):
 
     root.mainloop()
     
-def _manage_bounds(param_list, name, load_directly=False):
+def _manage_bounds(param_list, name, load_directly=False, bound_list=None):
     """
-    Manage parameter bounds by loading from a file, displaying a user input form for modification, and saving
-    the updated bounds back to the file.
-
-    This function first attempts to load previously saved lower and upper bounds for parameters from a file named
-    `bounds_{name}.txt`. If the file is not found, it initializes the bounds to `NaN`. The user can modify these bounds
-    through a graphical user interface (GUI) provided by `_load_bounds_to_interface`. After modification, the bounds are
-    saved back to the same file.
+    Manage parameter bounds by loading from a file, displaying a user input form for modification,
+    and saving the updated bounds back to the file. This version also allows loading bounds from a given array.
 
     Parameters
     ----------
@@ -676,6 +707,9 @@ def _manage_bounds(param_list, name, load_directly=False):
     load_directly : bool, optional
         If True, the function will load the bounds directly from the file if it exists, without showing the GUI.
         If False (default), the function will display the GUI for the user to modify the bounds, even if the file exists.
+    bound_list : tuple of lists, optional
+        If provided, this should be a tuple containing two lists: lower bounds and upper bounds.
+        These values will be used as the bounds instead of loading from a file, and no form will be displayed.
 
     Returns
     -------
@@ -687,30 +721,63 @@ def _manage_bounds(param_list, name, load_directly=False):
 
     global lower_bounds_list, upper_bounds_list
 
-    file_exists = True
+    # Initialize the flag to ensure it is always defined
+    should_print_after_modification = False
 
-    # Try to load previous bounds if available
-    try:
-        with open(f"{name}.txt", "r") as file:
-            lines = file.readlines()
+    # Load bounds from the provided array if available
+    if bound_list is not None:
+        lower_bounds_list, upper_bounds_list = bound_list
+        print("Loaded bounds from the provided array:")
+        for param, lower, upper in zip(param_list, lower_bounds_list, upper_bounds_list):
+            print(f"{param}: Lower Bound = {lower}, Upper Bound = {upper}")
 
-            param_names = lines[0].strip().split(",")  # Extract parameter names
-            lower_bounds_list = [float(val) for val in lines[1].strip().split(",")]
-            upper_bounds_list = [float(val) for val in lines[2].strip().split(",")]
-            
-    except FileNotFoundError:
-        file_exists = False
-        param_names = param_list
-        lower_bounds_list = [np.nan] * len(param_list)
-        upper_bounds_list = [np.nan] * len(param_list)
+        # Save the provided bounds directly to the file
+        with open(f"bounds_{name}.txt", "w") as file:
+            file.write(",".join(map(str, param_list)) + "\n")  # Write parameter names
+            file.write(",".join(map(str, lower_bounds_list)) + "\n")  # Write lower bounds
+            file.write(",".join(map(str, upper_bounds_list)) + "\n")  # Write upper bounds
 
-    # If load_directly is False or the file does not exist, display the GUI to allow user modifications
-    if not load_directly or not file_exists:
-        _load_bounds_to_interface(param_names, lower_bounds_list, upper_bounds_list, name)
+        # Do not display the form
+        return lower_bounds_list, upper_bounds_list
+    else:
+        file_exists = True
+
+        # Try to load previous bounds from the file
+        try:
+            with open(f"bounds_{name}.txt", "r") as file:
+                lines = file.readlines()
+                param_names = lines[0].strip().split(",")  # Extract parameter names
+                lower_bounds_list = [float(val) for val in lines[1].strip().split(",")]
+                upper_bounds_list = [float(val) for val in lines[2].strip().split(",")]
+                if load_directly:
+                    print("Loaded bounds from file:")
+                    for param, lower, upper in zip(param_names, lower_bounds_list, upper_bounds_list):
+                        print(f"{param}: Lower Bound = {lower}, Upper Bound = {upper}")
+                else:
+                    should_print_after_modification = True
+        except FileNotFoundError:
+            file_exists = False
+            param_names = param_list
+            lower_bounds_list = [np.nan] * len(param_list)
+            upper_bounds_list = [np.nan] * len(param_list)
+            print("File not found. Initializing bounds to NaN:")
+            for param in param_list:
+                print(f"{param}: Lower Bound = NaN, Upper Bound = NaN")
+
+        # If load_directly is False or the file does not exist, display the GUI to allow user modifications
+        if not load_directly or not file_exists:
+            _load_bounds_to_interface(param_names, lower_bounds_list, upper_bounds_list, name)
+            should_print_after_modification = True
+
+    # Print the bounds after modification if needed
+    if should_print_after_modification:
+        print("Bounds after modification or user input:")
+        for param, lower, upper in zip(param_list, lower_bounds_list, upper_bounds_list):
+            print(f"{param}: Lower Bound = {lower}, Upper Bound = {upper}")
 
     # Save updated bounds to the file
-    with open(f"{name}.txt", "w") as file:
-        file.write(",".join(map(str, param_names)) + "\n")  # Write parameter names
+    with open(f"bounds_{name}.txt", "w") as file:
+        file.write(",".join(map(str, param_list)) + "\n")  # Write parameter names
         file.write(",".join(map(str, lower_bounds_list)) + "\n")  # Write lower bounds
         file.write(",".join(map(str, upper_bounds_list)) + "\n")  # Write upper bounds
 
@@ -722,7 +789,6 @@ def _manage_bounds(param_list, name, load_directly=False):
 
     return lower_bounds, upper_bounds
 
-    
     
 def _orbital_phase_to_time(ph, iphase, semimajor, orbitalperiod, eccentricity, periapsis,
                            Rstar, Mstar1, Mstar2, precision=0.01):
@@ -912,7 +978,7 @@ def _orbital_time_to_phase(t, iphase, semimajor, orbitalperiod, eccentricity, pe
 ##########################################################################################
 
 # CONIC ORBIT #############################################################################
-def doppler_orbit_theoretical(t, units="keV", show_plot=False, precision_for_phase=0.01, load_directly=False):
+def doppler_orbit_theoretical(t, units="keV", show_plot=False, precision_for_phase=0.01, load_directly=False, parameter_list=None):
     """
     Computes the Doppler variation expected from orbital movement given a time array in seconds.
 
@@ -948,7 +1014,7 @@ def doppler_orbit_theoretical(t, units="keV", show_plot=False, precision_for_pha
 
     parameter_names = ["iphase", "semimajor", "orbitalperiod", "eccentricity", "periapsis", "inclination", "Rstar", "Mstar1", "Mstar2", "wind_vel", "feature"]
     
-    fixed_values = _manage_parameters(parameter_names, "orbit",load_directly=load_directly)
+    fixed_values = _manage_parameters(parameter_names, "orbit",load_directly=load_directly,parameter_list=parameter_list )
     iphase, semimajor, orbitalperiod, eccentricity, periapsis, inclination, Rstar, Mstar1, Mstar2, wind_vel, feature = fixed_values
     
     #...................................................
@@ -1015,7 +1081,7 @@ def doppler_orbit_theoretical(t, units="keV", show_plot=False, precision_for_pha
 
     
 # SPIRAL #########################################################################################
-def doppler_spiral_theoretical(t, units="keV", show_plot=False, load_directly=False):
+def doppler_spiral_theoretical(t, units="keV", show_plot=False, load_directly=False, parameter_list=None):
     """
     Computes the Doppler variation expected from a spiral movement given a time array in seconds.
 
@@ -1058,7 +1124,7 @@ def doppler_spiral_theoretical(t, units="keV", show_plot=False, load_directly=Fa
 
     parameter_names=["iphase_spiral", "semimajor_spiral", "b", "omega", "inclination_spiral", "feature"]
     
-    fixed_values = _manage_parameters(parameter_names, "spiral", load_directly=load_directly)
+    fixed_values = _manage_parameters(parameter_names, "spiral", load_directly=load_directly,parameter_list=parameter_list )
     iphase_spiral, semimajor_spiral, b, omega, inclination_spiral, feature = fixed_values
     #...................................................
     feature_ = {
@@ -1121,7 +1187,7 @@ def doppler_spiral_theoretical(t, units="keV", show_plot=False, load_directly=Fa
     return t,x,equation
     
 # ORBIT IN ORBIT #####################################################################################
-def doppler_disc_theoretical(t, units="keV", show_plot=False, load_directly=False):
+def doppler_disc_theoretical(t, units="keV", show_plot=False, load_directly=False, parameter_list=None):
     """
     Computes the Doppler variation expected from orbital movement in a main orbit, assuming a ballistic
     movement of plasma around a compact object or the movement of a mass entering an accretion disc.
@@ -1158,7 +1224,7 @@ def doppler_disc_theoretical(t, units="keV", show_plot=False, load_directly=Fals
 
     parameter_names=["iphase", "semimajor", "orbitalperiod", "eccentricity", "periapsis", "inclination", "Rstar", "Mstar1", "Mstar2", "iphase2", "semimajor2", "orbitalperiod2", "eccentricity2", "periapsis2", "inclination2",  "Mass3","wind_vel", "feature"]
     
-    fixed_values = _manage_parameters(parameter_names, "disc",load_directly=load_directly)
+    fixed_values = _manage_parameters(parameter_names, "disc",load_directly=load_directly,parameter_list=parameter_list )
     iphase, semimajor, orbitalperiod, eccentricity, periapsis, inclination, Rstar, Mstar1, Mstar2, iphase2, semimajor2, orbitalperiod2, eccentricity2, periapsis2, inclination2,  Mass3, wind_vel, feature = fixed_values
 
     #...................................................
@@ -1239,7 +1305,7 @@ def doppler_disc_theoretical(t, units="keV", show_plot=False, load_directly=Fals
     return t,x,x2,equation
     
 # SPIRAL IN ORBIT ####################################################################################
-def doppler_spiral_in_orbit_theoretical(t, units="keV", show_plot=False, load_directly=False):
+def doppler_spiral_in_orbit_theoretical(t, units="keV", show_plot=False, load_directly=False, parameter_list=None):
     """
     Computes the Doppler variation expected from an orbital movement with a logarithmic spiral component,
     given a time array in seconds.
@@ -1283,7 +1349,7 @@ def doppler_spiral_in_orbit_theoretical(t, units="keV", show_plot=False, load_di
 
     parameter_names=["iphase", "semimajor", "orbitalperiod", "eccentricity", "periapsis", "inclination", "iphase_spiral", "semimajor_spiral", "b", "omega", "inclination_spiral", "Rstar", "Mstar1", "Mstar2", "wind_vel", "feature"]
     
-    fixed_values = _manage_parameters(parameter_names, "spiral_in_orbit",load_directly=load_directly)
+    fixed_values = _manage_parameters(parameter_names, "spiral_in_orbit",load_directly=load_directly,parameter_list=parameter_list )
     iphase, semimajor, orbitalperiod, eccentricity, periapsis, inclination, iphase_spiral, semimajor_spiral, b, omega, inclination_spiral, Rstar, Mstar1, Mstar2, wind_vel, feature = fixed_values
 
     #...................................................
@@ -1364,7 +1430,7 @@ def doppler_spiral_in_orbit_theoretical(t, units="keV", show_plot=False, load_di
 ##########################################################################################
      
 # DENSITY IN THE ORBIT #############################################################################
-def density_through_orbit_theoretical(resolution=0.01, show_plot=False, load_directly=False):
+def density_through_orbit_theoretical(resolution=0.01, show_plot=False, load_directly=False, parameter_list=None):
     """
     Visualizes the density (gr/cm^2) encountered by a compact object along its orbit, assuming a spherically
     distributed stellar wind based on the CAK (Castor-Abbott-Klein) model.
@@ -1396,7 +1462,7 @@ def density_through_orbit_theoretical(resolution=0.01, show_plot=False, load_dir
 
     parameter_names = ["semimajor","orbitalperiod" ,"eccentricity", "periapsis", "Rstar","Mstar1","Mstar2","wind_infinite_velocity","Mass_loss_rate","beta" ]
     
-    fixed_values = _manage_parameters(parameter_names, "density_through_orbit",load_directly=load_directly)
+    fixed_values = _manage_parameters(parameter_names, "density_through_orbit",load_directly=load_directly,parameter_list=parameter_list )
     semimajor,orbitalperiod , eccentricity,periapsis, Rstar, Mstar1, Mstar2, wind_infinite_velocity, Mass_loss_rate, beta = fixed_values
 
     th = np.arange(0,1,resolution)
@@ -1445,7 +1511,7 @@ def density_through_orbit_theoretical(resolution=0.01, show_plot=False, load_dir
     return  time[Rorb > Rstar_cm], th[Rorb > Rstar_cm],  rho
 
 # ABSOPTION COLUMN #############################################################################
-def absorption_column_through_orbit_theoretical(resolution=0.01, show_plot=True, load_directly=False):
+def absorption_column_through_orbit_theoretical(resolution=0.01, show_plot=True, load_directly=False, parameter_list=None):
     """
     Visualizes the column density (NH1, x 10^22 cm^-2) encountered by radiation emitted at each orbital
     phase as it travels towards an observer. Assumes a spherically distributed, neutral (unionized)
@@ -1480,7 +1546,7 @@ def absorption_column_through_orbit_theoretical(resolution=0.01, show_plot=True,
 
     parameter_names = ["semimajor","orbitalperiod" ,"eccentricity", "periapsis" ,"inclination", "Rstar","Mstar1","Mstar2","wind_infinite_velocity","Mass_loss_rate","beta" ]
     
-    fixed_values = _manage_parameters(parameter_names, "absorption_column_through_orbit",load_directly=load_directly)
+    fixed_values = _manage_parameters(parameter_names, "absorption_column_through_orbit",load_directly=load_directly,parameter_list=parameter_list )
     semimajor, orbitalperiod,eccentricity, periapsis, inclination, Rstar, Mstar1, Mstar2, wind_infinite_velocity, Mass_loss_rate, beta = fixed_values
 
     th = np.arange(0,1,resolution)
@@ -1547,7 +1613,7 @@ def absorption_column_through_orbit_theoretical(resolution=0.01, show_plot=True,
 
 # DENSITY AND LOGCHI #############################################################################
 
-def density_and_ionization_orbital_phase_theoretical(resolution=0.01, size=10, show_plot=True, load_directly=False):
+def density_and_ionization_orbital_phase_theoretical(resolution=0.01, size=10, show_plot=True, load_directly=False, parameter_list=None):
     """
     Calculates and visualizes the density and ionization parameter (log(ξ)) encountered by radiation emitted
     at each orbital phase as it travels towards an observer. Assumes a spherically distributed, neutral stellar
@@ -1580,7 +1646,7 @@ def density_and_ionization_orbital_phase_theoretical(resolution=0.01, size=10, s
 
     parameter_names = [ "orb_phase", "luminosity","semimajor", "eccentricity", "periapsis", "inclination","Rstar", "Mstar1", "Mstar2", "wind_infinite_velocity", "Mass_loss_rate", "beta"]
     
-    fixed_values = _manage_parameters(parameter_names, "den_chi_orbphase",load_directly=load_directly)
+    fixed_values = _manage_parameters(parameter_names, "den_chi_orbphase",load_directly=load_directly,parameter_list=parameter_list )
     orb_phase, luminosity, semimajor, eccentricity, periapsis, inclination ,Rstar, Mstar1, Mstar2, wind_infinite_velocity, Mass_loss_rate, beta = fixed_values
 
     th = np.arange(0, 1, resolution)
@@ -1648,7 +1714,7 @@ def density_and_ionization_orbital_phase_theoretical(resolution=0.01, size=10, s
 # Ionization parameter map ###############################################################
 
 
-def ionization_map_phase(size_in_Rstar=0, min_color=None, max_color=None, save_plot=False, name="ionization_map", load_directly=False):
+def ionization_map_phase(size_in_Rstar=0, min_color=None, max_color=None, save_plot=False, name="ionization_map", load_directly=False, parameter_list=None):
     """
     Generates a logarithmic ionization parameter map based on the stellar wind density, luminosity, and
     orbital parameters. The uncolored area in the map represents the X-ray shadow.
@@ -1687,7 +1753,7 @@ def ionization_map_phase(size_in_Rstar=0, min_color=None, max_color=None, save_p
     ]
     
     # Load fixed values
-    fixed_values = _manage_parameters(parameter_names, "ionization_map_phase",load_directly=load_directly)
+    fixed_values = _manage_parameters(parameter_names, "ionization_map_phase",load_directly=load_directly,parameter_list=parameter_list )
     phase, semimajor, eccentricity, periapsis, Rstar, Mstar1, Mstar2, wind_infinite_velocity, Mass_loss_rate, beta, luminosity, bound1, bound2 = fixed_values
     
     # Calculate various parameters
@@ -1938,7 +2004,7 @@ def ionization_map_phase(size_in_Rstar=0, min_color=None, max_color=None, save_p
 ##########################################################################################
 
 # PHASE TO TIME ###########################################################################
-def orbital_phase_to_time(ph, precision=0.01,load_directly=False):
+def orbital_phase_to_time(ph, precision=0.01,load_directly=False, parameter_list=None):
     """
     Converts an orbital phase array to a time array for a compact object orbiting a companion star.
     The compact object moves faster at periastron than at apoastro due to the conservation of angular momentum
@@ -1975,7 +2041,7 @@ def orbital_phase_to_time(ph, precision=0.01,load_directly=False):
 
     #.............................Load parameters
     parameter_names = ["iphase", "semimajor", "orbitalperiod", "eccentricity", "periapsis", "Rstar", "Mstar1", "Mstar2"]
-    fixed_values = _manage_parameters(parameter_names, "phase_time",load_directly=load_directly)
+    fixed_values = _manage_parameters(parameter_names, "phase_time",load_directly=load_directly,parameter_list=parameter_list )
     
     iphase, semimajor, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2 = fixed_values
     
@@ -2021,7 +2087,7 @@ def orbital_phase_to_time(ph, precision=0.01,load_directly=False):
     return ph, time, W
     
     
-def orbital_time_to_phase(t, precision=0.01,load_directly=False):
+def orbital_time_to_phase(t, precision=0.01,load_directly=False, parameter_list=None):
     """
     Converts an orbital time array to a phase array for a compact object orbiting a companion star.
     The compact object moves faster at periastron than at apoastro due to the conservation of angular momentum
@@ -2059,7 +2125,7 @@ def orbital_time_to_phase(t, precision=0.01,load_directly=False):
 
     #.............................Load parameters
     parameter_names = ["iphase", "semimajor", "orbitalperiod", "eccentricity", "periapsis", "Rstar", "Mstar1", "Mstar2"]
-    fixed_values = _manage_parameters(parameter_names, "time_phase",load_directly=load_directly)
+    fixed_values = _manage_parameters(parameter_names, "time_phase",load_directly=load_directly,parameter_list=parameter_list )
     
     iphase, semimajor, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2 = fixed_values
     #.............................Load parameters
@@ -2265,7 +2331,7 @@ def _conic_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periaps
 # PS FIT------------------------------------------------------------------------------------------------------
 
 def fit_orbit_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarmsize=100,
-                 units="keV", method_="extended", extended_binsize=0.01,load_directly=False):
+                 units="keV", method_="extended", extended_binsize=0.01,load_directly=False, bound_list=None):
     """
     Fits observed orbital modulation data by estimating parameters such as phase, semi-major axis,
     orbital period, eccentricity, inclination, and periapsis using particle swarm optimization (PSO).
@@ -2344,7 +2410,7 @@ def fit_orbit_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarms
         return chi_squared
 
     #............................................PS implementation
-    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "bounds_orbit", load_directly=load_directly)
+    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "bounds_orbit", load_directly=load_directly, bound_list=bound_list)
 
 
     best_params_list = []
@@ -2416,7 +2482,7 @@ def fit_orbit_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarms
     return df_results_transposed, ph, predicted_data, chi_squared
     
 # LS FIT------------------------------------------------------------------------------------------------------
-def fit_orbit_ls(x_data, y_data, y_err=0, units="keV", method_="extended", extended_binsize=0.01,load_directly=False):
+def fit_orbit_ls(x_data, y_data, y_err=0, units="keV", method_="extended", extended_binsize=0.01,load_directly=False, bound_list=None):
     """
     Fits orbital modulation data by estimating parameters such as phase, semi-major axis, orbital period,
     eccentricity, inclination, and periapsis using a traditional Least Squares (LS) method.
@@ -2479,7 +2545,7 @@ def fit_orbit_ls(x_data, y_data, y_err=0, units="keV", method_="extended", exten
         method_ = "discrete"
         
     #............................................LS implementation
-    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "bounds_orbit",load_directly=load_directly)
+    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "bounds_orbit",load_directly=load_directly, bound_list=bound_list)
     
     model_func = lambda x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis, inclination, Rstar, Mstar1, Mstar2,wind_vel, feature: _conic_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis, inclination, Rstar, Mstar1, Mstar2, wind_vel,feature, units=units, method_=method_,extended_binsize=extended_binsize)
     
@@ -2728,7 +2794,7 @@ def _disc_in_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, peria
 
 # PS FIT------------------------------------------------------------------------------------------------------
 def fit_disc_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarmsize=100,
-                units="keV", method_="extended", extended_binsize=0.01,load_directly=False):
+                units="keV", method_="extended", extended_binsize=0.01,load_directly=False, bound_list=None):
     """
     Fits orbital modulation data by estimating parameters such as phase, semi-major axis, orbital period,
     eccentricity, and inclination for the main orbit, as well as corresponding parameters for a secondary
@@ -2810,7 +2876,7 @@ def fit_disc_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarmsi
         return chi_squared
         
     #............................................PS implementation
-    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "bounds_disc",load_directly=load_directly)
+    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "bounds_disc",load_directly=load_directly, bound_list=bound_list)
     best_params_list = []
     chi_list = []
     
@@ -2901,7 +2967,7 @@ def fit_disc_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarmsi
     
 # lS FIT------------------------------------------------------------------------------------------------------
 
-def fit_disc_ls(x_data, y_data, y_err=0, units="keV", method_="extended", extended_binsize=0.01,load_directly=False):
+def fit_disc_ls(x_data, y_data, y_err=0, units="keV", method_="extended", extended_binsize=0.01,load_directly=False, bound_list=None):
     """
     Fits orbital modulation data by estimating parameters such as phase, semi-major axis, orbital period,
     eccentricity, and inclination for the main orbit, as well as corresponding parameters for a secondary
@@ -2964,7 +3030,7 @@ def fit_disc_ls(x_data, y_data, y_err=0, units="keV", method_="extended", extend
         method_ = "discrete"
         
     #............................................LS implementation
-    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "bounds_disc", load_directly=load_directly)
+    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "bounds_disc", load_directly=load_directly, bound_list=bound_list)
     
     model_func = lambda x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis ,inclination, Rstar, Mstar1, Mstar2, iphase2, semimajor2, orbitalperiod2, eccentricity2, periapsis2 ,inclination2, Mass3, feature, wind_vel : _disc_in_orbit(x_data,  iphase, semimajor, orbitalperiod, eccentricity, periapsis ,inclination, Rstar, Mstar1, Mstar2, iphase2, semimajor2, orbitalperiod2, eccentricity2, periapsis2 ,inclination2, Mass3, feature,wind_vel,units=units, method_=method_,extended_binsize=extended_binsize)
     
@@ -3156,7 +3222,7 @@ def _spiral(x_data, iphase_spiral, semimajor_spiral, b, omega, inclination_spira
 
 # PS FIT------------------------------------------------------------------------------------------------------
 def fit_spiral_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarmsize=100,
-                  units="keV", method_="extended", extended_binsize=0.01,load_directly=False):
+                  units="keV", method_="extended", extended_binsize=0.01,load_directly=False, bound_list=None):
     """
     Fits orbital modulation data by estimating parameters for a spiral orbit using particle swarm optimization (PSO).
 
@@ -3235,7 +3301,7 @@ def fit_spiral_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarm
         return chi_squared
         
     #............................................ PS implementation
-    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "bounds_spiral",load_directly=load_directly)
+    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "bounds_spiral",load_directly=load_directly, bound_list=bound_list)
     best_params_list = []
     chi_list = []
     
@@ -3292,7 +3358,7 @@ def fit_spiral_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarm
 
     
 # LS FIT------------------------------------------------------------------------------------------------------
-def fit_spiral_ls(x_data, y_data, y_err=0, units="keV", method_="extended", extended_binsize=0.01,load_directly=False):
+def fit_spiral_ls(x_data, y_data, y_err=0, units="keV", method_="extended", extended_binsize=0.01,load_directly=False, bound_list=None):
     """
     Fits orbital modulation data by estimating parameters for a spiral orbit using a traditional least squares (LS) method.
     Although provided for completeness, the LS method may have limitations due to the complexity of the model.
@@ -3351,7 +3417,7 @@ def fit_spiral_ls(x_data, y_data, y_err=0, units="keV", method_="extended", exte
         print("The number of time points does not allow an extended approach. Changing to discrete")
         method_ = "discrete"
     #............................................LS implementation
-    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "bounds_spiral",load_directly=load_directly)
+    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "bounds_spiral",load_directly=load_directly, bound_list=bound_list)
     
     model_func = lambda x_data, iphase_spiral, semimajor_spiral, b, omega, inclination_spiral, feature: _spiral(x_data,  iphase_spiral, semimajor_spiral, b, omega, inclination_spiral, feature, units=units, method_=method_,extended_binsize=extended_binsize)
     
@@ -3588,7 +3654,7 @@ def _spiral_orbit(x_data, iphase_orbit, semimajor_orbit, orbitalperiod, eccentri
 
 # PS FIT------------------------------------------------------------------------------------------------------
 def fit_spiral_in_orbit_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarmsize=100,
-                           units="keV", method_="extended", extended_binsize=0.01,load_directly=False):
+                           units="keV", method_="extended", extended_binsize=0.01,load_directly=False, bound_list=None):
     """
     Fits orbital modulation data by estimating parameters for a spiral orbit contained within a main orbit using
     particle swarm optimization (PSO).
@@ -3665,7 +3731,7 @@ def fit_spiral_in_orbit_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=10
         return chi_squared
         
 #............................................ PS implementation
-    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "bounds_spiral_orbit",load_directly=load_directly)
+    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "bounds_spiral_orbit",load_directly=load_directly, bound_list=bound_list)
     best_params_list = []
     chi_list = []
     
@@ -3737,7 +3803,7 @@ def fit_spiral_in_orbit_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=10
     return df_results_transposed, ph, predicted_data, chi_squared
 
 # PS FIT------------------------------------------------------------------------------------------------------
-def fit_spiral_in_orbit_ls(x_data, y_data, y_err=0, units="keV", method_="extended", extended_binsize=0.01,load_directly=False):
+def fit_spiral_in_orbit_ls(x_data, y_data, y_err=0, units="keV", method_="extended", extended_binsize=0.01,load_directly=False, bound_list=None):
     """
     Fits orbital modulation data by estimating parameters for a spiral orbit contained within a main orbit using
     a traditional least squares (LS) method. Although the LS method may be limited due to the complexity of the model,
@@ -3797,7 +3863,7 @@ def fit_spiral_in_orbit_ls(x_data, y_data, y_err=0, units="keV", method_="extend
         print("The number of time points does not allow an extended approach. Changing to discrete")
         method_ = "discrete"
     #............................................ LS implementation
-    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "bounds_spiral_orbit",load_directly=load_directly)
+    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "bounds_spiral_orbit",load_directly=load_directly, bound_list=bound_list)
     
     model_func = lambda x_data,iphase_orbit, semimajor_orbit, orbitalperiod, eccentricity, periapsis, inclination_orbit, Rstar, Mstar1, Mstar2, iphase_spiral, semimajor_spiral, b, omega, inclination_spiral, feature: _spiral_orbit( x_data,iphase_orbit, semimajor_orbit, orbitalperiod, eccentricity, periapsis, inclination_orbit, Rstar, Mstar1, Mstar2, iphase_spiral, semimajor_spiral, b, omega, inclination_spiral, feature, units=units, method_=method_, extended_binsize=extended_binsize)
     
@@ -3998,7 +4064,7 @@ def _nh_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis,
     
 # PS FIT------------------------------------------------------------------------------------------------------
 def fit_nh_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=200, swarmsize=20,
-              method_="extended", extended_binsize=0.01,load_directly=False):
+              method_="extended", extended_binsize=0.01,load_directly=False, bound_list=None):
     """
     Fits the column density (NH1, x 10^22 cm^-2) encountered by radiation emitted at each orbital phase as
     it travels towards an observer, assuming a spherically distributed, neutral (unionized) stellar wind based
@@ -4076,7 +4142,7 @@ def fit_nh_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=200, swarmsize=
          
         return chi_squared
 #............................................PS implementation
-    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "bounds_nh",load_directly=load_directly)
+    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "bounds_nh",load_directly=load_directly, bound_list=bound_list)
     best_params_list = []
     chi_list = []
 

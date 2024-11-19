@@ -1,0 +1,3 @@
+iphase_orbit,semimajor_orbit,orbitalperiod,eccentricity,periapsis,inclination,Rstar,Mstar1,Mstar2,iphase_spiral,semimajor_spiral,b,omega,inclination_spiral
+nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan
+nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan
