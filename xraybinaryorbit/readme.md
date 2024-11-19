@@ -1,6 +1,7 @@
 ![Codecov](https://img.shields.io/codecov/c/github/xragua/xraybinaryorbit)
 
 [![status](https://joss.theoj.org/papers/7f4fbc6a63adc4ba5a07bb340a4d7246/status.svg)](https://joss.theoj.org/papers/7f4fbc6a63adc4ba5a07bb340a4d7246)
+
 # XRAYBINARYORBIT: A Python Package for Analyzing Orbital Modulations in X-ray Binaries
 
 
