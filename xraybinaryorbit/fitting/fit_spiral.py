@@ -35,7 +35,7 @@ mu = 0.5
 mp = 1.67E-24
 
 # SPIRAL #############################################################################
-def _spiral(x_data, iphase_spiral, semimajor_spiral, b, omega, inclination_spiral, feature, units, method_, extended_binsize):
+def spiral(x_data, iphase_spiral, semimajor_spiral, b, omega, inclination_spiral, feature, units, method_, extended_binsize):
     """
     Simulate the Doppler shift for a spiral structure in orbit around a central object. This private function is called
     by fit_spiral_ps and fit_spiral_ls.
@@ -219,7 +219,7 @@ def fit_spiral_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarm
     
         iphase_spiral, semimajor_spiral, b, omega, inclination_spiral, feature = params
 
-        predicted_data = _spiral(x_data, iphase_spiral, semimajor_spiral, b, omega, inclination_spiral, feature, units, method_,extended_binsize)
+        predicted_data = spiral(x_data, iphase_spiral, semimajor_spiral, b, omega, inclination_spiral, feature, units, method_,extended_binsize)
       
         chi_squared = _chi_squared_weighted(y_data, y_err_weight,predicted_data)
 
@@ -234,7 +234,7 @@ def fit_spiral_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarm
         
         best_params, _ = pso(objective_function, lb=lower_bounds, ub=upper_bounds, maxiter = maxiter, swarmsize = swarmsize)
         best_params_list.append(best_params)
-        predicted_data = _spiral(x_data, *best_params, units,method_,extended_binsize)
+        predicted_data = spiral(x_data, *best_params, units,method_,extended_binsize)
 
         chi_squared = _chi_squared_weighted(y_data, y_err_weight,predicted_data)
         
@@ -253,7 +253,7 @@ def fit_spiral_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarm
 
 
     #............................. Evaluate results
-    predicted_data = _spiral(x_data, iphase_spiral, semimajor_spiral, b, omega, inclination_spiral, feature, units, method_,extended_binsize)
+    predicted_data = spiral(x_data, iphase_spiral, semimajor_spiral, b, omega, inclination_spiral, feature, units, method_,extended_binsize)
     chi_squared = _chi_squared_weighted(y_data, y_err_weight,predicted_data)
     #............................. Prepare output
 
@@ -344,7 +344,7 @@ def fit_spiral_ls(x_data, y_data, y_err=0, units="keV", method_="extended", exte
     #............................................LS implementation
     lower_bounds, upper_bounds = _manage_bounds(parameter_names, "bounds_spiral",load_directly=load_directly, bound_list=bound_list)
     
-    model_func = lambda x_data, iphase_spiral, semimajor_spiral, b, omega, inclination_spiral, feature: _spiral(x_data,  iphase_spiral, semimajor_spiral, b, omega, inclination_spiral, feature, units=units, method_=method_,extended_binsize=extended_binsize)
+    model_func = lambda x_data, iphase_spiral, semimajor_spiral, b, omega, inclination_spiral, feature: spiral(x_data,  iphase_spiral, semimajor_spiral, b, omega, inclination_spiral, feature, units=units, method_=method_,extended_binsize=extended_binsize)
     
     try:
         fit_params, fit_covariance = curve_fit(model_func, x_data, np.array(y_data), bounds=[lower_bounds, upper_bounds], maxfev=1000)
