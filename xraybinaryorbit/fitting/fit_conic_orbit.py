@@ -22,6 +22,7 @@ from ..helpers.data_helpers import _manage_parameters,_define_x_y_sy,_copy_field
 
 from ..helpers.math_helpers import _gaussian,_time_pairs,_interpolate_pchip,_chi_squared_weighted,_chi_squared,_orbital_phase_to_time,_orbital_time_to_phase
 
+
 c = 299792458
 
 msun = (1.98847*10**30)*1000 #gr
@@ -34,8 +35,8 @@ na = 6.02214076*10**23/1.00797
 mu = 0.5
 mp = 1.67E-24
 
-# CONIC ORBIT #############################################################################
-def _conic_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis, inclination, Rstar, Mstar1, Mstar2, wind_vel, feature, units, method_, extended_binsize):
+#############################################################################
+def conic_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis, inclination, Rstar, Mstar1, Mstar2, wind_vel, feature, units, method_, extended_binsize):
     """
     Simulate the Doppler and radial velocities in a conic orbital system using either a discrete or extended method. Its a private function called by
     fit_orbit_ps abd fit_orbit_ls.
@@ -170,7 +171,7 @@ def _conic_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periaps
     equation = equation_.get(units, 1)
 
     return equation
-    
+
 # PS FIT------------------------------------------------------------------------------------------------------
 
 def fit_orbit_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarmsize=100,
@@ -245,7 +246,7 @@ def fit_orbit_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarms
     def objective_function(params):
 
         iphase, semimajor, orbitalperiod, eccentricity, periapsis ,inclination, Rstar, Mstar1, Mstar2, wind_vel,feature = params
-        predicted_data = _conic_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity,
+        predicted_data = conic_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity,
                                                      periapsis ,inclination, Rstar, Mstar1, Mstar2, wind_vel, feature, units, method_,extended_binsize)
 
         chi_squared = _chi_squared_weighted(y_data, y_err_weight,predicted_data)
@@ -264,7 +265,7 @@ def fit_orbit_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarms
         best_params, _ = pso(objective_function, lb=lower_bounds, ub=upper_bounds, maxiter = maxiter, swarmsize = swarmsize)
 
         best_params_list.append(best_params)
-        predicted_data = _conic_orbit(x_data, *best_params, units,method_,extended_binsize)
+        predicted_data = conic_orbit(x_data, *best_params, units,method_,extended_binsize)
 
         chi_squared = _chi_squared_weighted(y_data, y_err_weight,predicted_data)
         
@@ -281,7 +282,7 @@ def fit_orbit_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarms
     (iphase, semimajor, orbitalperiod, eccentricity, periapsis ,inclination, Rstar, Mstar1, Mstar2, wind_vel, feature) = best_params
     
     #.............................Evaluate results
-    predicted_data = _conic_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis ,inclination, Rstar, Mstar1, Mstar2, wind_vel, feature, units, method_,extended_binsize)
+    predicted_data = conic_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis ,inclination, Rstar, Mstar1, Mstar2, wind_vel, feature, units, method_,extended_binsize)
 
     chi_squared = _chi_squared_weighted(y_data, y_err_weight,predicted_data)
     #.............................Prepare output
@@ -388,7 +389,7 @@ def fit_orbit_ls(x_data, y_data, y_err=0, units="keV", method_="extended", exten
     #............................................LS implementation
     lower_bounds, upper_bounds = _manage_bounds(parameter_names, "bounds_orbit",load_directly=load_directly, bound_list=bound_list)
     
-    model_func = lambda x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis, inclination, Rstar, Mstar1, Mstar2,wind_vel, feature: _conic_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis, inclination, Rstar, Mstar1, Mstar2, wind_vel,feature, units=units, method_=method_,extended_binsize=extended_binsize)
+    model_func = lambda x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis, inclination, Rstar, Mstar1, Mstar2,wind_vel, feature: conic_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis, inclination, Rstar, Mstar1, Mstar2, wind_vel,feature, units=units, method_=method_,extended_binsize=extended_binsize)
     
     try:
         fit_params, fit_covariance = curve_fit(model_func, x_data, y_data, bounds=[lower_bounds, upper_bounds], maxfev=1000)

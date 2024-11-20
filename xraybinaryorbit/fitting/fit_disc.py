@@ -22,6 +22,7 @@ from ..helpers.data_helpers import _manage_parameters,_define_x_y_sy,_copy_field
 
 from ..helpers.math_helpers import _gaussian,_time_pairs,_interpolate_pchip,_chi_squared_weighted,_chi_squared,_orbital_phase_to_time,_orbital_time_to_phase
 
+
 c = 299792458
 
 msun = (1.98847*10**30)*1000 #gr
@@ -35,7 +36,7 @@ mu = 0.5
 mp = 1.67E-24
 
 # ORBIT IN ORBIT #############################################################################
-def _disc_in_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis, inclination, Rstar, Mstar1, Mstar2, iphase2, semimajor2, orbitalperiod2, eccentricity2, periapsis2, inclination2, Mass3, feature, wind_vel, units, method_, extended_binsize):
+def disc_in_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis, inclination, Rstar, Mstar1, Mstar2, iphase2, semimajor2, orbitalperiod2, eccentricity2, periapsis2, inclination2, Mass3, feature, wind_vel, units, method_, extended_binsize):
     """
     Simulate the Doppler and radial velocities for a binary system with a third mass object (disc in orbit). This private function is
     called by fit_disc_ps and fit_disc_ls.
@@ -221,9 +222,11 @@ def _disc_in_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, peria
     return equation
     
 
+#
 # PS FIT------------------------------------------------------------------------------------------------------
 def fit_disc_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarmsize=100,
                 units="keV", method_="extended", extended_binsize=0.01,load_directly=False, bound_list=None):
+                    
     """
     Fits orbital modulation data by estimating parameters such as phase, semi-major axis, orbital period,
     eccentricity, and inclination for the main orbit, as well as corresponding parameters for a secondary
@@ -279,8 +282,6 @@ def fit_disc_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarmsi
         Chi-squared statistic weighted by the error, indicating the quality of fit.
     """
 
-
-
     #............................................data prep
     parameter_names = ["iphase", "semimajor", "orbitalperiod", "eccentricity", "periapsis" ,"inclination", "Rstar", "Mstar1", "Mstar2", "iphase2", "semimajor2", "orbitalperiod2", "eccentricity2", "periapsis2" ,"inclination2",  "Mass3", "feature","wind_vel"]
 
@@ -298,7 +299,7 @@ def fit_disc_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarmsi
 
         iphase, semimajor, orbitalperiod, eccentricity, periapsis ,inclination, Rstar, Mstar1, Mstar2, iphase2, semimajor2, orbitalperiod2, eccentricity2, periapsis2 ,inclination2, Mass3, feature, wind_vel = params
 
-        predicted_data = _disc_in_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis ,inclination, Rstar, Mstar1, Mstar2, iphase2, semimajor2, orbitalperiod2, eccentricity2, periapsis2 ,inclination2, Mass3, feature, wind_vel, units, method_,extended_binsize)
+        predicted_data = disc_in_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis ,inclination, Rstar, Mstar1, Mstar2, iphase2, semimajor2, orbitalperiod2, eccentricity2, periapsis2 ,inclination2, Mass3, feature, wind_vel, units, method_,extended_binsize)
 
         chi_squared = _chi_squared_weighted(y_data, y_err_weight,predicted_data)
 
@@ -314,7 +315,7 @@ def fit_disc_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarmsi
         best_params, _ = pso(objective_function, lb=lower_bounds, ub=upper_bounds, maxiter = maxiter, swarmsize = swarmsize)
         
         best_params_list.append(best_params)
-        predicted_data = _disc_in_orbit(x_data, *best_params, units,method_,extended_binsize)
+        predicted_data = disc_in_orbit(x_data, *best_params, units,method_,extended_binsize)
         chi_squared = _chi_squared_weighted(y_data, y_err_weight,predicted_data)
         
         chi_list.append(chi_squared)
@@ -330,7 +331,7 @@ def fit_disc_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=1000, swarmsi
     (iphase, semimajor, orbitalperiod, eccentricity, periapsis ,inclination, Rstar, Mstar1, Mstar2, iphase2, semimajor2, orbitalperiod2, eccentricity2, periapsis2 ,inclination2, Mass3, feature, wind_vel) = best_params
 
     # ...............................Evaluate reults
-    predicted_data = _disc_in_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis ,inclination, Rstar, Mstar1, Mstar2, iphase2, semimajor2, orbitalperiod2, eccentricity2, periapsis2 ,inclination2, Mass3, feature, wind_vel, units, method_,extended_binsize)
+    predicted_data = disc_in_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis ,inclination, Rstar, Mstar1, Mstar2, iphase2, semimajor2, orbitalperiod2, eccentricity2, periapsis2 ,inclination2, Mass3, feature, wind_vel, units, method_,extended_binsize)
 
     chi_squared = _chi_squared_weighted(y_data, y_err_weight,predicted_data)
     #.............................prepare output
@@ -461,7 +462,7 @@ def fit_disc_ls(x_data, y_data, y_err=0, units="keV", method_="extended", extend
     #............................................LS implementation
     lower_bounds, upper_bounds = _manage_bounds(parameter_names, "bounds_disc", load_directly=load_directly, bound_list=bound_list)
     
-    model_func = lambda x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis ,inclination, Rstar, Mstar1, Mstar2, iphase2, semimajor2, orbitalperiod2, eccentricity2, periapsis2 ,inclination2, Mass3, feature, wind_vel : _disc_in_orbit(x_data,  iphase, semimajor, orbitalperiod, eccentricity, periapsis ,inclination, Rstar, Mstar1, Mstar2, iphase2, semimajor2, orbitalperiod2, eccentricity2, periapsis2 ,inclination2, Mass3, feature,wind_vel,units=units, method_=method_,extended_binsize=extended_binsize)
+    model_func = lambda x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis ,inclination, Rstar, Mstar1, Mstar2, iphase2, semimajor2, orbitalperiod2, eccentricity2, periapsis2 ,inclination2, Mass3, feature, wind_vel : disc_in_orbit(x_data,  iphase, semimajor, orbitalperiod, eccentricity, periapsis ,inclination, Rstar, Mstar1, Mstar2, iphase2, semimajor2, orbitalperiod2, eccentricity2, periapsis2 ,inclination2, Mass3, feature,wind_vel,units=units, method_=method_,extended_binsize=extended_binsize)
     
     try:
         fit_params, fit_covariance = curve_fit(model_func, x_data, y_data,  bounds=[lower_bounds, upper_bounds], maxfev=1000)
