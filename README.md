@@ -62,6 +62,7 @@ The following Python libraries are required:
 
 The software provides a user-friendly interface for managing the various parameters that influence orbital modulations. Upon first use, the user inputs parameters through a form, which are then saved in a file within the running directory. This file is automatically loaded in future runs, eliminating the need to re-enter all parameters.
  If the file is absent, the form will reappear for new inputs. Alternatively, setting `load_directly=True` will bypass the form and run the code using previously saved parameters (only if the file exists).
+Alternatively, the input parameters or bounds can be provided as lists, by providing a "parameter_list" or "bound_list" as imputs. This values will be saved for future runs within the working directory as a .txt for subsequent runs.
 
 ### Fitting Functions
 

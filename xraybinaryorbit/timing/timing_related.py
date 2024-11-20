@@ -1,22 +1,13 @@
 import numpy as np
 import pandas as pd
 from scipy.integrate import quad
-from pyswarm import pso
-from scipy.interpolate import PchipInterpolator
 from scipy.interpolate import interp1d
-import matplotlib.pyplot as plt
-from scipy.optimize import curve_fit
-import os
-import warnings
-import tkinter as tk
-from tkinter import messagebox
-from astropy.timeseries import LombScargle
-from scipy.signal import find_peaks, peak_widths, peak_prominences, find_peaks_cwt
-from scipy.integrate import quad
-from matplotlib.colors import Normalize
-from matplotlib.cm import ScalarMappable
-import inspect
 import math
+import matplotlib.pyplot as plt
+from tkinter import messagebox
+import tkinter as tk
+from astropy.timeseries import LombScargle
+from scipy.signal import find_peaks, peak_widths
 
 from ..helpers.data_helpers import _manage_parameters,_define_x_y_sy,_copy_fields, _load_values_to_interface, _manage_parameters,_load_bounds_to_interface, _manage_bounds
 

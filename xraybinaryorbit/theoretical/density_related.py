@@ -1,22 +1,14 @@
 import numpy as np
-import pandas as pd
 from scipy.integrate import quad
-from pyswarm import pso
-from scipy.interpolate import PchipInterpolator
 from scipy.interpolate import interp1d
+import math
+import pandas as pd
 import matplotlib.pyplot as plt
-from scipy.optimize import curve_fit
-import os
-import warnings
-import tkinter as tk
-from tkinter import messagebox
-from astropy.timeseries import LombScargle
-from scipy.signal import find_peaks, peak_widths, peak_prominences, find_peaks_cwt
-from scipy.integrate import quad
 from matplotlib.colors import Normalize
 from matplotlib.cm import ScalarMappable
-import inspect
-import math
+import tkinter as tk
+from tkinter import messagebox
+
 
 from ..helpers.data_helpers import _manage_parameters,_define_x_y_sy,_copy_fields, _load_values_to_interface, _manage_parameters,_load_bounds_to_interface, _manage_bounds
 
@@ -54,6 +46,7 @@ def density_through_orbit_theoretical(resolution=0.01, show_plot=False, load_dir
     A form will appear to input the necessary orbital parameters. These parameters are saved in a .txt file
     in the current directory and automatically loaded in subsequent runs. This avoids the need to re-enter parameters,
     allowing modification of only those that require adjustment.
+    By setting load_directly=True the data will be authomatically loaded into the function without rising a form. By providing parameter_list=(list of parameters) the parameters will be trated as an imput and saved within the current directory for subsequent runs.
 
     Returns
     -------
@@ -136,6 +129,7 @@ def absorption_column_through_orbit_theoretical(resolution=0.01, show_plot=True,
     A form will appear to input the necessary orbital parameters. These parameters are saved in a .txt file
     in the current directory and automatically loaded in subsequent runs. This avoids the need to re-enter
     parameters, allowing modification of only those that require adjustment.
+    By setting load_directly=True the data will be authomatically loaded into the function without rising a form. By providing parameter_list=(list of parameters) the parameters will be trated as an imput and saved within the current directory for subsequent runs.
     If the distance to the star is smaller than the stellar radius, the result will be 0.
 
     Returns
@@ -238,6 +232,8 @@ def density_and_ionization_orbital_phase_theoretical(resolution=0.01, size=10, s
     load_directly : bool, optional
         If True, attempts to load previously saved orbital parameters from a file. If False, prompts the user to
         input the parameters. Default is False.
+By providing parameter_list=(list of parameters) the parameters will be trated as an imput and saved within the current directory for subsequent runs.
+        
 
     Returns
     -------
@@ -338,11 +334,16 @@ def ionization_map_phase(size_in_Rstar=0, min_color=None, max_color=None, save_p
     name : str, optional
         Name of the file to save the plot. Default is "ionization_map".
 
+
+
     Notes
     -----
     A form will appear to input the necessary orbital parameters. These parameters are saved in a .txt file
     in the current directory and automatically loaded in subsequent runs. This avoids the need to re-enter parameters,
     allowing modification of only those that require adjustment.
+    By setting load_directly=True the data will be authomatically loaded into the function without rising a form. By providing parameter_list=(list of parameters) the parameters will be trated as an imput and saved within the current directory for subsequent runs.
+        
+
 
     Returns
     -------
@@ -604,8 +605,3 @@ def ionization_map_phase(size_in_Rstar=0, min_color=None, max_color=None, save_p
         plt.savefig(f"{name}.png")
     
     return chi_result, area_between_bounds
-###################################### ORBITAL PHASE TO TIME ##############################
-# Orbital phase to time aproximation (constant areolar velocity)
-# Orbital time to phase (constant areolar velocity and interpolation)
-##########################################################################################
-

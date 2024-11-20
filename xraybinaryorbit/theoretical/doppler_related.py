@@ -1,22 +1,10 @@
 import numpy as np
-import pandas as pd
 from scipy.integrate import quad
-from pyswarm import pso
-from scipy.interpolate import PchipInterpolator
 from scipy.interpolate import interp1d
-import matplotlib.pyplot as plt
-from scipy.optimize import curve_fit
-import os
-import warnings
+import math
 import tkinter as tk
 from tkinter import messagebox
-from astropy.timeseries import LombScargle
-from scipy.signal import find_peaks, peak_widths, peak_prominences, find_peaks_cwt
-from scipy.integrate import quad
-from matplotlib.colors import Normalize
-from matplotlib.cm import ScalarMappable
-import inspect
-import math
+import matplotlib.pyplot as plt
 
 from ..helpers.data_helpers import _manage_parameters,_define_x_y_sy,_copy_fields, _load_values_to_interface, _manage_parameters,_load_bounds_to_interface, _manage_bounds
 
@@ -58,6 +46,7 @@ def doppler_orbit_theoretical(t, units="keV", show_plot=False, precision_for_pha
     A form will appear to input the necessary orbital parameters. These parameters are saved in a .txt file
     in the current directory and automatically loaded in subsequent runs, avoiding the need to re-enter parameters.
     You can modify only those parameters that require adjustment.
+    By setting load_directly=True the data will be authomatically loaded into the function without rising a form. By providing parameter_list=(list of parameters) the parameters will be trated as an imput and saved within the current directory for subsequent runs.
 
     Returns
     -------
@@ -167,6 +156,7 @@ def doppler_spiral_theoretical(t, units="keV", show_plot=False, load_directly=Fa
     A form will appear to input the necessary orbital parameters. These parameters are saved in a .txt file
     in the current directory and automatically loaded in subsequent runs, avoiding the need to re-enter parameters.
     You can modify only those parameters that require adjustment.
+    By setting load_directly=True the data will be authomatically loaded into the function without rising a form. By providing parameter_list=(list of parameters) the parameters will be trated as an imput and saved within the current directory for subsequent runs.
 
     Returns
     -------
@@ -266,6 +256,7 @@ def doppler_disc_theoretical(t, units="keV", show_plot=False, load_directly=Fals
     A form will appear to input the necessary orbital parameters. These parameters are saved in a .txt file
     in the current directory and automatically loaded in subsequent runs. This avoids the need to re-enter parameters,
     and allows modification of only those parameters that require adjustment.
+    By setting load_directly=True the data will be authomatically loaded into the function without rising a form. By providing parameter_list=(list of parameters) the parameters will be trated as an imput and saved within the current directory for subsequent runs.
 
     Returns
     -------
@@ -384,6 +375,7 @@ def doppler_spiral_in_orbit_theoretical(t, units="keV", show_plot=False, load_di
     A form will appear to input the necessary orbital parameters. These parameters are saved in a .txt file
     in the current directory and automatically loaded in subsequent runs, avoiding the need to re-enter
     all parameters. Only those parameters that require adjustment need to be modified.
+    By setting load_directly=True the data will be authomatically loaded into the function without rising a form. By providing parameter_list=(list of parameters) the parameters will be trated as an imput and saved within the current directory for subsequent runs.
 
     Returns
     -------
