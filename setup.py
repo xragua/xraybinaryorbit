@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='xraybinaryorbit',  # Your package name
-    version='0.2.9',  # Version of your package
+    version='0.3.1',  # Version of your package
     license='MIT',  # License type
     description='A package for x-ray binary orbital modulations.',  # Short description
     author='LAEX',  # Your name

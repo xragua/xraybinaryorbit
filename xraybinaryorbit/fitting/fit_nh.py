@@ -34,7 +34,7 @@ na = 6.02214076*10**23/1.00797
 mu = 0.5
 mp = 1.67E-24
 
-def _nh_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis, inclination, Rstar, Mstar1, Mstar2, Mass_loss_rate, wind_infinite_velocity, beta, method_, extended_binsize):
+def nh_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis, inclination, Rstar, Mstar1, Mstar2, Mass_loss_rate, wind_infinite_velocity, beta, method_, extended_binsize):
     """
     Calculate the hydrogen column density (NH) in an orbital system with a stellar wind. This private function is called by
     fit_nh_ps.
@@ -224,7 +224,6 @@ def fit_nh_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=200, swarmsize=
 
 
 #............................................Data prep.
-    _advise()
     parameter_names=["iphase", "semimajor", "orbitalperiod", "eccentricity", "periapsis" ,"inclination", "Rstar", "Mstar1", "Mstar2", "Mdot", "v_inf", "beta"]
     
     t = x_data
@@ -241,7 +240,7 @@ def fit_nh_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=200, swarmsize=
     def objective_function(params):
 
         iphase, semimajor, orbitalperiod, eccentricity, periapsis ,inclination, Rstar, Mstar1, Mstar2, Mdot, v_inf, beta = params
-        predicted_data = _nh_orbit(x_data,  iphase, semimajor, orbitalperiod, eccentricity, periapsis ,inclination, Rstar, Mstar1,
+        predicted_data = nh_orbit(x_data,  iphase, semimajor, orbitalperiod, eccentricity, periapsis ,inclination, Rstar, Mstar1,
                                      Mstar2, Mdot, v_inf, beta, method_,extended_binsize)
 
         chi_squared = _chi_squared_weighted(y_data, y_err_weight,predicted_data)
@@ -258,7 +257,7 @@ def fit_nh_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=200, swarmsize=
         best_params, _ = pso(objective_function, lb=lower_bounds, ub=upper_bounds, maxiter = maxiter, swarmsize = swarmsize, phig=2)
 
         best_params_list.append(best_params)
-        predicted_data = _nh_orbit(x_data, *best_params, method_,extended_binsize)
+        predicted_data = nh_orbit(x_data, *best_params, method_,extended_binsize)
 
         chi_squared = _chi_squared_weighted(y_data, y_err_weight, predicted_data)
 
@@ -275,7 +274,7 @@ def fit_nh_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=200, swarmsize=
 
     ( iphase, semimajor, orbitalperiod, eccentricity, periapsis ,inclination, Rstar, Mstar1, Mstar2, Mdot, v_inf, beta) = best_params
 
-    predicted_data = _nh_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis ,inclination, Rstar, Mstar1, Mstar2, Mdot, v_inf, beta, method_,extended_binsize)
+    predicted_data = nh_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis ,inclination, Rstar, Mstar1, Mstar2, Mdot, v_inf, beta, method_,extended_binsize)
 #............................. Final evaluation
     chi_squared = _chi_squared_weighted(y_data, y_err_weight,predicted_data)
 #............................. Prepare output
