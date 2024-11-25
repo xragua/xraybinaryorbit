@@ -64,7 +64,7 @@ As these functions use a lot of parameters, which can sometimes be difficult to 
 A form will be displayed, and the parameters will be saved in the directory for further interactions. These saved parameters will be used if new parameters are not provided.
 For the function to work, the submit button must be pressed.
 If the parameters are already saved within the working directory, setting "load_directly=True" no form will be displayed and that parameters will be used within the function.
-Alternatively, the input parameters or bounds can be provided as lists, by providing a "parameter_list" or "bound_list" as imputs.
+Alternatively, the parameters can be provided as lists in the following format: parameter_list=[parameters] for the theoretical functions or as bound_list = [lower_bounds], [upper_bounds] for the fitting functions.
 
 Please, take into account that fits in general will take A LOT of time to complete.
 

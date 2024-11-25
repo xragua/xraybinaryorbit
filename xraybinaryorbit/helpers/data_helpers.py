@@ -285,7 +285,7 @@ def _manage_parameters(param_list, name, load_directly=False, parameter_list=Non
     except FileNotFoundError:
         file_exists = False
         fixed_values_list = [np.nan] * len(param_list)
-        print("File not found. Bounds will be initialized to NaN. A form will be displayed to allow easy input of the parameters. Alternatively, the bounds can be provided as lists in the following format: parameter_list=[parameters].")
+        print("File not found. Bounds will be initialized to NaN. A form will be displayed to allow easy input of the parameters. Alternatively, the parameters can be provided as lists in the following format: parameter_list=[parameters].")
         print("")
         print(f"The requied parameters are:")
         for param in zip(param_list,):
@@ -404,74 +404,6 @@ def _load_bounds_to_interface(param_list, lower_bounds, upper_bounds, name):
 
     root.mainloop()
     
-def _manage_bounds(param_list, name, load_directly=False, bound_list=None):
-    """
-    Manage parameter bounds by loading from a file, displaying a user input form for modification, and saving
-    the updated bounds back to the file.
-
-    This function first attempts to load previously saved lower and upper bounds for parameters from a file named
-    `bounds_{name}.txt`. If the file is not found, it initializes the bounds to `NaN`. The user can modify these bounds
-    through a graphical user interface (GUI) provided by `_load_bounds_to_interface`. After modification, the bounds are
-    saved back to the same file.
-
-    Parameters
-    ----------
-    param_list : list of str
-        A list of parameter names to be managed and saved. This list is used both in the GUI form
-        and for saving the parameter names to the output file.
-    name : str
-        The base name for the bounds file where the parameters will be saved and loaded from.
-        The file is expected to be named `bounds_{name}.txt`.
-    load_directly : bool, optional
-        If True, the function will load the bounds directly from the file if it exists, without showing the GUI.
-        If False (default), the function will display the GUI for the user to modify the bounds, even if the file exists.
-
-    Returns
-    -------
-    lower_bounds : list of float
-        The final list of valid lower bounds (i.e., where both lower and upper bounds are not `NaN`).
-    upper_bounds : list of float
-        The final list of valid upper bounds (i.e., where both lower and upper bounds are not `NaN`).
-    """
-
-    global lower_bounds_list, upper_bounds_list
-
-    file_exists = True
-
-    # Try to load previous bounds if available
-    try:
-        with open(f"{name}.txt", "r") as file:
-            lines = file.readlines()
-
-            param_names = lines[0].strip().split(",")  # Extract parameter names
-            lower_bounds_list = [float(val) for val in lines[1].strip().split(",")]
-            upper_bounds_list = [float(val) for val in lines[2].strip().split(",")]
-            
-    except FileNotFoundError:
-        file_exists = False
-        param_names = param_list
-        lower_bounds_list = [np.nan] * len(param_list)
-        upper_bounds_list = [np.nan] * len(param_list)
-
-    # If load_directly is False or the file does not exist, display the GUI to allow user modifications
-    if not load_directly or not file_exists:
-        _load_bounds_to_interface(param_names, lower_bounds_list, upper_bounds_list, name)
-
-    # Save updated bounds to the file
-    with open(f"{name}.txt", "w") as file:
-        file.write(",".join(map(str, param_names)) + "\n")  # Write parameter names
-        file.write(",".join(map(str, lower_bounds_list)) + "\n")  # Write lower bounds
-        file.write(",".join(map(str, upper_bounds_list)) + "\n")  # Write upper bounds
-
-    # Filter out NaN values and return valid lower and upper bounds
-    lower_bounds = [lower_bounds_list[i] for i in range(len(lower_bounds_list))
-                    if not np.isnan(lower_bounds_list[i]) and not np.isnan(upper_bounds_list[i])]
-    upper_bounds = [upper_bounds_list[i] for i in range(len(upper_bounds_list))
-                    if not np.isnan(lower_bounds_list[i]) and not np.isnan(upper_bounds_list[i])]
-
-    return lower_bounds, upper_bounds
-
-
 def _manage_bounds(param_list, name, load_directly=False, bound_list=None):
     """
     Manage parameter bounds by loading from a file, displaying a user input form for modification,
