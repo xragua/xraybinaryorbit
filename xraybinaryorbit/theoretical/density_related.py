@@ -148,8 +148,6 @@ def absorption_column_through_orbit_theoretical(resolution=0.01, show_plot=True,
         Absorption column density (NH1, x 10^22 cm^-2) through the orbit.
     
     """
-
-
     parameter_names = ["semimajor","orbitalperiod" ,"eccentricity", "periapsis" ,"inclination", "Rstar","Mstar1","Mstar2","wind_infinite_velocity","Mass_loss_rate","beta" ]
     
     fixed_values = _manage_parameters(parameter_names, "absorption_column_through_orbit",load_directly=load_directly,parameter_list=parameter_list )
@@ -214,8 +212,6 @@ def absorption_column_through_orbit_theoretical(resolution=0.01, show_plot=True,
     #...................................................
     
     return time, th, nh
-         
-         
 
 # DENSITY AND LOGCHI #############################################################################
 
@@ -318,8 +314,6 @@ def density_and_ionization_orbital_phase_theoretical(resolution=0.01, size=10, s
          
          
 # Ionization parameter map ###############################################################
-
-
 def ionization_map_phase(size_in_Rstar=0, min_color=None, max_color=None, save_plot=False, name="ionization_map", load_directly=False, parameter_list=None):
     """
     Generates a logarithmic ionization parameter map based on the stellar wind density, luminosity, and
@@ -342,7 +336,7 @@ def ionization_map_phase(size_in_Rstar=0, min_color=None, max_color=None, save_p
     -----
     A form will appear to input the necessary orbital parameters. These parameters are saved in a .txt file
     in the current directory and automatically loaded in subsequent runs. This avoids the need to re-enter parameters,
-    allowing modification of only those that require adjustment.
+    allowing modification of only those that require adjustment. 
 
     Returns
     -------
@@ -351,7 +345,6 @@ def ionization_map_phase(size_in_Rstar=0, min_color=None, max_color=None, save_p
     area : float
         The calculated area between bounds in cm^2.
     """
-
 
     parameter_names = [
         "phase", "semimajor", "eccentricity", "periapsis", "Rstar", "Mstar1", "Mstar2",

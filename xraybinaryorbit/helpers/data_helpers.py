@@ -281,12 +281,16 @@ def _manage_parameters(param_list, name, load_directly=False, parameter_list=Non
                     print(f"{param}: {value}")
             else:
                 should_print_after_modification = True
+                
     except FileNotFoundError:
         file_exists = False
         fixed_values_list = [np.nan] * len(param_list)
-        print("File not found. Initializing parameters to NaN:")
-        for param in param_list:
-            print(f"{param}: NaN")
+        print("File not found. Bounds will be initialized to NaN. A form will be displayed to allow easy input of the parameters. Alternatively, the bounds can be provided as lists in the following format: parameter_list=[parameters].")
+        print("")
+        print(f"The requied parameters are:")
+        for param in zip(param_list,):
+                        print(f"{param}")
+            
 
     # If load_directly is False or the file does not exist, display the GUI
     if not load_directly or not file_exists:
@@ -504,15 +508,15 @@ def _manage_bounds(param_list, name, load_directly=False, bound_list=None):
         lower_bounds_list, upper_bounds_list = bound_list
         print("Loaded bounds from the provided array:")
         for param, lower, upper in zip(param_list, lower_bounds_list, upper_bounds_list):
-            print(f"{param}: Lower = {lower}, Upper = {upper}")
-
+            print(f"{param}  {lower} - {upper}")
+        print("")
         # Save the provided bounds directly to the file
         with open(f"{name}.txt", "w") as file:
             file.write(",".join(map(str, param_list)) + "\n")  # Write parameter names
             file.write(",".join(map(str, lower_bounds_list)) + "\n")  # Write lower bounds
             file.write(",".join(map(str, upper_bounds_list)) + "\n")  # Write upper bounds
 
-
+    
     if bound_list is None:
         # Initialize the flag to ensure it is always defined
         file_exists = True
@@ -527,17 +531,21 @@ def _manage_bounds(param_list, name, load_directly=False, bound_list=None):
                 if load_directly:
                     print("Loaded bounds from file:")
                     for param, lower, upper in zip(param_list, lower_bounds_list, upper_bounds_list):
-                        print(f"{param}: Lower = {lower}, Upper = {upper}")
+                        print(f"{param} {lower} - {upper}")
+                    print("")    
                 else:
                     should_print_after_modification = True
+                    
         except FileNotFoundError:
             file_exists = False
             lower_bounds_list = [np.nan] * len(param_list)
             upper_bounds_list = [np.nan] * len(param_list)
-            print("File not found. Initializing bounds to NaN:")
-            for param in param_list:
-                print(f"{param}: Lower = NaN, Upper = NaN")
-
+            print("File not found. Bounds will be initialized to NaN. A form will be displayed to allow easy input of the parameters. Alternatively, the bounds can be provided as lists in the following format: bound_list = [lower_bounds], [upper_bounds].")
+            print("")
+            print(f"The requied parameters are:")
+            for param in zip(param_list,):
+                        print(f"{param}")
+            
         # If load_directly is False or the file does not exist, display the GUI
         if not load_directly or not file_exists:
             _load_bounds_to_interface(param_list, lower_bounds_list, upper_bounds_list, name)
@@ -547,8 +555,8 @@ def _manage_bounds(param_list, name, load_directly=False, bound_list=None):
         if should_print_after_modification:
             print("Bounds after modification or user input:")
             for param, lower, upper in zip(param_list, lower_bounds_list, upper_bounds_list):
-                print(f"{param}--- Lower = {lower}, Upper = {upper}")
-
+                print(f"{param}  {lower} - {upper}")
+            print("")
         # Save updated bounds to the file
         with open(f"{name}.txt", "w") as file:
             file.write(",".join(map(str, param_list)) + "\n")  # Write parameter names

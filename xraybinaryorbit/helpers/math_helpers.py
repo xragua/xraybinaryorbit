@@ -217,7 +217,7 @@ def scale(x, y):
     x_new = ((max(y) - min(y)) / (max(x) - min(x))) * (x - max(x)) + max(y)
     return x_new
 
-
+# PHASE TO TIME ###########################################################################
 
 def _orbital_phase_to_time(ph, iphase, semimajor, orbitalperiod, eccentricity, periapsis,
                            Rstar, Mstar1, Mstar2, precision=0.01):
