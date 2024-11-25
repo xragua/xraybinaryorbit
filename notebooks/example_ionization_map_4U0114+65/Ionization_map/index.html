@@ -598,6 +598,8 @@ A list of the functions contained in this package will be displayed by runing th
 As these functions use a lot of parameters, which can sometimes be difficult to handle, we have implemented a user-friendly method for parameter input:
 A form will be displayed, and the parameters will be saved in the directory for further interactions. These saved parameters will be used if new parameters are not provided.
 For the function to work, the submit button must be pressed.
+If the parameters are already saved within the working directory, setting "load_directly=True" no form will be displayed and that parameters will be used within the function.
+Alternatively, the input parameters or bounds can be provided as lists, by providing a "parameter_list" or "bound_list" as imputs.
 
 Please, take into account that fits in general will take A LOT of time to complete.
 
@@ -675,9 +677,15 @@ feka = pd.DataFrame(feka_data)</div>
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">chi1</span><span class="p">,</span><span class="n">area1</span> <span class="o">=</span> <span class="n">ionization_map_phase</span><span class="p">(</span><span class="n">size_in_Rstar</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">min_color</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">max_color</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"ionization_map"</span><span class="p">,</span><span class="n">load_directly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">params</span><span class="o">=</span><span class="p">[</span><span class="mf">0.3</span><span class="p">,</span><span class="mf">1.51</span><span class="p">,</span><span class="mf">0.15</span><span class="p">,</span><span class="mf">100.0</span><span class="p">,</span><span class="mf">37.0</span><span class="p">,</span><span class="mf">16.0</span><span class="p">,</span><span class="mf">1.4</span><span class="p">,</span><span class="mf">1200.0</span><span class="p">,</span><span class="mf">1e-06</span><span class="p">,</span><span class="mf">0.8</span><span class="p">,</span><span class="mf">1.30628470e+36</span><span class="p">,</span><span class="mf">25.0</span><span class="p">,</span><span class="mf">100.0</span><span class="p">]</span>
+
+<span class="n">chi1</span><span class="p">,</span><span class="n">area1</span> <span class="o">=</span> <span class="n">ionization_map_phase</span><span class="p">(</span><span class="n">size_in_Rstar</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">min_color</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">max_color</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"ionization_map"</span>
+                                  <span class="p">,</span><span class="n">load_directly</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">parameter_list</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-3">chi1,area1 = ionization_map_phase(size_in_Rstar=3, min_color=None,max_color=None, save_plot=False, name="ionization_map",load_directly=False)</div>
+<div class="clipboard-copy-txt" id="cell-3">params=[0.3,1.51,0.15,100.0,37.0,16.0,1.4,1200.0,1e-06,0.8,1.30628470e+36,25.0,100.0]
+
+chi1,area1 = ionization_map_phase(size_in_Rstar=3, min_color=None,max_color=None, save_plot=False, name="ionization_map"
+                                  ,load_directly=False,parameter_list=params)</div>
 </div>
 </div>
 </div>
@@ -689,7 +697,21 @@ feka = pd.DataFrame(feka_data)</div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>max color coefficient is 109.98
+<pre>Loaded parameters from the provided array:
+phase: 0.3
+semimajor: 1.51
+eccentricity: 0.15
+periapsis: 100.0
+Rstar: 37.0
+Mstar1: 16.0
+Mstar2: 1.4
+wind_infinite_velocity: 1200.0
+Mass_loss_rate: 1e-06
+beta: 0.8
+luminosity: 1.3062847e+36
+bound1: 25.0
+bound2: 100.0
+max color coefficient is 109.98
 min color coefficient is 5.86
 </pre>
 </div>
@@ -723,9 +745,15 @@ min color coefficient is 5.86
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">chi2</span><span class="p">,</span><span class="n">area2</span> <span class="o">=</span> <span class="n">ionization_map_phase</span><span class="p">(</span><span class="n">size_in_Rstar</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">min_color</span><span class="o">=</span><span class="mf">5.86</span><span class="p">,</span> <span class="n">max_color</span><span class="o">=</span><span class="mf">209.98</span><span class="p">,</span> <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"ionization_map"</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">params</span><span class="o">=</span><span class="p">[</span><span class="mf">0.3</span><span class="p">,</span><span class="mf">1.51</span><span class="p">,</span><span class="mf">0.15</span><span class="p">,</span><span class="mf">100.0</span><span class="p">,</span><span class="mf">37.0</span><span class="p">,</span><span class="mf">16.0</span><span class="p">,</span><span class="mf">1.4</span><span class="p">,</span><span class="mf">1200.0</span><span class="p">,</span><span class="mf">1e-06</span><span class="p">,</span><span class="mf">0.8</span><span class="p">,</span><span class="mf">6.24733539e+35</span><span class="p">,</span><span class="mf">25.0</span><span class="p">,</span><span class="mf">100.0</span><span class="p">]</span>
+
+<span class="n">chi2</span><span class="p">,</span><span class="n">area2</span> <span class="o">=</span> <span class="n">ionization_map_phase</span><span class="p">(</span><span class="n">size_in_Rstar</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">min_color</span><span class="o">=</span><span class="mf">5.86</span><span class="p">,</span> <span class="n">max_color</span><span class="o">=</span><span class="mf">209.98</span><span class="p">,</span> 
+                                  <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"ionization_map"</span><span class="p">,</span><span class="n">parameter_list</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-4">chi2,area2 = ionization_map_phase(size_in_Rstar=3, min_color=5.86, max_color=209.98, save_plot=False, name="ionization_map")</div>
+<div class="clipboard-copy-txt" id="cell-4">params=[0.3,1.51,0.15,100.0,37.0,16.0,1.4,1200.0,1e-06,0.8,6.24733539e+35,25.0,100.0]
+
+chi2,area2 = ionization_map_phase(size_in_Rstar=3, min_color=5.86, max_color=209.98, 
+                                  save_plot=False, name="ionization_map",parameter_list=params)</div>
 </div>
 </div>
 </div>
@@ -734,6 +762,26 @@ min color coefficient is 5.86
 <div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>Loaded parameters from the provided array:
+phase: 0.3
+semimajor: 1.51
+eccentricity: 0.15
+periapsis: 100.0
+Rstar: 37.0
+Mstar1: 16.0
+Mstar2: 1.4
+wind_infinite_velocity: 1200.0
+Mass_loss_rate: 1e-06
+beta: 0.8
+luminosity: 6.24733539e+35
+bound1: 25.0
+bound2: 100.0
+</pre>
+</div>
+</div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedImage jp-OutputArea-output" tabindex="0">
@@ -763,9 +811,15 @@ min color coefficient is 5.86
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">chi3</span><span class="p">,</span><span class="n">area3</span> <span class="o">=</span> <span class="n">ionization_map_phase</span><span class="p">(</span><span class="n">size_in_Rstar</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">min_color</span><span class="o">=</span><span class="mf">5.86</span><span class="p">,</span> <span class="n">max_color</span><span class="o">=</span><span class="mf">109.98</span><span class="p">,</span> <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"ionization_map"</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">params</span><span class="o">=</span><span class="p">[</span><span class="mf">0.3</span><span class="p">,</span><span class="mf">1.51</span><span class="p">,</span><span class="mf">0.15</span><span class="p">,</span><span class="mf">100.0</span><span class="p">,</span><span class="mf">37.0</span><span class="p">,</span><span class="mf">16.0</span><span class="p">,</span><span class="mf">1.4</span><span class="p">,</span><span class="mf">1200.0</span><span class="p">,</span><span class="mf">1e-06</span><span class="p">,</span><span class="mf">0.8</span><span class="p">,</span><span class="mf">9.38737128e+34</span><span class="p">,</span><span class="mf">25.0</span><span class="p">,</span><span class="mf">100.0</span><span class="p">]</span>
+
+<span class="n">chi3</span><span class="p">,</span><span class="n">area3</span> <span class="o">=</span> <span class="n">ionization_map_phase</span><span class="p">(</span><span class="n">size_in_Rstar</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">min_color</span><span class="o">=</span><span class="mf">5.86</span><span class="p">,</span> <span class="n">max_color</span><span class="o">=</span><span class="mf">109.98</span><span class="p">,</span> 
+                                  <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"ionization_map"</span><span class="p">,</span><span class="n">parameter_list</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-5">chi3,area3 = ionization_map_phase(size_in_Rstar=3, min_color=5.86, max_color=109.98, save_plot=False, name="ionization_map")</div>
+<div class="clipboard-copy-txt" id="cell-5">params=[0.3,1.51,0.15,100.0,37.0,16.0,1.4,1200.0,1e-06,0.8,9.38737128e+34,25.0,100.0]
+
+chi3,area3 = ionization_map_phase(size_in_Rstar=3, min_color=5.86, max_color=109.98, 
+                                  save_plot=False, name="ionization_map",parameter_list=params)</div>
 </div>
 </div>
 </div>
@@ -774,6 +828,26 @@ min color coefficient is 5.86
 <div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>Loaded parameters from the provided array:
+phase: 0.3
+semimajor: 1.51
+eccentricity: 0.15
+periapsis: 100.0
+Rstar: 37.0
+Mstar1: 16.0
+Mstar2: 1.4
+wind_infinite_velocity: 1200.0
+Mass_loss_rate: 1e-06
+beta: 0.8
+luminosity: 9.38737128e+34
+bound1: 25.0
+bound2: 100.0
+</pre>
+</div>
+</div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedImage jp-OutputArea-output" tabindex="0">
@@ -803,9 +877,15 @@ min color coefficient is 5.86
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">chi4</span><span class="p">,</span><span class="n">area4</span> <span class="o">=</span> <span class="n">ionization_map_phase</span><span class="p">(</span><span class="n">size_in_Rstar</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">min_color</span><span class="o">=</span><span class="mf">5.86</span><span class="p">,</span> <span class="n">max_color</span><span class="o">=</span><span class="mf">109.98</span><span class="p">,</span> <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"ionization_map"</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">params</span><span class="o">=</span><span class="p">[</span><span class="mf">0.3</span><span class="p">,</span><span class="mf">1.51</span><span class="p">,</span><span class="mf">0.15</span><span class="p">,</span><span class="mf">100.0</span><span class="p">,</span><span class="mf">37.0</span><span class="p">,</span><span class="mf">16.0</span><span class="p">,</span><span class="mf">1.4</span><span class="p">,</span><span class="mf">1200.0</span><span class="p">,</span><span class="mf">1e-06</span><span class="p">,</span><span class="mf">0.8</span><span class="p">,</span><span class="mf">4.12532189e+35</span><span class="p">,</span><span class="mf">25.0</span><span class="p">,</span><span class="mf">100.0</span><span class="p">]</span>
+
+<span class="n">chi4</span><span class="p">,</span><span class="n">area4</span> <span class="o">=</span> <span class="n">ionization_map_phase</span><span class="p">(</span><span class="n">size_in_Rstar</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">min_color</span><span class="o">=</span><span class="mf">5.86</span><span class="p">,</span> <span class="n">max_color</span><span class="o">=</span><span class="mf">109.98</span><span class="p">,</span> 
+                                  <span class="n">save_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"ionization_map"</span><span class="p">,</span><span class="n">parameter_list</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-6">chi4,area4 = ionization_map_phase(size_in_Rstar=3, min_color=5.86, max_color=109.98, save_plot=False, name="ionization_map")</div>
+<div class="clipboard-copy-txt" id="cell-6">params=[0.3,1.51,0.15,100.0,37.0,16.0,1.4,1200.0,1e-06,0.8,4.12532189e+35,25.0,100.0]
+
+chi4,area4 = ionization_map_phase(size_in_Rstar=3, min_color=5.86, max_color=109.98, 
+                                  save_plot=False, name="ionization_map",parameter_list=params)</div>
 </div>
 </div>
 </div>
@@ -814,6 +894,26 @@ min color coefficient is 5.86
 <div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>Loaded parameters from the provided array:
+phase: 0.3
+semimajor: 1.51
+eccentricity: 0.15
+periapsis: 100.0
+Rstar: 37.0
+Mstar1: 16.0
+Mstar2: 1.4
+wind_infinite_velocity: 1200.0
+Mass_loss_rate: 1e-06
+beta: 0.8
+luminosity: 4.12532189e+35
+bound1: 25.0
+bound2: 100.0
+</pre>
+</div>
+</div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedImage jp-OutputArea-output" tabindex="0">
