@@ -142,7 +142,6 @@ def rebin_snr(t, x, sy, snr_threshold):
     sy_rebinned : array-like
         Rebinned errors.
     """
-
     
     w=[]
     c_bin=[]
@@ -318,7 +317,6 @@ def preprocess_data(t, x, sy):
     
     return t, x, sy
 #.................................................. Periods sliding window
-
 
 def period_sliding_window(t, c, sc, window_sec, step_sec, max_period=None, min_period=None, false_alarm_threshold=0.1,
                           rel_high_for_error=0.9, folded_pulses=False, snr_pulse=0.2, nbin_pulse=None):
