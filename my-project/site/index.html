@@ -136,7 +136,8 @@
 <h2 id="usage">Usage</h2>
 <h3 id="general-usage">General Usage</h3>
 <p>The software provides a user-friendly interface for managing the various parameters that influence orbital modulations. Upon first use, the user inputs parameters through a form, which are then saved in a file within the running directory. This file is automatically loaded in future runs, eliminating the need to re-enter all parameters.
- If the file is absent, the form will reappear for new inputs. Alternatively, setting <code>load_directly=True</code> will bypass the form and run the code using previously saved parameters (only if the file exists).</p>
+ If the file is absent, the form will reappear for new inputs. By setting <code>load_directly=True</code> will bypass the form and run the code using previously saved parameters (only if the file exists).
+ Alternatively, the parameters can be provided as lists in the following format: parameter_list=[parameters] for the theoretical functions or as bound_list = [lower_bounds], [upper_bounds] for the fitting functions.</p>
 <h3 id="fitting-functions">Fitting Functions</h3>
 <p>For fitting orbital parameters, the software offers two approaches: least squares (LS) and particle swarm optimization (PSO) denoted by <code>_ls</code> and <code>_ps</code>, within the functions name respectively. The LS methods is faster but may fail to converge in certain cases, whereas the PS0 is more robust but computationally intensive. Key parameters for PSO include <code>num_iterations</code>, <code>maxiter</code>, and <code>swarmsize</code>. It is recommended to start with smaller values for these parameters (e.g., <code>num_iterations=3</code>, <code>maxiter=100</code>, and <code>swarmsize=20</code>) to evaluate computational demand and adjust accordingly. </p>
 <h3 id="extended-vs-discrete-fitting">Extended vs. Discrete Fitting</h3>
@@ -190,5 +191,5 @@
 
 <!--
 MkDocs version : 1.6.0
-Build Date UTC : 2024-10-25 09:00:59.890980+00:00
+Build Date UTC : 2024-11-25 13:33:55.430982+00:00
 -->

@@ -626,6 +626,8 @@ A list of the functions contained in this package will be displayed by runing th
 As these functions use a lot of parameters, which can sometimes be difficult to handle, we have implemented a user-friendly method for parameter input:
 A form will be displayed, and the parameters will be saved in the directory for further interactions. These saved parameters will be used if new parameters are not provided.
 For the function to work, the submit button must be pressed.
+If the parameters are already saved within the working directory, setting "load_directly=True" no form will be displayed and that parameters will be used within the function.
+Alternatively, the input parameters or bounds can be provided as lists, by providing a "parameter_list" or "bound_list" as imputs.
 
 Please, take into account that fits in general will take A LOT of time to complete.
 
@@ -656,9 +658,9 @@ If you need help, contact graciela.sanjurjo@ua.es.
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">time</span><span class="p">,</span> <span class="n">phase</span><span class="p">,</span> <span class="n">density</span> <span class="o">=</span> <span class="n">density_through_orbit_theoretical</span><span class="p">(</span><span class="n">resolution</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">show_plot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">load_directly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">time</span><span class="p">,</span> <span class="n">phase</span><span class="p">,</span> <span class="n">density</span> <span class="o">=</span> <span class="n">density_through_orbit_theoretical</span><span class="p">(</span><span class="n">resolution</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">show_plot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">load_directly</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-2">time, phase, density = density_through_orbit_theoretical(resolution=0.01, show_plot=True, load_directly=False)</div>
+<div class="clipboard-copy-txt" id="cell-2">time, phase, density = density_through_orbit_theoretical(resolution=0.01, show_plot=True, load_directly=True)</div>
 </div>
 </div>
 </div>
@@ -667,6 +669,23 @@ If you need help, contact graciela.sanjurjo@ua.es.
 <div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>Loaded parameters from file:
+semimajor: 3.0
+orbitalperiod: 10.0
+eccentricity: 0.2
+periapsis: 200.0
+Rstar: 22.0
+Mstar1: 12.0
+Mstar2: 1.4
+wind_infinite_velocity: 500.0
+Mass_loss_rate: 1e-06
+beta: 0.8
+</pre>
+</div>
+</div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedImage jp-OutputArea-output" tabindex="0">
@@ -696,9 +715,9 @@ If you need help, contact graciela.sanjurjo@ua.es.
 </div>
 </clipboard-copy>
 </div>
-<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">time</span><span class="p">,</span> <span class="n">phase</span><span class="p">,</span> <span class="n">NH</span> <span class="o">=</span><span class="n">absorption_column_through_orbit_theoretical</span><span class="p">(</span><span class="n">resolution</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span><span class="n">show_plot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">load_directly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class="highlight-ipynb hl-python"><pre><span></span><span class="n">time</span><span class="p">,</span> <span class="n">phase</span><span class="p">,</span> <span class="n">NH</span> <span class="o">=</span><span class="n">absorption_column_through_orbit_theoretical</span><span class="p">(</span><span class="n">resolution</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span><span class="n">show_plot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">load_directly</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
-<div class="clipboard-copy-txt" id="cell-3">time, phase, NH =absorption_column_through_orbit_theoretical(resolution=0.01,show_plot=True, load_directly=False)</div>
+<div class="clipboard-copy-txt" id="cell-3">time, phase, NH =absorption_column_through_orbit_theoretical(resolution=0.01,show_plot=True, load_directly=True)</div>
 </div>
 </div>
 </div>
@@ -707,6 +726,24 @@ If you need help, contact graciela.sanjurjo@ua.es.
 <div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>Loaded parameters from file:
+semimajor: 1.51
+orbitalperiod: 2.0
+eccentricity: 0.0
+periapsis: 70.0
+inclination: 40.0
+Rstar: 50.0
+Mstar1: 22.0
+Mstar2: 1.4
+wind_infinite_velocity: 1200.0
+Mass_loss_rate: 1e-06
+beta: 0.8
+</pre>
+</div>
+</div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedImage jp-OutputArea-output" tabindex="0">
