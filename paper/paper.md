@@ -96,9 +96,9 @@ where r is the orbital radius, $\omega$ is angular velocity, $\i$ is inclination
 
 # Examples of Package Performance
 
-![Some results obtained with the functions contained in this package.](joss1.jpg){#sylt width="95%"}
+![Some results obtained with the functions contained in this package.](joss1.jpg){#sylt width="100%"}
 
-![Some results obtained with the functions contained in this package.](joss2.jpg){#sylt width="95%"}
+![Some results obtained with the functions contained in this package.](joss2.jpg){#sylt width="100%"}
 
 
 # Acknowledgements
