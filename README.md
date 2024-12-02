@@ -3,7 +3,7 @@
 [![status](https://joss.theoj.org/papers/7f4fbc6a63adc4ba5a07bb340a4d7246/status.svg)](https://joss.theoj.org/papers/7f4fbc6a63adc4ba5a07bb340a4d7246)
 
 
-# XRAYBINARYORBIT: A Python Package for Analyzing Orbital Modulations in X-ray Binaries
+# xraybinaryorbit: A Python Package for Analyzing Orbital Modulations in X-ray Binaries
 
 
 **X-ray binaries are truly fascinating!** In these extreme environments, a compact object—either a neutron star or black hole—draws in matter from a companion star, producing intense X-ray emissions. These systems offer a unique window into extreme physics, from the effects of strong gravity and relativistic jets to the presence of intense magnetic fields.
@@ -80,7 +80,7 @@ The `extended` approach can be utilized by providing a list of `time pairs`, or 
 
 ## Documentation
 
-Detailed documentation, including function references and tutorials, can be found at: [XRAYBINARYORBIT Documentation](https://xragua.github.io/xraybinaryorbit/).
+Detailed documentation, including function references and tutorials, can be found at: [xraybinaryorbit Documentation](https://xragua.github.io/xraybinaryorbit/).
 
 ---
 

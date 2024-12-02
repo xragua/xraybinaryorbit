@@ -1,5 +1,5 @@
 
-# Contributing to XRAYBINARYORBIT
+# Contributing to xraybinaryorbit
 
 Thank you for taking the time to contribute! We appreciate your effort in helping to improve the **xraybinaryorbit** package.
 
