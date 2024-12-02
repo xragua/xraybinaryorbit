@@ -17,6 +17,7 @@ from matplotlib.colors import Normalize
 from matplotlib.cm import ScalarMappable
 import inspect
 import math
+from scipy.interpolate import CubicSpline
 
 from ..helpers.data_helpers import _manage_parameters,_define_x_y_sy,_copy_fields, _load_values_to_interface, _manage_parameters,_load_bounds_to_interface, _manage_bounds
 
@@ -99,18 +100,16 @@ def nh_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis, 
     
 
 
-    def nh_calc(th):
-
-        if not isinstance(th, (list, np.ndarray)):
-            th = [th]
-
+    def nh_calc(phases):
         nh = []
+        th = np.arange(-2, 2, 0.01)  # Dense grid for orbital phases
 
+        # Calculate nh for all values in the th grid
         for phase in th:
-            Rorb = (abar * (1 - eccentricity**2) / (1 + eccentricity * np.cos((phase - periapsis / 360) * 2 * np.pi))) * Rstar_cm  # in cm
+            Rorb = (abar * (1 - eccentricity**2) /
+                    (1 + eccentricity * np.cos((phase - periapsis / 360) * 2 * np.pi))) * Rstar_cm  # in cm
 
             def integrand(z):
-            
                 alpha = np.arccos(np.cos(phase * 2 * np.pi) * np.sin(inclination * 2 * np.pi / 360))
                 x = np.sqrt(Rorb**2 + z**2 - 2 * Rorb * z * np.cos(alpha))
                 v = vinf_cm_s * (1 - Rstar_cm / x)**beta
@@ -120,7 +119,26 @@ def nh_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis, 
             ne, _ = quad(integrand, 1, Rstar_cm * 1000)
             nh.append(ne * na / 1e22)
 
-        return np.nan_to_num(nh)
+        # Convert nh to numpy array for easier indexing
+        nh = np.array(nh)
+
+        # Filter valid (non-zero) data for interpolation
+        idx_good = nh > 0
+        th_good = th[idx_good]
+        nh_good = nh[idx_good]
+
+        # Interpolate using CubicSpline
+        nh_interpolator = CubicSpline(th_good, nh_good, extrapolate=True)
+
+        # Compute max and min bounds for physical phase ranges
+        nh_bounds = nh_interpolator(th)
+        max_nh_bound = max(nh_bounds[(th > 0.7) & (th < 1.2)])
+        min_nh_bound = min(nh_bounds[(th > 0.25) & (th < 0.75)])
+
+        # Interpolate nh for the given phases and clip extrapolated values
+        nh_out = np.clip(nh_interpolator(phases), nh_good.min(), nh_good.max())
+
+        return nh_out
 
 
     # Constants and conversions
@@ -272,7 +290,7 @@ def fit_nh_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=200, swarmsize=
     best_params = best_params_list[best_iteration]
     best_chi = chi_list[best_iteration]
 
-    ( iphase, semimajor, orbitalperiod, eccentricity, periapsis ,inclination, Rstar, Mstar1, Mstar2, Mdot, v_inf, beta) = best_params
+    (iphase, semimajor, orbitalperiod, eccentricity, periapsis ,inclination, Rstar, Mstar1, Mstar2, Mdot, v_inf, beta) = best_params
 
     predicted_data = nh_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis ,inclination, Rstar, Mstar1, Mstar2, Mdot, v_inf, beta, method_,extended_binsize)
 #............................. Final evaluation

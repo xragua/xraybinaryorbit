@@ -17,7 +17,7 @@ from matplotlib.colors import Normalize
 from matplotlib.cm import ScalarMappable
 import inspect
 import math
-
+from scipy.interpolate import CubicSpline
 from ..helpers.data_helpers import _manage_parameters,_define_x_y_sy,_copy_fields, _load_values_to_interface, _manage_parameters,_load_bounds_to_interface, _manage_bounds
 
 from ..helpers.math_helpers import _gaussian,_time_pairs,_interpolate_pchip,_chi_squared_weighted,_chi_squared,_orbital_phase_to_time,_orbital_time_to_phase
@@ -91,7 +91,7 @@ def density_through_orbit_theoretical(resolution=0.01, show_plot=False, load_dir
     #...................................................
     if show_plot:
     
-        fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(15, 5))
+        fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(9, 3))
 
         ax1.errorbar(time[Rorb>Rstar_cm], rho,  label='Data', color='b')
         ax1.set_xlabel("Time (s)")
@@ -104,7 +104,7 @@ def density_through_orbit_theoretical(resolution=0.01, show_plot=False, load_dir
         ax2.legend()
 
         ax3 = plt.subplot(1, 3, 3, projection='polar')
-        ax3.plot(th[Rorb>0] * 2 * np.pi, Rorb[Rorb>0],"b")
+        ax3.plot(th[Rorb>0] * 2 * np.pi, Rorb[Rorb>0]/(Rstar * rsun_cm),"b")
         ax3.set_theta_zero_location("N")
         ax3.set_theta_direction(-1)
         ax3.set_rlabel_position(90)
@@ -153,7 +153,7 @@ def absorption_column_through_orbit_theoretical(resolution=0.01, show_plot=True,
     fixed_values = _manage_parameters(parameter_names, "absorption_column_through_orbit",load_directly=load_directly,parameter_list=parameter_list )
     semimajor, orbitalperiod,eccentricity, periapsis, inclination, Rstar, Mstar1, Mstar2, wind_infinite_velocity, Mass_loss_rate, beta = fixed_values
 
-    th = np.arange(0,1,resolution)
+    th = np.arange(-0.1,1.1,resolution)
     
     _,time,_ = _orbital_phase_to_time(th,0, semimajor, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2,precision=0.01)
 
@@ -176,19 +176,32 @@ def absorption_column_through_orbit_theoretical(resolution=0.01, show_plot=True,
         
             alpha = np.arccos(np.cos(th[i]*2*np.pi)*np.sin(inclination*2*np.pi/360))
             x = np.sqrt(Rorb**2+z**2-2*Rorb*z*np.cos(alpha))
+
             v = (vinf_cm_s*(1-Rstar_cm/x)**beta)
             rho = (M_dot_grams/(4 * np.pi * v * x**2))
+
             return rho
 
         ne, _ = quad(integrand, 1, Rstar_cm * 1000)
-
         nh.append(ne*na/1e22)
         
-    nh = np.nan_to_num(nh)
+    #INTERPOLATE AND ALSO CLIP
+    idx_good= np.array(nh)>0
+    th_good = th[idx_good]
+    nh_good = np.array(nh)[idx_good]
+
+    nh_interpolator = CubicSpline(th_good, nh_good, extrapolate=True)
+
+    nh_bounds=nh_interpolator(th)
+    max_nh_bound = max(nh_bounds[(th>0.7)&(th<1.2)])
+    min_nh_bound = min(nh_bounds[(th>0.25)&(th<0.75)])
+
+    nh = np.clip(nh_interpolator(th), nh_good.min(), nh_good.max())
+
     #...................................................
     if show_plot:
     
-        fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(10, 5))
+        fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(9, 3))
         
         ax1.errorbar(time, nh,  label='Data', color='b')
         ax1.set_xlabel("Time (s)")
@@ -201,7 +214,7 @@ def absorption_column_through_orbit_theoretical(resolution=0.01, show_plot=True,
         ax2.legend()
 
         ax3 = plt.subplot(1, 3, 3, projection='polar')
-        ax3.plot(th * 2 * np.pi, Rorb_plot,"b")
+        ax3.plot(th * 2 * np.pi, Rorb_plot/(Rstar * rsun_cm),"b")
         ax3.set_theta_zero_location("N")
         ax3.set_theta_direction(-1)
         ax3.set_rlabel_position(90)
@@ -299,7 +312,7 @@ def density_and_ionization_orbital_phase_theoretical(resolution=0.01, size=10, s
         ax2.legend()
 
         ax3 = plt.subplot(1, 3, 3, projection='polar')
-        ax3.plot(th * 2 * np.pi, Rorb_plot,"b")
+        ax3.plot(th * 2 * np.pi, Rorb_plot/(Rstar * rsun_cm),"b")
         ax3.set_theta_zero_location("N")
         ax3.set_theta_direction(-1)
         ax3.set_rlabel_position(90)
