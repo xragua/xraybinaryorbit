@@ -102,7 +102,7 @@ def nh_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis, 
 
     def nh_calc(phases):
         nh = []
-        th = np.arange(-2, 2, 0.01)  # Dense grid for orbital phases
+        th = np.arange(min(phases)-0.5, max(phases)+0.5, 0.01)  # Dense grid for orbital phases
 
         # Calculate nh for all values in the th grid
         for phase in th:
