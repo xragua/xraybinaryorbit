@@ -35,7 +35,7 @@ bibliography: paper.bib
 
 # Summary
 
-X-ray astronomy is a young discipline, spanning no more than a few decades. The Earth's atmosphere is opaque to this type of radiation, so observations in this part of the spectrum were delayed until the space era began, when rocket launchers carrying X-ray telescopes revealed the universe from a brand-new point of view (see [@CambridgeXrayHistory] for a nice overview).
+X-ray astronomy is a young discipline, spanning no more than a few decades. The Earth's atmosphere is opaque to this type of radiation, so observations in this part of the spectrum were delayed until the space era began, when rocket launchers carrying X-ray telescopes revealed the universe from a brand-new point of view [@CambridgeXrayHistory].
 
 X-ray binaries are tremendously interesting systems. In these extreme environments, a compact object (either a neutron star, a black hole or a white dwarf) draws in matter from a companion star, producing X-ray radiation. These systems offer a unique window into extreme physics, from the effects of strong gravity and relativistic jets to the presence of intense magnetic fields [@Carroll_Ostlie_2017;@1983bhwd.book.S].
 
