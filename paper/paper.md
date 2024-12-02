@@ -14,12 +14,15 @@ authors:
     equal-contrib: true
     affiliation: 1
   - name: Jessica Planelles Villalva 
+    orcid: 0009-0007-9988-0202
     equal-contrib: true 
     affiliation: 1
   - name: Jose Miguel Torrejón
+    orcid: 0000-0002-5967-5163
     equal-contrib: true
     affiliation: 1
   - name: Jose Joaquín Rodes-Roca
+    orcid: 0000-0003-4363-8138
     equal-contrib: true
     affiliation: 1
 
@@ -93,8 +96,9 @@ where r is the orbital radius, $\omega$ is angular velocity, $\i$ is inclination
 
 # Examples of Package Performance
 
-![Some results obtained with the functions contained in this package.](joss1.jpg){#sylt width="70%"}
-![Some results obtained with the functions contained in this package.](joss2.jpg){#sylt width="70%"}
+![Some results obtained with the functions contained in this package.](joss1.jpg){#sylt width="80%"}
+
+![Some results obtained with the functions contained in this package.](joss2.jpg){#sylt width="80%"}
 
 
 # Acknowledgements
