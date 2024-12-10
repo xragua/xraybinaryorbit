@@ -60,11 +60,11 @@ Several software packages are available for the analysis of X-ray astronomy. Som
 xraybinaryorbit is a dedicated software package specifically designed for studying orbital modulations in X-ray binary systems.
 The tool features an intuitive interface for managing the parameters that affect orbital modulations. During the initial use, users input parameters via a form, and these are stored in a configuration file within the working directory. This file is automatically loaded in subsequent sessions, removing the need for repeated data entry (direct loads are also permited).
 
-The software offers two fitting methods: least squares (LS) and particle swarm optimization (PSO) [@10.1162/EVCO_r_00180, @pyswarms]. The LS method is faster but may fail to converge in some cases, whereas PSO is more robust but computationally intensive. Some results obtained with this package are shown in Figure 1.
+The software offers two fitting methods: least squares (LS) and particle swarm optimization (PSO) [@10.1162/EVCO_r_00180, @pyswarms]. The LS method is faster but may fail to converge in some cases, whereas PSO is more robust but computationally intensive. Some results obtained with this package are shown in Figures 1, 2 and 3.
 
 
 
-# Science Behind
+# Background theory
 
 This package primarily relies on the following theoretical frameworks:
 
@@ -96,9 +96,11 @@ where r is the orbital radius, $\omega$ is angular velocity, $\i$ is inclination
 
 # Examples of Package Performance
 
-![Some results obtained with the functions contained in this package.](joss1.jpg){#sylt width="100%"}
+![Reconstructed trajectory of Fe xxv emitting plasma for Cen X-3, deduced by the observed Doppler shifts of the emission line center.](trajectory_and_shifts.png){#sylt width="100%"}
 
-![Some results obtained with the functions contained in this package.](joss2.jpg){#sylt width="100%"}
+![Ionization map of the stellar wind on the orbital plane for 4U 0114+65 for the different luminosities observed.](new_iopn_map.png){#sylt width="100%"}
+
+![Theoretical local absoprption column for a hipothetical system.](NH_through_the_orbit.png){#sylt width="100%"}
 
 
 # Acknowledgements

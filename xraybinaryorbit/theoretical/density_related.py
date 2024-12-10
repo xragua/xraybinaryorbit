@@ -17,6 +17,7 @@ from matplotlib.colors import Normalize
 from matplotlib.cm import ScalarMappable
 import inspect
 import math
+import matplotlib.gridspec as gridspec
 from scipy.interpolate import CubicSpline
 from ..helpers.data_helpers import _manage_parameters,_define_x_y_sy,_copy_fields, _load_values_to_interface, _manage_parameters,_load_bounds_to_interface, _manage_bounds
 
@@ -91,27 +92,37 @@ def density_through_orbit_theoretical(resolution=0.01, show_plot=False, load_dir
     #...................................................
     if show_plot:
     
-        fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(9, 3))
+        fig = plt.figure(figsize=(9, 3))
+        gs = gridspec.GridSpec(1, 3, width_ratios=[1.2, 1.2, 1.2])
 
-        ax1.errorbar(time[Rorb>Rstar_cm], rho,  label='Data', color='b')
+        # First subplot
+        ax1 = fig.add_subplot(gs[0, 0])
+        ax1.errorbar(time[Rorb > Rstar_cm], rho, label='Data', color='b')
         ax1.set_xlabel("Time (s)")
         ax1.set_ylabel("Density through the orbit gr/cm$^2$")
-        ax1.legend()
+        # ax1.legend()
 
-        ax2.errorbar(th[Rorb>Rstar_cm], rho,  label='Data', color='b')
+        # Second subplot
+        ax2 = fig.add_subplot(gs[0, 1])
+        ax2.errorbar(th[Rorb > Rstar_cm], rho, label='Data', color='b')
         ax2.set_xlabel("Orbital phase")
         ax2.set_ylabel("Density through the orbit gr/cm$^2$")
-        ax2.legend()
+        # ax2.legend()
 
-        ax3 = plt.subplot(1, 3, 3, projection='polar')
-        ax3.plot(th[Rorb>0] * 2 * np.pi, Rorb[Rorb>0]/(Rstar * rsun_cm),"b")
+        # Third subplot (polar plot)
+        ax3 = fig.add_subplot(gs[0, 2], projection='polar')
+        ax3.plot(th[Rorb > 0] * 2 * np.pi, Rorb[Rorb > 0] / (Rstar * rsun_cm), "b")
         ax3.set_theta_zero_location("N")
         ax3.set_theta_direction(-1)
-        ax3.set_rlabel_position(90)
+        ax3.set_frame_on(False)  # Remove the Cartesian frame
 
+        # Adjust spacing
         plt.tight_layout()
-        
-        plt.savefig("density_through_the_orbit.png")
+
+        # Save and show the plot
+        plt.savefig("density_through_the_orbit.png", bbox_inches='tight')
+
+
     #.....................................................
 
     return  time[Rorb > Rstar_cm], th[Rorb > Rstar_cm],  rho
@@ -119,7 +130,7 @@ def density_through_orbit_theoretical(resolution=0.01, show_plot=False, load_dir
 # ABSOPTION COLUMN #############################################################################
 def absorption_column_through_orbit_theoretical(resolution=0.01, show_plot=True, load_directly=False, parameter_list=None):
     """
-    Visualizes the column density (NH1, x 10^22 cm^-2) encountered by radiation emitted at each orbital
+    Visualizes the column density (NH, x 10^22 cm^-2) encountered by radiation emitted at each orbital
     phase as it travels towards an observer. Assumes a spherically distributed, neutral (unionized)
     stellar wind based on the CAK (Castor-Abbott-Klein) model.
 
@@ -144,8 +155,8 @@ def absorption_column_through_orbit_theoretical(resolution=0.01, show_plot=True,
         Time array corresponding to the orbital movement.
     phase : array-like
         Orbital phase array.
-    NH1 : array-like
-        Absorption column density (NH1, x 10^22 cm^-2) through the orbit.
+    NH : array-like
+        Absorption column density (NH, x 10^22 cm^-2) through the orbit.
     
     """
     parameter_names = ["semimajor","orbitalperiod" ,"eccentricity", "periapsis" ,"inclination", "Rstar","Mstar1","Mstar2","wind_infinite_velocity","Mass_loss_rate","beta" ]
@@ -201,25 +212,30 @@ def absorption_column_through_orbit_theoretical(resolution=0.01, show_plot=True,
     #...................................................
     if show_plot:
     
-        fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(9, 3))
+        fig = plt.figure(figsize=(12, 3))
+        gs = gridspec.GridSpec(1, 3, width_ratios=[1, 1, 1.2])
         
+        ax1 = fig.add_subplot(gs[0, 0])
         ax1.errorbar(time, nh,  label='Data', color='b')
         ax1.set_xlabel("Time (s)")
-        ax1.set_ylabel("NH1 (x 10$^{22}$ cm$^{-2}$)")
-        ax1.legend()
+        ax1.set_ylabel("NH (x 10$^{22}$ cm$^{-2}$)")
+        #ax1.legend()
         
+        ax2 = fig.add_subplot(gs[0, 1])
         ax2.errorbar(th, nh,  label='Data', color='b')
         ax2.set_xlabel("Orbital phase")
-        ax2.set_ylabel("NH1 (x 10$^{22}$ cm$^{-2}$)")
-        ax2.legend()
+        ax2.set_ylabel("NH (x 10$^{22}$ cm$^{-2}$)")
+        #ax2.legend()
 
-        ax3 = plt.subplot(1, 3, 3, projection='polar')
+        ax3 = fig.add_subplot(gs[0, 2], projection='polar')
         ax3.plot(th * 2 * np.pi, Rorb_plot/(Rstar * rsun_cm),"b")
         ax3.set_theta_zero_location("N")
         ax3.set_theta_direction(-1)
-        ax3.set_rlabel_position(90)
+        ax3.set_frame_on(False)
+        #ax3.set_rlabel_position(90)
+ 
 
-        plt.tight_layout()
+        #plt.tight_layout()
         
         plt.savefig("NH_through_the_orbit.png")
     #...................................................
@@ -300,7 +316,7 @@ def density_and_ionization_orbital_phase_theoretical(resolution=0.01, size=10, s
         ax1.errorbar(z/Rstar_cm, density,  label='Data', color='b')
         ax1.set_xlabel("Path from NS (R*)")
         ax1.set_ylabel("Density cm$^{-3}$)")
-        ax1.legend()
+        #ax1.legend()
         ax1.set_xscale("log")
         ax1.set_yscale("log")
         
@@ -309,13 +325,15 @@ def density_and_ionization_orbital_phase_theoretical(resolution=0.01, size=10, s
         ax2.set_ylabel("Ionization Parameter (log(ξ))")
         ax2.set_xscale("log")
         ax2.set_yscale("log")
-        ax2.legend()
+        #ax2.legend()
 
         ax3 = plt.subplot(1, 3, 3, projection='polar')
         ax3.plot(th * 2 * np.pi, Rorb_plot/(Rstar * rsun_cm),"b")
         ax3.set_theta_zero_location("N")
         ax3.set_theta_direction(-1)
-        ax3.set_rlabel_position(90)
+        #ax3.set_rlabel_position(90)
+        ax3.spines['polar'].set_visible(False)
+        ax3.set_xticks([])
 
         plt.tight_layout()
         
