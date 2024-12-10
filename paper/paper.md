@@ -100,7 +100,7 @@ where r is the orbital radius, $\omega$ is angular velocity, $\i$ is inclination
 
 ![Ionization map of the stellar wind in the orbital plane of 4U 0114+65, showing variations in different observed luminosities.](new_iopn_map.png){#sylt width="100%"}
 
-![Theoretical local absorption column for a hypothetical system, as calculated through the orbit.](NH_through_the_orbit.png){#sylt width="100%"}
+![Theoretical local absorption column for a hypothetical X-Ray binary system, vs both time and orbital phase, calculated through the orbit.](NH_through_the_orbit.png){#sylt width="100%"}
 
 
 # Acknowledgements
