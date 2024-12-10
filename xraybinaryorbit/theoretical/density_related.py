@@ -235,7 +235,7 @@ def absorption_column_through_orbit_theoretical(resolution=0.01, show_plot=True,
         #ax3.set_rlabel_position(90)
  
 
-        #plt.tight_layout()
+        plt.tight_layout()
         
         plt.savefig("NH_through_the_orbit.png")
     #...................................................
