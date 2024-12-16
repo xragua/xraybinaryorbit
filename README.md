@@ -86,7 +86,7 @@ Detailed documentation, including function references and tutorials, can be foun
 
 ## Contributing
 
-Contributions are welcome! Please check the [CONTRIBUTING FILE](https://github.com/xragua/xraybinaryorbit/my-project/docs/contribute.md) for details on how to contribute.
+Contributions are welcome! Please check the [CONTRIBUTING FILE](https://github.com/xragua/xraybinaryorbit/blob/main/my-project/docs/contribute.md) for details on how to contribute.
 
 ---
 
