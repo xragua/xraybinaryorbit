@@ -5,17 +5,6 @@
 
 # xraybinaryorbit: A Python Package for Analyzing Orbital Modulations in X-ray Binaries
 
-Markdown:
-[![DOI](https://joss.theoj.org/papers/10.21105/joss.07220/status.svg)](https://doi.org/10.21105/joss.07220)
-
-HTML:
-<a style="border-width:0" href="https://doi.org/10.21105/joss.07220">
-  <img src="https://joss.theoj.org/papers/10.21105/joss.07220/status.svg" alt="DOI badge" >
-</a>
-
-reStructuredText:
-.. image:: https://joss.theoj.org/papers/10.21105/joss.07220/status.svg
-   :target: https://doi.org/10.21105/joss.07220
 
 **X-ray binaries are truly fascinating!** In these extreme environments, a compact object—either a neutron star or black hole—draws in matter from a companion star, producing intense X-ray emissions. These systems offer a unique window into extreme physics, from the effects of strong gravity and relativistic jets to the presence of intense magnetic fields.
 
