@@ -41,7 +41,7 @@ def test_cr():
 
 def test_rebin_snr():
     # Test rebinning with a signal-to-noise ratio threshold
-    snr_threshold = 0.2
+    snr_threshold = 20.0
     t_rebinned, c_rebinned, sc_rebinned = rebin_snr(t, c, sc, snr_threshold)
     
     # Assertions
@@ -75,7 +75,7 @@ def test_fold_pulse():
     period = 0.2 * 24 * 60 * 60
     
     # Fold the pulse
-    t_folded, c_folded, sc_folded = fold_pulse(t, c, sc, period, snr=0.2)
+    t_folded, c_folded, sc_folded = fold_pulse(t, c, sc, period, snr=20.0)
     
     # Assertions
     assert len(t_folded) < len(t), "Folded time array should have fewer points than the original"

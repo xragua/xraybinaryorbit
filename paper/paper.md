@@ -1,5 +1,5 @@
 ---
-title: 'xraybinaryorbit: A Python Package for Analyzing Orbital Modulations in X-ray Binaries'
+title: 'xraybinaryorbit: KJH'
 tags:
   - Python
   - X-ray astronomy

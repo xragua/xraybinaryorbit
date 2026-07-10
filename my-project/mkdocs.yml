@@ -1,3 +1,4 @@
+
 site_name: xraybinaryorbit
 
 theme:
@@ -8,6 +9,16 @@ theme:
     name: readthedocs
     logo: images/logo.png  # Add this line to specify the logo path
 
+# Add or merge these entries into mkdocs.yml
+markdown_extensions:
+  - pymdownx.arithmatex:
+      generic: true
+
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
+
+
 extra_css:
     - css/custom.css  # Include your custom CSS file here
 
@@ -15,7 +26,11 @@ plugins:
     - mkdocs-jupyter
 
 nav:
-    -  GETTING STARTED: index.md
+    - GETTING STARTED: index.md
+    
+    - SCIENCE: science.md
+    
+    - FUNCTIONS: functions.md
     
     - EXAMPLES:
     
@@ -34,10 +49,6 @@ nav:
 
         - Fe XXV Doppler Shifts Cen X-3: notebooks/example_fexxv_doppler_shifts_CenX3/Fit_real_line_doppler_shifts.ipynb
         
-
-        
-
-    - FUNCTIONS: functions.md
     
     - CONTRIBUTE: contribute.md
     

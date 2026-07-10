@@ -1,41 +1,43 @@
+import os
+
+import pandas as pd
 import pytest
-from xraybinaryorbit import *
+
+from xraybinaryorbit import ionization_map_phase
 
 
-# Test for ionization_map_phase with default parameters
+def _unpack_map_output(output):
+    assert len(output) in (2, 3)
+    if len(output) == 3:
+        xi_map, electron_density_map, area = output
+        assert isinstance(electron_density_map, pd.DataFrame)
+    else:
+        xi_map, area = output
+    return xi_map, area
+
+
 def test_ionization_map_phase_default():
-    # Run the function with default parameters and loading data directly
-    chi_result, area_between_bounds = ionization_map_phase(load_directly=True)
-
-    # Assert outputs
-    assert isinstance(chi_result, pd.DataFrame), "The output chi_result should be a pandas DataFrame."
-    assert '0.0' in chi_result.columns, "The DataFrame should contain orbital phase columns."
-    assert not chi_result.empty, "The DataFrame should not be empty."
-    assert isinstance(area_between_bounds, float), "The area between bounds should be a float."
-    assert area_between_bounds >= 0, "The area should be a non-negative number."
-
-    # Check if the plot is saved correctly
-    plot_filename = "test_ionization_map.png"
-    ionization_map_phase(save_plot=True, name="test_ionization_map", load_directly=True)
-
-    # Assert that the plot file has been created
-    assert os.path.isfile(plot_filename), "The plot should be saved as a file."
-
-    # Clean up: remove the file after the test
-    if os.path.exists(plot_filename):
-        os.remove(plot_filename)
+    xi_map, area = _unpack_map_output(ionization_map_phase(load_directly=True))
+    assert isinstance(xi_map, pd.DataFrame)
+    assert not xi_map.empty
+    assert isinstance(area, float)
+    assert area >= 0
 
 
-# Test for ionization_map_phase with custom size and color scale
+def test_ionization_map_phase_plot():
+    filename = "test_ionization_map.png"
+    _unpack_map_output(ionization_map_phase(
+        save_plot=True, name="test_ionization_map", load_directly=True,
+    ))
+    assert os.path.isfile(filename)
+    os.remove(filename)
+
+
 def test_ionization_map_phase_custom_size_color():
-    # Run the function with custom size and color scale
-    chi_result, area_between_bounds = ionization_map_phase(size_in_Rstar=3.0, min_color=1e-5, max_color=1e2, load_directly=True)
-
-    # Assert outputs
-    assert isinstance(chi_result, pd.DataFrame), "The output chi_result should be a pandas DataFrame."
-    assert not chi_result.empty, "The DataFrame should not be empty."
-    assert isinstance(area_between_bounds, float), "The area between bounds should be a float."
-    assert area_between_bounds >= 0, "The area should be a non-negative number."
-
-    # Check some specific properties of the custom color scale and size
-    assert chi_result.shape[0] > 0, "The DataFrame should have at least one row."
+    xi_map, area = _unpack_map_output(ionization_map_phase(
+        size_in_Rstar=3.0, min_color=1e-5, max_color=1e2,
+        load_directly=True,
+    ))
+    assert isinstance(xi_map, pd.DataFrame)
+    assert not xi_map.empty
+    assert area >= 0

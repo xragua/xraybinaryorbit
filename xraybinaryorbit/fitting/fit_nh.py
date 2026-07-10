@@ -1,338 +1,491 @@
+"""Fit orbital hydrogen column density through a spherical stellar wind."""
+
+from __future__ import annotations
+
+import warnings
+
 import numpy as np
 import pandas as pd
-from scipy.integrate import quad
 from pyswarm import pso
-from scipy.interpolate import PchipInterpolator
-from scipy.interpolate import interp1d
-import matplotlib.pyplot as plt
-from scipy.optimize import curve_fit
-import os
-import warnings
-import tkinter as tk
-from tkinter import messagebox
-from astropy.timeseries import LombScargle
-from scipy.signal import find_peaks, peak_widths, peak_prominences, find_peaks_cwt
 from scipy.integrate import quad
-from matplotlib.colors import Normalize
-from matplotlib.cm import ScalarMappable
-import inspect
-import math
-from scipy.interpolate import CubicSpline
 
-from ..helpers.data_helpers import _manage_parameters,_define_x_y_sy,_copy_fields, _load_values_to_interface, _manage_parameters,_load_bounds_to_interface, _manage_bounds
+from ..helpers.data_helpers import _define_x_y_sy, _manage_bounds
+from ..helpers.math_helpers import _chi_squared_weighted, _orbital_time_to_phase
 
-from ..helpers.math_helpers import _gaussian,_time_pairs,_interpolate_pchip,_chi_squared_weighted,_chi_squared,_orbital_phase_to_time,_orbital_time_to_phase
+M_SUN_G = 1.98847e33
+R_SUN_CM = 6.96340e10
+M_PROTON_G = 1.67262192369e-24
+SECONDS_PER_YEAR = 365.25 * 24.0 * 3600.0
+HYDROGEN_MASS_FRACTION = 0.70
+LOS_UPPER_LIMIT_RSTAR = 1000.0
 
-c = 299792458
 
-msun = (1.98847*10**30)*1000 #gr
-rsun_m = 696340*1000 #
-rsun_cm = 696340*1000*100 #cm
+def _validate_parameters(
+    semimajor,
+    orbitalperiod,
+    eccentricity,
+    Rstar,
+    mass_loss_rate,
+    wind_infinite_velocity,
+    beta,
+):
+    if semimajor <= 0 or orbitalperiod <= 0 or Rstar <= 0:
+        raise ValueError("semimajor, orbitalperiod, and Rstar must be positive.")
+    if mass_loss_rate <= 0 or wind_infinite_velocity <= 0:
+        raise ValueError("Mdot and v_inf must be positive.")
+    if beta < 0:
+        raise ValueError("beta must be non-negative.")
+    if not 0 <= eccentricity < 1:
+        raise ValueError("eccentricity must satisfy 0 <= eccentricity < 1.")
 
-kev_ams = 1.23984193
 
-na = 6.02214076*10**23/1.00797
-mu = 0.5
-mp = 1.67E-24
+def _phase_from_times(
+    times,
+    iphase,
+    semimajor,
+    orbitalperiod,
+    eccentricity,
+    periapsis,
+    Rstar,
+    reference_time=None,
+):
+    times = np.atleast_1d(np.asarray(times, dtype=float))
+    if times.size == 0 or not np.all(np.isfinite(times)):
+        raise ValueError("times must contain finite values.")
 
-def nh_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis, inclination, Rstar, Mstar1, Mstar2, Mass_loss_rate, wind_infinite_velocity, beta, method_, extended_binsize):
+    prepended = reference_time is not None
+    if prepended:
+        reference_time = float(reference_time)
+        if reference_time > float(np.min(times)):
+            raise ValueError("reference_time cannot be later than the evaluated times.")
+        evaluation_times = np.concatenate(([reference_time], times))
+    else:
+        evaluation_times = times
+
+    # Equal dummy masses avoid imposing a barycentric meaning on a relative
+    # donor--compact-object separation while remaining compatible with old helpers.
+    phase, _, _ = _orbital_time_to_phase(
+        evaluation_times,
+        iphase,
+        semimajor,
+        orbitalperiod,
+        eccentricity,
+        periapsis,
+        Rstar,
+        1.0,
+        1.0,
+        precision=0.01,
+    )
+    phase = np.asarray(phase, dtype=float)
+    return phase[1:] if prepended else phase
+
+
+def _relative_separation_rstar(phase, semimajor, eccentricity, periapsis):
+    true_anomaly = 2.0 * np.pi * np.asarray(phase, dtype=float) - np.deg2rad(periapsis)
+    denominator = 1.0 + eccentricity * np.cos(true_anomaly)
+    if np.any(denominator <= 0):
+        raise ValueError("Invalid eccentric-orbit denominator.")
+    return semimajor * (1.0 - eccentricity**2) / denominator
+
+
+def _line_of_sight_intersects_star(separation, cos_alpha):
+    """Check the ray from the compact object towards the observer."""
+    z_closest = max(float(separation) * float(cos_alpha), 0.0)
+    minimum_radius = np.sqrt(
+        separation**2
+        + z_closest**2
+        - 2.0 * separation * z_closest * cos_alpha
+    )
+    return minimum_radius <= 1.0
+
+
+def _nh_at_phase(
+    phase,
+    semimajor,
+    eccentricity,
+    periapsis,
+    inclination,
+    Rstar,
+    mass_loss_rate,
+    wind_infinite_velocity,
+    beta,
+):
+    """Equivalent hydrogen column in units of 1e22 cm^-2."""
+    separation = float(
+        _relative_separation_rstar(phase, semimajor, eccentricity, periapsis)
+    )
+    cos_alpha = float(
+        np.clip(
+            np.cos(2.0 * np.pi * phase) * np.sin(np.deg2rad(inclination)),
+            -1.0,
+            1.0,
+        )
+    )
+
+    # Historical package convention: an occulted direct source returns NH=0.
+    if separation <= 1.0 or _line_of_sight_intersects_star(separation, cos_alpha):
+        return 0.0
+
+    rstar_cm = Rstar * R_SUN_CM
+    mdot_g_s = mass_loss_rate * M_SUN_G / SECONDS_PER_YEAR
+    vinf_cm_s = wind_infinite_velocity * 1.0e5
+
+    def mass_column_integrand(z_rstar):
+        radius_rstar = np.sqrt(
+            separation**2
+            + z_rstar**2
+            - 2.0 * separation * z_rstar * cos_alpha
+        )
+        if radius_rstar <= 1.0:
+            return np.inf
+        velocity = vinf_cm_s * (1.0 - 1.0 / radius_rstar) ** beta
+        if velocity <= 0 or not np.isfinite(velocity):
+            return np.inf
+        radius_cm = radius_rstar * rstar_cm
+        density = mdot_g_s / (4.0 * np.pi * velocity * radius_cm**2)
+        return density * rstar_cm  # dz = Rstar du
+
+    mass_column, _ = quad(
+        mass_column_integrand,
+        0.0,
+        LOS_UPPER_LIMIT_RSTAR,
+        epsabs=0.0,
+        epsrel=3.0e-5,
+        limit=250,
+    )
+    if not np.isfinite(mass_column) or mass_column < 0:
+        raise FloatingPointError("Non-finite wind-column integral.")
+
+    return HYDROGEN_MASS_FRACTION * mass_column / M_PROTON_G / 1.0e22
+
+
+def _nh_for_phases(phases, parameters):
+    phases = np.atleast_1d(np.asarray(phases, dtype=float))
+    return np.asarray(
+        [
+            _nh_at_phase(
+                phase,
+                parameters[1],
+                parameters[3],
+                parameters[4],
+                parameters[5],
+                parameters[6],
+                parameters[7],
+                parameters[8],
+                parameters[9],
+            )
+            for phase in phases
+        ],
+        dtype=float,
+    )
+
+
+def _samples_for_bin(phase_width, extended_binsize):
+    if extended_binsize <= 0:
+        raise ValueError("extended_binsize must be positive.")
+    ratio = max(float(phase_width) / float(extended_binsize), 1.0)
+    return int(np.clip(np.ceil(4.0 * ratio) + 1, 9, 65))
+
+
+def _build_sample_blocks(lo, hi, phase_width, extended_binsize):
+    blocks = []
+    sizes = []
+    for start, stop, width in zip(lo, hi, phase_width):
+        midpoint = 0.5 * (start + stop)
+        if stop > start and width >= extended_binsize:
+            block = np.linspace(
+                start,
+                stop,
+                _samples_for_bin(width, extended_binsize),
+            )
+        else:
+            block = np.array([midpoint], dtype=float)
+        blocks.append(block)
+        sizes.append(block.size)
+    return np.concatenate(blocks), np.asarray(sizes, dtype=int)
+
+
+def _mean_blocks(values, sizes):
+    split = np.cumsum(sizes)[:-1]
+    return np.asarray(
+        [np.mean(block) for block in np.split(np.asarray(values, dtype=float), split)],
+        dtype=float,
+    )
+
+
+def nh_orbit(
+    x_data,
+    iphase,
+    semimajor,
+    orbitalperiod,
+    eccentricity,
+    periapsis,
+    inclination,
+    Rstar,
+    Mass_loss_rate,
+    wind_infinite_velocity,
+    beta,
+    method_,
+    extended_binsize,
+):
+    """Calculate orbital NH in units of 1e22 cm^-2.
+
+    ``semimajor`` is the relative donor--compact-object semimajor axis in units
+    of the donor radius. No barycentric mass correction belongs in this wind
+    geometry. Extended bins are sampled in one globally anchored phase call and
+    the physical NH values are then averaged inside each bin.
     """
-    Calculate the hydrogen column density (NH) in an orbital system with a stellar wind. This private function is called by
-    fit_nh_ps.
+    _validate_parameters(
+        semimajor,
+        orbitalperiod,
+        eccentricity,
+        Rstar,
+        Mass_loss_rate,
+        wind_infinite_velocity,
+        beta,
+    )
 
-    This function calculates the hydrogen column density (NH) in a binary orbital system with a star that has a stellar wind.
-    The function integrates the mass density along the line of sight as the system moves through different orbital phases,
-    taking into account the orbital motion and wind velocity profile. It supports both "extended" and "discrete" methods for
-    calculation, where the "extended" method computes averaged values over time bins, and the "discrete" method computes
-    NH at individual time points.
+    method_ = str(method_).lower()
+    if method_ not in {"discrete", "extended"}:
+        raise ValueError("method_ must be 'discrete' or 'extended'.")
 
-    Parameters
-    ----------
-    x_data : array-like
-        The input time data (or time bins) to compute NH values.
-    iphase : float
-        The initial phase of the orbit, typically as a fraction of the orbital period or in radians.
-    semimajor : float
-        The semi-major axis of the orbit, in solar radii.
-    orbitalperiod : float
-        The orbital period of the system in days.
-    eccentricity : float
-        The eccentricity of the orbit, ranging from 0 (circular) to 1 (parabolic).
-    periapsis : float
-        The argument of periapsis of the orbit, describing the orientation of the orbit in the plane of motion.
-    inclination : float
-        The inclination of the orbit in degrees, relative to the plane of the sky.
-    Rstar : float
-        The radius of the star, typically in solar radii.
-    Mstar1 : float
-        The mass of the primary star, typically in solar masses.
-    Mstar2 : float
-        The mass of the secondary object, typically in solar masses.
-    Mass_loss_rate : float
-        The mass loss rate from the star due to stellar wind, typically in solar masses per year.
-    wind_infinite_velocity : float
-        The terminal wind velocity of the stellar wind, typically in km/s.
-    beta : float
-        The velocity law exponent for the wind velocity profile (used in the beta-law to describe wind acceleration).
-    method_ : str
-        The method used for calculation. Can be "extended" (for time bins) or "discrete" (for individual time points).
-    extended_binsize : float
-        The bin size for the extended method. This is used to average NH values over each time bin.
+    x = np.asarray(x_data, dtype=float)
+    if x.size == 0 or not np.all(np.isfinite(x)):
+        raise ValueError("x_data must contain finite times.")
 
-    Returns
-    -------
-    nh_bin : np.ndarray
-        The hydrogen column density (NH) values for each time bin or each time point, depending on the calculation method.
-        The output array is in units of 10^22 cm^-2.
+    parameters = (
+        iphase,
+        semimajor,
+        orbitalperiod,
+        eccentricity,
+        periapsis,
+        inclination,
+        Rstar,
+        Mass_loss_rate,
+        wind_infinite_velocity,
+        beta,
+    )
 
-    Notes
-    -----
-    - The function computes NH based on the integration of mass density along the line of sight, taking into account
-      the orbital motion and wind profile. The wind velocity follows a beta-law, where the wind velocity increases as a
-      function of distance from the star.
-    - For the "extended" method, NH is computed over time bins, and the values are averaged for each bin. For the "discrete"
-      method, NH is computed at individual time points.
-    - The mass density is calculated using the mass loss rate and wind velocity, and NH is obtained by integrating the density
-      along the line of sight.
-    - The final NH values are returned in units of 10^22 cm^-2.
+    if method_ == "discrete":
+        if x.ndim != 1:
+            raise ValueError("Discrete x_data must be one-dimensional.")
+        reference_time = float(np.min(x))
+        phases = _phase_from_times(
+            x,
+            iphase,
+            semimajor,
+            orbitalperiod,
+            eccentricity,
+            periapsis,
+            Rstar,
+            reference_time=reference_time,
+        )
+        return _nh_for_phases(phases, parameters)
 
-    """
-    
+    if x.ndim != 2 or x.shape[1] != 2:
+        raise ValueError("Extended x_data must have shape (n_bins, 2).")
 
+    lo = np.minimum(x[:, 0], x[:, 1])
+    hi = np.maximum(x[:, 0], x[:, 1])
+    reference_time = float(np.min(lo))
+    edge_times = np.column_stack((lo, hi)).reshape(-1)
+    edge_phases = _phase_from_times(
+        edge_times,
+        iphase,
+        semimajor,
+        orbitalperiod,
+        eccentricity,
+        periapsis,
+        Rstar,
+        reference_time=reference_time,
+    ).reshape(-1, 2)
+    phase_width = np.abs(edge_phases[:, 1] - edge_phases[:, 0])
 
-    def nh_calc(phases):
-        nh = []
-        th = np.arange(min(phases)-0.5, max(phases)+0.5, 0.01)  # Dense grid for orbital phases
-
-        # Calculate nh for all values in the th grid
-        for phase in th:
-            Rorb = (abar * (1 - eccentricity**2) /
-                    (1 + eccentricity * np.cos((phase - periapsis / 360) * 2 * np.pi))) * Rstar_cm  # in cm
-
-            def integrand(z):
-                alpha = np.arccos(np.cos(phase * 2 * np.pi) * np.sin(inclination * 2 * np.pi / 360))
-                x = np.sqrt(Rorb**2 + z**2 - 2 * Rorb * z * np.cos(alpha))
-                v = vinf_cm_s * (1 - Rstar_cm / x)**beta
-                rho = M_dot_grams / (4 * np.pi * v * x**2)
-                return rho
-
-            ne, _ = quad(integrand, 1, Rstar_cm * 1000)
-            nh.append(ne * na / 1e22)
-
-        # Convert nh to numpy array for easier indexing
-        nh = np.array(nh)
-
-        # Filter valid (non-zero) data for interpolation
-        idx_good = nh > 0
-        th_good = th[idx_good]
-        nh_good = nh[idx_good]
-
-        # Interpolate using CubicSpline
-        nh_interpolator = CubicSpline(th_good, nh_good, extrapolate=True)
-
-        # Compute max and min bounds for physical phase ranges
-        nh_bounds = nh_interpolator(th)
-        max_nh_bound = max(nh_bounds[(th > 0.7) & (th < 1.2)])
-        min_nh_bound = min(nh_bounds[(th > 0.25) & (th < 0.75)])
-
-        # Interpolate nh for the given phases and clip extrapolated values
-        nh_out = np.clip(nh_interpolator(phases), nh_good.min(), nh_good.max())
-
-        return nh_out
+    sample_times, sizes = _build_sample_blocks(
+        lo, hi, phase_width, extended_binsize
+    )
+    sample_phases = _phase_from_times(
+        sample_times,
+        iphase,
+        semimajor,
+        orbitalperiod,
+        eccentricity,
+        periapsis,
+        Rstar,
+        reference_time=reference_time,
+    )
+    sample_nh = _nh_for_phases(sample_phases, parameters)
+    return _mean_blocks(sample_nh, sizes)
 
 
-    # Constants and conversions
-    vinf_cm_s = wind_infinite_velocity * 100000  # Terminal velocity in cm/s
-    Rstar_cm = Rstar * rsun_cm  # Star radius in cm
-    
-    abar = semimajor * max(Mstar1,Mstar2)/(Mstar1+Mstar2)
-    M_dot_grams = Mass_loss_rate * msun/(365*24*60*60) #Mass_loss_rate gr/s
-    Rstar_cm = Rstar*rsun_cm #R* in cm
+def _prepare_fit_data(x_data, y_data, y_err, method_):
+    y = np.asarray(y_data, dtype=float).reshape(-1)
+    if y.size == 0 or not np.all(np.isfinite(y)):
+        raise ValueError("y_data must be a non-empty finite array.")
 
-    t = x_data
-    shape_t = t.shape
-    t_to_phase = t.reshape(-1)
+    x, sigma = _define_x_y_sy(x_data, y, y_err)
+    x = np.asarray(x, dtype=float)
+    sigma = np.asarray(sigma, dtype=float).reshape(-1)
+    if sigma.size != y.size or np.any(~np.isfinite(sigma)) or np.any(sigma <= 0):
+        raise ValueError("y_err must contain positive finite uncertainties.")
 
-    if method_ == "extended":
-        
-        ph_from_t, _, _ = _orbital_time_to_phase(t_to_phase, iphase, semimajor, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2, precision=0.01)
-        t_to_phase_punctual = np.mean(t, axis=1)
-        phase_punctual, _, _ = _orbital_time_to_phase(t_to_phase_punctual, iphase, semimajor, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2, precision=0.01)
+    method_ = str(method_).lower()
+    if method_ not in {"discrete", "extended"}:
+        raise ValueError("method_ must be 'discrete' or 'extended'.")
 
-        phbins = ph_from_t.reshape(shape_t)
-        size_phase_bin = np.diff(phbins)
-        minsizebin = min(size_phase_bin)
-        maxph = max(phbins[-1])
-        tphase = np.arange(0, maxph, minsizebin / 3)
-
-        nh_for_bin = nh_calc(tphase)
-        nh_bin = []
-
-        for i in range(len(phbins)):
-        
-            if size_phase_bin[i] >= extended_binsize:
-            
-                nh_bin.append(np.mean(nh_for_bin[(tphase >= phbins[i, 0]) & (tphase <= phbins[i, 1])]))
-                
-            else:
-                nh_bin.append(nh_calc(np.array([phase_punctual[i]]))[0])
-
-    elif method_ == "discrete":
-
-        
-        phase_discrete, _, _ = _orbital_time_to_phase(t, iphase, semimajor, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2, precision=0.01)
-        
-        nh_bin = nh_calc(phase_discrete)
-
-    return np.array(nh_bin,dtype=np.float64)
-    
-# PS FIT------------------------------------------------------------------------------------------------------
-def fit_nh_ps(x_data, y_data, y_err=0, num_iterations=3, maxiter=200, swarmsize=20,
-              method_="extended", extended_binsize=0.01,load_directly=False, bound_list=None):
-    """
-    Fits the column density (NH1, x 10^22 cm^-2) encountered by radiation emitted at each orbital phase as
-    it travels towards an observer, assuming a spherically distributed, neutral (unionized) stellar wind based
-    on the CAK model.
-
-    The fitting process uses a particle swarm optimization (PSO) algorithm to minimize the chi-squared
-    difference between observed and predicted data points.
-
-    The function supports two fitting methods:
-    
-    - "discrete": Suitable for discrete data points (e.g., spectra with small orbital phase ranges; faster).
-    - "extended": Suitable for data with varying or extended bin sizes, typical for current instrument
-      resolutions (e.g., XMM-Newton and Chandra) and short X-ray binary (XRB) orbits.
-
-    Parameters
-    ----------
-    x_data : array-like
-        Time bins of the observed data.
-    y_data : array-like
-        Observed data points corresponding to each time bin.
-    y_err : array-like, optional
-        Error associated with each observed data point. Default is 0.
-    num_iterations : int, optional
-        Number of iterations for the PSO algorithm. Default is 3.
-    maxiter : int, optional
-        Maximum number of iterations for each PSO run. Default is 200.
-    swarmsize : int, optional
-        Number of particles in the PSO swarm. Default is 20.
-    method_ : str, optional
-        Fitting method to use, either "discrete" or "extended". Default is "extended".
-    extended_binsize : float, optional
-        Bin size for the extended method. Default is 0.01.
-
-    Notes
-    -----
-    A form will appear to input the necessary bounds for the orbital parameters. These parameters are saved in
-    a .txt file in the current directory and automatically loaded in subsequent runs. This avoids the need to
-    re-enter parameters, allowing modification of only those that require adjustment.
-
-    Returns
-    -------
-    df_results_transposed : pd.DataFrame
-        Transposed DataFrame of the best-fit parameters and their standard deviations.
-    ph : array-like
-        Array of phases corresponding to the predicted data.
-    predicted_data : array-like
-        Predicted data based on the best-fit parameters.
-    chi_squared : float
-        Chi-squared statistic weighted by the error, indicating the quality of fit.
-    """
-
-
-#............................................Data prep.
-    parameter_names=["iphase", "semimajor", "orbitalperiod", "eccentricity", "periapsis" ,"inclination", "Rstar", "Mstar1", "Mstar2", "Mdot", "v_inf", "beta"]
-    
-    t = x_data
-    x_data, y_err_weight = _define_x_y_sy(x_data,y_data, y_err)
-        
-    if method_ == "discrete" and len(np.shape(x_data)) == 2 and len(x_data) == len(y_data):
-        x_data = np.mean(t, axis=1)
-    
-    if len(np.shape(x_data)) == 1 and len(x_data) == len(y_data):
-        print("The number of time points does not allow an extended approach. Changing to discrete")
+    if x.ndim == 1:
+        if x.size != y.size:
+            raise ValueError("x_data and y_data have incompatible lengths.")
+        if method_ == "extended":
+            warnings.warn(
+                "One-dimensional x_data cannot represent bins; using discrete mode.",
+                RuntimeWarning,
+                stacklevel=2,
+            )
         method_ = "discrete"
-#............................................Objective function
+    elif x.ndim == 2 and x.shape == (y.size, 2):
+        if method_ == "discrete":
+            x = np.mean(x, axis=1)
+    else:
+        raise ValueError("x_data must contain points or an (n, 2) bin array.")
 
-    def objective_function(params):
+    return x, y, sigma, method_
 
-        iphase, semimajor, orbitalperiod, eccentricity, periapsis ,inclination, Rstar, Mstar1, Mstar2, Mdot, v_inf, beta = params
-        predicted_data = nh_orbit(x_data,  iphase, semimajor, orbitalperiod, eccentricity, periapsis ,inclination, Rstar, Mstar1,
-                                     Mstar2, Mdot, v_inf, beta, method_,extended_binsize)
 
-        chi_squared = _chi_squared_weighted(y_data, y_err_weight,predicted_data)
-         
-        return chi_squared
-#............................................PS implementation
-    lower_bounds, upper_bounds = _manage_bounds(parameter_names, "bounds_nh",load_directly=load_directly, bound_list=bound_list)
-    best_params_list = []
-    chi_list = []
+def _parameter_names():
+    return [
+        "iphase",
+        "semimajor",
+        "orbitalperiod",
+        "eccentricity",
+        "periapsis",
+        "inclination",
+        "Rstar",
+        "Mdot",
+        "v_inf",
+        "beta",
+    ]
 
-    for i in range(num_iterations):
-    
 
-        best_params, _ = pso(objective_function, lb=lower_bounds, ub=upper_bounds, maxiter = maxiter, swarmsize = swarmsize, phig=2)
+def _validate_bounds(names, lower, upper):
+    lower = np.asarray(lower, dtype=float)
+    upper = np.asarray(upper, dtype=float)
+    if lower.shape != upper.shape or lower.size != len(names):
+        raise ValueError("The number of bounds does not match the model parameters.")
+    if not np.all(np.isfinite(lower)) or not np.all(np.isfinite(upper)):
+        raise ValueError("All parameter bounds must be finite.")
+    if np.any(lower >= upper):
+        bad = [name for name, lo, hi in zip(names, lower, upper) if lo >= hi]
+        raise ValueError(f"Lower bounds must be smaller than upper bounds: {bad}.")
 
-        best_params_list.append(best_params)
-        predicted_data = nh_orbit(x_data, *best_params, method_,extended_binsize)
+    for name in ("semimajor", "orbitalperiod", "Rstar", "Mdot", "v_inf"):
+        if lower[names.index(name)] <= 0:
+            raise ValueError(f"The lower bound of {name} must be strictly positive.")
+    if lower[names.index("beta")] < 0:
+        raise ValueError("The lower bound of beta must be non-negative.")
+    e_index = names.index("eccentricity")
+    if lower[e_index] < 0 or upper[e_index] >= 1:
+        raise ValueError("eccentricity bounds must satisfy 0 <= e < 1.")
+    return lower, upper
 
-        chi_squared = _chi_squared_weighted(y_data, y_err_weight, predicted_data)
 
-        chi_list.append(chi_squared)
-        #print(chi_squared)
-        
-#.............................Get the results
-    mean_params = np.mean (best_params_list, axis=0)
-    std_params = np.std (best_params_list, axis=0)
+def _results_frame(names, values, errors):
+    frame = pd.DataFrame(
+        [values, errors], index=["Value", "Std"], columns=names
+    )
+    frame.columns.name = "Name of the parameter"
+    return frame
 
-    best_iteration = np.argmin(chi_list)
-    best_params = best_params_list[best_iteration]
-    best_chi = chi_list[best_iteration]
 
-    (iphase, semimajor, orbitalperiod, eccentricity, periapsis ,inclination, Rstar, Mstar1, Mstar2, Mdot, v_inf, beta) = best_params
+def _fitted_phase(x_data, params, method_):
+    if method_ == "extended":
+        times = np.mean(x_data, axis=1)
+        reference_time = float(np.min(x_data))
+    else:
+        times = np.asarray(x_data, dtype=float)
+        reference_time = float(np.min(times))
+    return _phase_from_times(
+        times,
+        params[0],
+        params[1],
+        params[2],
+        params[3],
+        params[4],
+        params[6],
+        reference_time=reference_time,
+    )
 
-    predicted_data = nh_orbit(x_data, iphase, semimajor, orbitalperiod, eccentricity, periapsis ,inclination, Rstar, Mstar1, Mstar2, Mdot, v_inf, beta, method_,extended_binsize)
-#............................. Final evaluation
-    chi_squared = _chi_squared_weighted(y_data, y_err_weight,predicted_data)
-#............................. Prepare output
 
-    results = []
-    for param_name, best_param, std_param in zip(parameter_names, best_params, std_params):
-        results.append([best_param, std_param])
+def _safe_score(model, y, sigma, params):
+    try:
+        prediction = np.asarray(model(params), dtype=float)
+        if prediction.shape != y.shape or not np.all(np.isfinite(prediction)):
+            return np.inf
+        return float(_chi_squared_weighted(y, sigma, prediction))
+    except (ValueError, FloatingPointError, OverflowError, ZeroDivisionError):
+        return np.inf
 
-    df_results = pd.DataFrame(results, index=parameter_names, columns=['Value', 'Std'])
-    df_results.index.name = 'Name of the parameter'
-    df_results_transposed = df_results.T
 
-    
-    if method_=="extended":
+def fit_nh_ps(
+    x_data,
+    y_data,
+    y_err=0,
+    num_iterations=3,
+    maxiter=200,
+    swarmsize=20,
+    method_="extended",
+    extended_binsize=0.01,
+    load_directly=False,
+    bound_list=None,
+):
+    """Fit the spherical-wind NH model using particle-swarm optimisation."""
+    names = _parameter_names()
+    x, y, sigma, method_ = _prepare_fit_data(x_data, y_data, y_err, method_)
+    lower, upper = _manage_bounds(
+        names,
+        "bounds_nh",
+        load_directly=load_directly,
+        bound_list=bound_list,
+    )
+    lower, upper = _validate_bounds(names, lower, upper)
+    if num_iterations < 1:
+        raise ValueError("num_iterations must be at least 1.")
 
-        t =  np.array([np.mean(i) for i in x_data])
-        
-        ph,_,_ = _orbital_time_to_phase(t ,
-        df_results_transposed.iphase.Value,
-        df_results_transposed.semimajor.Value,
-        df_results_transposed.orbitalperiod.Value,
-        df_results_transposed.eccentricity.Value,
-        df_results_transposed.periapsis.Value,
-        df_results_transposed.Rstar.Value,
-        max(df_results_transposed.Mstar2.Value, df_results_transposed.Mstar1.Value),
-        min(df_results_transposed.Mstar2.Value,df_results_transposed.Mstar1.Value),  precision=0.01)
-        
-    if method_=="discrete":
+    def model_from_params(params):
+        return nh_orbit(x, *params, method_, extended_binsize)
 
-        t = x_data
-        
-        ph,_,_ = _orbital_time_to_phase(t ,
-        df_results_transposed.iphase.Value,
-        df_results_transposed.semimajor.Value,
-        df_results_transposed.orbitalperiod.Value,
-        df_results_transposed.eccentricity.Value,
-        df_results_transposed.periapsis.Value,
-        df_results_transposed.Rstar.Value,
-        max(df_results_transposed.Mstar2.Value, df_results_transposed.Mstar1.Value),
-        min(df_results_transposed.Mstar2.Value,df_results_transposed.Mstar1.Value),  precision=0.01)
-       
-        
-    return df_results_transposed, ph, predicted_data, chi_squared
+    def objective(params):
+        return _safe_score(model_from_params, y, sigma, params)
+
+    runs = []
+    chi_values = []
+    for _ in range(num_iterations):
+        params, _ = pso(
+            objective,
+            lb=lower,
+            ub=upper,
+            maxiter=maxiter,
+            swarmsize=swarmsize,
+            phig=2,
+        )
+        params = np.asarray(params, dtype=float)
+        score = objective(params)
+        if not np.isfinite(score):
+            raise RuntimeError(
+                "PSO did not find a finite NH model; verify the bounds and eclipse geometry."
+            )
+        runs.append(params)
+        chi_values.append(score)
+
+    runs = np.asarray(runs, dtype=float)
+    best = runs[int(np.argmin(chi_values))]
+    scatter = np.std(runs, axis=0)
+    predicted = np.asarray(model_from_params(best), dtype=float)
+    chi_squared = float(_chi_squared_weighted(y, sigma, predicted))
+
+    return (
+        _results_frame(names, best, scatter),
+        _fitted_phase(x, best, method_),
+        predicted,
+        chi_squared,
+    )

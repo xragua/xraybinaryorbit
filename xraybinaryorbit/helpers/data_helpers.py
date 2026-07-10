@@ -222,7 +222,7 @@ def _load_values_to_interface(param_list, fixed_values, name):
 
     root.mainloop()
     
-def _manage_parameters(param_list, name, load_directly=False, parameter_list=None):
+def _manage_parameters(param_list, name, load_directly=False, parameter_list=None, verbose_complete=False):
     """
     Manage parameter values by loading from a file, displaying a user input form for modification,
     and saving the updated values back to the file. This version also allows loading parameters
@@ -257,9 +257,10 @@ def _manage_parameters(param_list, name, load_directly=False, parameter_list=Non
     # If parameter_list is provided, load values directly and skip the form
     if parameter_list is not None:
         fixed_values_list = parameter_list
-        print("Loaded parameters from the provided array:")
-        for param, value in zip(param_list, fixed_values_list):
-            print(f"{param}: {value}")
+        if verbose_complete:
+            print("Loaded parameters from the provided array:")
+            for param, value in zip(param_list, fixed_values_list):
+                print(f"{param}: {value}")
 
         # Save the provided parameters directly to the file
         with open(f"{name}.txt", "w") as file:
@@ -276,7 +277,8 @@ def _manage_parameters(param_list, name, load_directly=False, parameter_list=Non
             lines = file.readlines()
             fixed_values_list = [float(val) for val in lines[1].strip().split(",")]
             if load_directly:
-                print("Loaded parameters from file:")
+                if verbose_complete:
+                    print("Loaded parameters from file:")
                 for param, value in zip(param_list, fixed_values_list):
                     print(f"{param}: {value}")
             else:
@@ -299,7 +301,8 @@ def _manage_parameters(param_list, name, load_directly=False, parameter_list=Non
 
     # Print the parameters after modification if needed
     if should_print_after_modification:
-        print("Parameters after modification or user input:")
+        if verbose_complete:
+            print("Parameters after modification or user input:")
         for param, value in zip(param_list, fixed_values_list):
             print(f"{param}: {value}")
 

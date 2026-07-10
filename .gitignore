@@ -28,3 +28,24 @@ temp/
 .ipynb_checkpoints/
 *checkpoints*
 
+
+# Local backups and temporary files
+Untitled.ipynb
+*.zip
+test_old/
+xraybinaryorbit/fitting/fit_modules_corrected/
+xraybinaryorbit/fitting/old_fit/
+xraybinaryorbit/theoretical/doppler_related_old.py
+
+# Generated files in repository root
+/NH_through_the_orbit.png
+/absorption_column_through_orbit.txt
+/den_chi_orbphase.txt
+/density_and_chi_orbital_phase.png
+/disc.txt
+/disc_doppler_evolution.png
+/orbit.txt
+/orbit_doppler_evolution.png
+/phase_time.txt
+/spiral.txt
+/spiral_doppler_evolution.png

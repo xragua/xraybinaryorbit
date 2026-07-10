@@ -47,3 +47,5 @@
 12. XRISM Science Team. (2022). XRISM Quick Reference. *arXiv e-prints*. [https://doi.org/10.48550/arXiv.2202.05399](https://doi.org/10.48550/arXiv.2202.05399)
 
 
+13. Sanjurjo-Ferrín, G., Planelles Villalva, J., Torrejón, J. M., & Rodes-Roca, J. J. (2024), *xraybinaryorbit: A Python Package for Analyzing Orbital Modulations in X-ray Binaries*, JOSS, 9, 7220.
+

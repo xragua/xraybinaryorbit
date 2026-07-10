@@ -24,6 +24,8 @@ from .helpers.math_helpers import (
     _orbital_time_to_phase
 )
 
+from .helpers.math_helpers import scale
+
 
 
 

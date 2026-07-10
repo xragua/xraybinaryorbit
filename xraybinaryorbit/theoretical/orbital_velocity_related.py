@@ -35,180 +35,130 @@ mu = 0.5
 mp = 1.67E-24
 
 # PHASE TO TIME ###########################################################################
-def orbital_phase_to_time(ph, precision=0.01,load_directly=False, parameter_list=None):
-    """
-    Converts an orbital phase array to a time array for a compact object orbiting a companion star.
-    The compact object moves faster at periastron than at apoastro due to the conservation of angular momentum
-    and Kepler's laws of planetary motion.
+def orbital_phase_to_time(
+    ph,
+    precision=0.01,
+    load_directly=False,
+    parameter_list=None,
+):
+    """Convert orbital phase to time using the shared helper implementation.
 
-    The increased orbital speed at periastron occurs because, as the compact object moves closer to the central star,
-    it must travel faster to maintain the total angular momentum of the system. This behavior follows Kepler's second
-    law, which states that objects sweep out equal areas in equal times, and the gravitational force strengthens
-    as the bodies approach and weakens as they move apart.
+    The spatial scale and component masses are unnecessary for this conversion
+    when the orbital period is supplied directly, so the public interface keeps
+    only the four parameters required by the calculation.
 
     Parameters
     ----------
     ph : array-like
         Orbital phase array.
     precision : float, optional
-        Resolution for the phase array. Default is 0.01.
-
-    Notes
-    -----
-    A form will appear to input the necessary orbital parameters. These parameters are saved in a .txt file
-    in the current directory and automatically loaded in subsequent runs. This avoids the need to re-enter parameters,
-    allowing modification of only those that require adjustment.
+        Resolution of the internal phase grid. Default is 0.01.
+    load_directly : bool, optional
+        Passed to ``_manage_parameters``.
+    parameter_list : sequence, optional
+        Values for ``iphase``, ``orbitalperiod``, ``eccentricity`` and
+        ``periapsis``.
 
     Returns
     -------
-    ph : array-like
-        The input orbital phase array.
-    time : array-like
-        Time array corresponding to the orbital phase.
-    W : array-like
-        Angular velocity array corresponding to the orbital phase.
+    ph : numpy.ndarray
+        Input orbital phases.
+    time : numpy.ndarray
+        Time corresponding to each phase, in seconds.
+    W : numpy.ndarray
+        Orbital angular velocity, in rad s^-1.
     """
 
+    parameter_names = [
+        "iphase",
+        "orbitalperiod",
+        "eccentricity",
+        "periapsis",
+    ]
 
-    #.............................Load parameters
-    parameter_names = ["iphase", "semimajor", "orbitalperiod", "eccentricity", "periapsis", "Rstar", "Mstar1", "Mstar2"]
-    fixed_values = _manage_parameters(parameter_names, "phase_time",load_directly=load_directly,parameter_list=parameter_list )
-    
-    iphase, semimajor, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2 = fixed_values
-    
-    if len(ph)>1:
-        th_ = np.arange(-precision+iphase, max(ph)+iphase, precision)
-        th = np.arange(iphase, max(ph)+iphase, precision)
+    iphase, orbitalperiod, eccentricity, periapsis = _manage_parameters(
+        parameter_names,
+        "phase_time",
+        load_directly=load_directly,
+        parameter_list=parameter_list,
+    )
 
-    else:
-    
-        th_ = np.arange(-precision+iphase, 1+ph+iphase, precision)
-        th = np.arange(iphase, 1+ph+iphase, precision)
-        
-    number_of_orbits=max(th_-min(th_))
-    
-    abar = semimajor * max(Mstar1, Mstar2) / (Mstar1 + Mstar2)
-    orbital_period_s = orbitalperiod*24*60*60
+    ph = np.atleast_1d(np.asarray(ph, dtype=float))
 
-    def integrand(theta):
-    
-        return 0.5 * (abar * (1 - eccentricity ** 2) / (1 + eccentricity * np.cos((theta - periapsis / 360) * 2 * np.pi))) ** 2
+    return _orbital_phase_to_time(
+        ph,
+        iphase,
+        None,  # semimajor: unused when orbitalperiod is supplied
+        orbitalperiod,
+        eccentricity,
+        periapsis,
+        None,  # Rstar: unused
+        None,  # Mstar1: unused
+        None,  # Mstar2: unused
+        precision=precision,
+    )
 
-    time_ = []
-    tprev = 0
-    w_ = []
 
-    for i in range(len(th_) - 1):
-        
-        area_, _ = quad(integrand, th_[i], th_[i + 1])
-        tprev += area_
-        time_.append(tprev)
-        w_.append(2*np.pi* abs(th_[i+1]- th_[i])/area_)
+# TIME TO PHASE ###########################################################################
+def orbital_time_to_phase(
+    t,
+    precision=0.01,
+    load_directly=False,
+    parameter_list=None,
+):
+    """Convert orbital time to phase using the shared helper implementation.
 
-    constant = number_of_orbits * orbital_period_s/max(time_)
-    time = np.array(time_) * constant
-    W = np.array(w_) / constant
-
-    time_interpolator = interp1d(th, time, kind='cubic', fill_value="extrapolate")
-    time = time_interpolator(ph)
-    
-    w_interpolator = interp1d(th, W, kind='cubic', fill_value="extrapolate")
-    W = w_interpolator(ph)
-        
-    return ph, time, W
-    
-    
-def orbital_time_to_phase(t, precision=0.01,load_directly=False, parameter_list=None):
-    """
-    Converts an orbital time array to a phase array for a compact object orbiting a companion star.
-    The compact object moves faster at periastron than at apoastro due to the conservation of angular momentum
-    and Kepler's laws of planetary motion.
-
-    The increased orbital speed at periastron occurs because, as the compact object moves closer to the central star,
-    it must travel faster to maintain the total angular momentum of the system. This behavior follows Kepler's second
-    law, which states that objects sweep out equal areas in equal times, and the gravitational force strengthens
-    as the bodies approach and weakens as they move apart.
+    The spatial scale and component masses are unnecessary for this conversion
+    when the orbital period is supplied directly, so the public interface keeps
+    only the four parameters required by the calculation.
 
     Parameters
     ----------
     t : array-like
-        Orbital time array.
+        Orbital time array in seconds.
     precision : float, optional
-        Resolution for the phase array. Default is 0.01.
-
-    Notes
-    -----
-    A form will appear to input the necessary orbital parameters. These parameters are saved in a .txt file
-    in the current directory and automatically loaded in subsequent runs. This avoids the need to re-enter parameters,
-    allowing modification of only those that require adjustment.
+        Resolution of the internal phase grid. Default is 0.01.
+    load_directly : bool, optional
+        Passed to ``_manage_parameters``.
+    parameter_list : sequence, optional
+        Values for ``iphase``, ``orbitalperiod``, ``eccentricity`` and
+        ``periapsis``.
 
     Returns
     -------
-    ph : array-like
-        Orbital phase array corresponding to the input time array.
-    time : array-like
-        Time array corresponding to the orbital phase.
-    W : array-like
-        Angular velocity array corresponding to the orbital phase.
-
+    phase : numpy.ndarray
+        Orbital phase corresponding to each input time.
+    t : numpy.ndarray
+        Input time array, in seconds.
+    W : numpy.ndarray
+        Orbital angular velocity, in rad s^-1.
     """
 
+    parameter_names = [
+        "iphase",
+        "orbitalperiod",
+        "eccentricity",
+        "periapsis",
+    ]
 
-    #.............................Load parameters
-    parameter_names = ["iphase", "semimajor", "orbitalperiod", "eccentricity", "periapsis", "Rstar", "Mstar1", "Mstar2"]
-    fixed_values = _manage_parameters(parameter_names, "time_phase",load_directly=load_directly,parameter_list=parameter_list )
-    
-    iphase, semimajor, orbitalperiod, eccentricity, periapsis, Rstar, Mstar1, Mstar2 = fixed_values
-    #.............................Load parameters
-        
-    orbital_period_s = 24*60*60*orbitalperiod
-        
-    if len(t)>1:
-        number_of_orbits = (max(t)-min(t))/orbital_period_s+10
-    else:
-        number_of_orbits = 10
-    
-    th_ = np.arange(-precision+iphase, number_of_orbits+iphase, precision)
-    
-    th = np.arange(iphase, number_of_orbits+iphase, precision)
-    
-    abar = semimajor * max(Mstar1, Mstar2) / (Mstar1 + Mstar2)
+    iphase, orbitalperiod, eccentricity, periapsis = _manage_parameters(
+        parameter_names,
+        "time_phase",
+        load_directly=load_directly,
+        parameter_list=parameter_list,
+    )
 
-    #.............................Decipher relation between th and time
-    abar = semimajor * max(Mstar1, Mstar2) / (Mstar1 + Mstar2)
-    
-    def integrand(theta):
-        return 0.5 * (abar * (1 - eccentricity ** 2) / (1 + eccentricity * np.cos((theta - periapsis / 360) * 2 * np.pi))) ** 2
+    t = np.atleast_1d(np.asarray(t, dtype=float))
 
-    time_ = []
-    tprev = 0
-    w_ = []
-
-    for i in range(len(th_) - 1):
-        
-        area_, _ = quad(integrand, th_[i], th_[i + 1])
-        tprev += area_
-        time_.append(tprev)
-        w_.append(2*np.pi* abs(th_[i+1]- th_[i])/area_)
-
-    constant = number_of_orbits * orbital_period_s/max(time_)
-    time = np.array(time_) * constant
-    W_to_interpolate  = np.array(w_) / constant
-    
-    if (len(time) != (len(th))):
-        time=np.array(time[0:len(th)])
-        
-    if (len(W_to_interpolate) != (len(th))):
-        W_to_interpolate=np.array(W_to_interpolate[0:len(th)])
-                    
-    #.............................Now that we know the relation between time, W and phase respectively, interpolate to obtain phase from our input time
-    times_to_interpolate = t-min(t)
-    
-    phase_interpolator = interp1d(time, th, kind='cubic', fill_value="extrapolate")
-    phase = phase_interpolator(times_to_interpolate)
-    
-    w_interpolator = interp1d(time, W_to_interpolate, kind='cubic', fill_value="extrapolate")
-    W = w_interpolator(times_to_interpolate)
-    
-    return phase, t, W
-##################################################################################
+    return _orbital_time_to_phase(
+        t,
+        iphase,
+        None,  # semimajor: unused when orbitalperiod is supplied
+        orbitalperiod,
+        eccentricity,
+        periapsis,
+        None,  # Rstar: unused
+        None,  # Mstar1: unused
+        None,  # Mstar2: unused
+        precision=precision,
+    )
