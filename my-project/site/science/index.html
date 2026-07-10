@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>SCIENCE - xraybinaryorbit</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../css/custom.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "SCIENCE";
+        var mkdocs_page_input_path = "science.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="..">
+          <img src="../images/logo.png" class="logo" alt="Logo"/>
+        </a>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">GETTING STARTED</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="#">SCIENCE</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#conventions-and-units">Conventions and units</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#relative-and-barycentric-semi-major-axes">Relative and barycentric semi-major axes</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#orbital-motion-and-the-phase-time-relation">Orbital motion and the phase--time relation</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#eccentric-separation">Eccentric separation</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#keplers-second-law">Kepler's second law</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#doppler-modulation">Doppler modulation</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#first-order-doppler-transformation">First-order Doppler transformation</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#eccentric-binary-orbit">Eccentric binary orbit</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#logarithmic-spiral">Logarithmic spiral</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#spiral-plus-binary-orbit">Spiral plus binary orbit</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#hierarchical-orbit-or-disc-model">Hierarchical orbit or disc model</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#stellar-wind-density-cak-like-beta-law">Stellar-wind density: CAK-like beta law</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#equivalent-hydrogen-column-density">Equivalent hydrogen column density</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#eclipse-convention">Eclipse convention</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#wind-ionization">Wind ionization</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#timing-analysis">Timing analysis</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#hardness-and-colour-ratios">Hardness and colour ratios</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#inverse-variance-rebinning">Inverse-variance rebinning</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#pulse-folding">Pulse folding</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#lomb-scargle-period-search">Lomb--Scargle period search</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#model-fitting">Model fitting</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#weighted-objective-function">Weighted objective function</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#discrete-and-extended-observations">Discrete and extended observations</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#particle-swarm-optimization">Particle Swarm Optimization</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#what-is-a-particle">What is a particle?</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#how-particles-move">How particles move</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#meaning-of-the-package-controls">Meaning of the package controls</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#which-pso-result-is-returned">Which PSO result is returned?</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#recommended-pso-checks">Recommended PSO checks</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#bounded-least-squares-and-its-errors">Bounded least squares and its errors</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#pso-and-ls-errors-are-different-quantities">PSO and LS errors are different quantities</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#main-physical-degeneracies">Main physical degeneracies</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#doppler-orbit">Doppler orbit</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#spiral-models">Spiral models</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#hierarchical-orbit">Hierarchical orbit</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#absorption">Absorption</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#scope-and-limitations">Scope and limitations</a>
+    </li>
+    </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../functions/">FUNCTIONS</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">EXAMPLES</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../notebooks/example_time_phase_relation_theoretical/time_phase_relation/">Time Phase Relation Theoretical</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../notebooks/example_doppler_theoretical/Doppler_theoretical_functions/">Doppler Theoretical in four scenarios</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../notebooks/example_density_NH_theoretical/Wind_density_and_NH/">Density Through the Orbit and Absorption Column</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../notebooks/example_density_ionization_orbital_phase/density_and_chi_orbital_phase/">Density and Ionization Parameter in the Orbital Path of Radiation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../notebooks/example_ionization_map_4U0114%2B65/Ionization_map/">Ionization Map of 4U0114+65</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../notebooks/example_NS_spin_shape_VelaX1/Pulse_shape_Velax1/">Ns pulse shape in Vela X-1</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../notebooks/example_fexxv_doppler_shifts_CenX3/Fit_real_line_doppler_shifts/">Fe XXV Doppler Shifts Cen X-3</a>
+                  </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../contribute/">CONTRIBUTE</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../references/">REFERENCES</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">xraybinaryorbit</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">SCIENCE</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="scientific-background-and-numerical-methods">Scientific background and numerical methods</h1>
+<p><code>xraybinaryorbit</code> provides simplified, interpretable models for orbital modulation in X-ray binaries. This page summarizes the physical assumptions and numerical methods used by the package. Function signatures and return values are documented separately in <a href="../functions/">Functions</a>.</p>
+<hr />
+<h2 id="conventions-and-units">Conventions and units</h2>
+<p>The current development version uses the following conventions.</p>
+<table>
+<thead>
+<tr>
+<th>Quantity</th>
+<th style="text-align: right;">Symbol</th>
+<th>Package convention</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Time</td>
+<td style="text-align: right;"><span class="arithmatex">\(t\)</span></td>
+<td>seconds</td>
+</tr>
+<tr>
+<td>Orbital phase</td>
+<td style="text-align: right;"><span class="arithmatex">\(\phi\)</span></td>
+<td>cycles; one complete orbit spans 1</td>
+</tr>
+<tr>
+<td>Initial phase</td>
+<td style="text-align: right;"><code>iphase</code></td>
+<td>cycles</td>
+</tr>
+<tr>
+<td>Orbital period</td>
+<td style="text-align: right;"><span class="arithmatex">\(P_{\rm orb}\)</span></td>
+<td>days in the orbital models</td>
+</tr>
+<tr>
+<td>Eccentricity</td>
+<td style="text-align: right;"><span class="arithmatex">\(e\)</span></td>
+<td><span class="arithmatex">\(0\leq e&lt;1\)</span></td>
+</tr>
+<tr>
+<td>Argument of periapsis</td>
+<td style="text-align: right;"><span class="arithmatex">\(\omega_{\rm p}\)</span></td>
+<td>degrees</td>
+</tr>
+<tr>
+<td>Inclination</td>
+<td style="text-align: right;"><span class="arithmatex">\(i\)</span></td>
+<td>degrees</td>
+</tr>
+<tr>
+<td>Stellar radius</td>
+<td style="text-align: right;"><span class="arithmatex">\(R_*\)</span></td>
+<td>solar radii</td>
+</tr>
+<tr>
+<td>Stellar masses</td>
+<td style="text-align: right;"><span class="arithmatex">\(M_1,M_2,M_3\)</span></td>
+<td>solar masses</td>
+</tr>
+<tr>
+<td>Wind velocity</td>
+<td style="text-align: right;"><span class="arithmatex">\(v_\infty\)</span></td>
+<td>km s<span class="arithmatex">\(^{-1}\)</span></td>
+</tr>
+<tr>
+<td>Mass-loss rate</td>
+<td style="text-align: right;"><span class="arithmatex">\(\dot M\)</span></td>
+<td><span class="arithmatex">\(M_\odot\,{\rm yr}^{-1}\)</span></td>
+</tr>
+<tr>
+<td>Energy</td>
+<td style="text-align: right;"><span class="arithmatex">\(E\)</span></td>
+<td>keV</td>
+</tr>
+<tr>
+<td>Wavelength</td>
+<td style="text-align: right;"><span class="arithmatex">\(\lambda\)</span></td>
+<td>angstrom</td>
+</tr>
+<tr>
+<td>Hydrogen column</td>
+<td style="text-align: right;"><span class="arithmatex">\(N_{\rm H}\)</span></td>
+<td><span class="arithmatex">\(10^{22}\,{\rm cm}^{-2}\)</span></td>
+</tr>
+</tbody>
+</table>
+<h3 id="relative-and-barycentric-semi-major-axes">Relative and barycentric semi-major axes</h3>
+<p>In the binary models, <code>semimajor</code> is the <strong>relative semi-major axis</strong></p>
+<div class="arithmatex">\[
+a_{\rm rel}=a_1+a_2,
+\]</div>
+<p>expressed in units of the donor radius <span class="arithmatex">\(R_*\)</span>. If <code>Mstar1</code> is the object carrying the observed feature and <code>Mstar2</code> is its companion, the barycentric semi-major axis of <code>Mstar1</code> is</p>
+<div class="arithmatex">\[
+a_1=a_{\rm rel}\frac{M_2}{M_1+M_2}.
+\]</div>
+<p>This distinction is important:</p>
+<ul>
+<li>Doppler motion of an emitter uses its <strong>barycentric</strong> orbit.</li>
+<li>Wind density and absorption use the <strong>relative separation</strong> from the donor centre.</li>
+</ul>
+<hr />
+<h2 id="orbital-motion-and-the-phase-time-relation">Orbital motion and the phase--time relation</h2>
+<h3 id="eccentric-separation">Eccentric separation</h3>
+<p>Let</p>
+<div class="arithmatex">\[
+\theta=2\pi\phi,
+\qquad
+\nu=\theta-\omega_{\rm p},
+\]</div>
+<p>where <span class="arithmatex">\(\nu\)</span> is the true-anomaly-like angle used by the model. The relative separation is</p>
+<div class="arithmatex">\[
+r_{\rm rel}(\nu)=
+\frac{a_{\rm rel}(1-e^2)}{1+e\cos\nu}.
+\]</div>
+<p>When <code>semimajor</code> is given in donor-radius units,</p>
+<div class="arithmatex">\[
+r_{\rm rel,cm}=r_{\rm rel}R_*.
+\]</div>
+<h3 id="keplers-second-law">Kepler's second law</h3>
+<p>For an eccentric orbit, geometrical phase does not increase linearly with time. The package uses Kepler's second law,</p>
+<div class="arithmatex">\[
+dA=\frac{1}{2}r^2d\theta,
+\qquad
+\frac{dA}{dt}=\mathrm{constant},
+\]</div>
+<p>to convert between orbital phase and time. The swept area is integrated on a numerical phase grid and normalized so that one complete revolution equals the supplied orbital period.</p>
+<p>The conversion also returns the instantaneous angular velocity</p>
+<div class="arithmatex">\[
+W=\frac{d\theta}{dt},
+\]</div>
+<p>in rad s<span class="arithmatex">\(^{-1}\)</span>. An equivalent analytic Keplerian expression is</p>
+<div class="arithmatex">\[
+\frac{d\nu}{dt}
+=
+\frac{2\pi}{P_{\rm orb}}
+\frac{(1+e\cos\nu)^2}{(1-e^2)^{3/2}}.
+\]</div>
+<p>The <code>precision</code> argument controls the internal phase-grid spacing. It is a numerical resolution parameter, not a statistical uncertainty.</p>
+<hr />
+<h2 id="doppler-modulation">Doppler modulation</h2>
+<h3 id="first-order-doppler-transformation">First-order Doppler transformation</h3>
+<p>The package uses the non-relativistic approximation</p>
+<div class="arithmatex">\[
+D=1+\frac{v_{\rm los}}{c},
+\]</div>
+<p>where <span class="arithmatex">\(v_{\rm los}\)</span> is the model line-of-sight velocity. The observable transforms as</p>
+<div class="arithmatex">\[
+E_{\rm obs}=\frac{E_0}{D},
+\qquad
+\lambda_{\rm obs}=\lambda_0D,
+\qquad
+P_{\rm obs}=P_0D.
+\]</div>
+<p>This approximation is appropriate when <span class="arithmatex">\(|v_{\rm los}|\ll c\)</span>.</p>
+<h3 id="eccentric-binary-orbit">Eccentric binary orbit</h3>
+<p>For the barycentric orbit of the emitting object,</p>
+<div class="arithmatex">\[
+r_1=\frac{a_1(1-e^2)}{1+e\cos\nu}.
+\]</div>
+<p>The radius changes in an eccentric orbit, so the projected velocity must include both radial and tangential terms. With the package projection</p>
+<div class="arithmatex">\[
+z=r_1\cos\theta\sin i,
+\]</div>
+<p>the complete derivative is</p>
+<div class="arithmatex">\[
+v_{\rm orb,los}
+=
+\frac{dz}{dt}
+=
+\left(
+\dot r_1\cos\theta-r_1\dot\theta\sin\theta
+\right)\sin i.
+\]</div>
+<p>The radial derivative is</p>
+<div class="arithmatex">\[
+\dot r_1
+=
+\frac{a_1(1-e^2)e\sin\nu}
+{(1+e\cos\nu)^2}\,\dot\nu.
+\]</div>
+<p>The first term vanishes only for a circular orbit. The corrected orbital models retain both contributions.</p>
+<p>An optional phenomenological flow term can be added:</p>
+<div class="arithmatex">\[
+v_{\rm flow,los}=v_{\rm wind}\cos\theta\sin i.
+\]</div>
+<p>This extra term is not the same as the accelerating stellar-wind solution used in the density and absorption models.</p>
+<h3 id="logarithmic-spiral">Logarithmic spiral</h3>
+<p>The isolated spiral is described by</p>
+<div class="arithmatex">\[
+R(\theta)=a_{\rm s}e^{b\theta}.
+\]</div>
+<p>The spiral phase evolves as</p>
+<div class="arithmatex">\[
+\phi_{\rm s}(t)=\phi_{{\rm s},0}+\Omega_{\rm s}(t-t_0),
+\]</div>
+<p>where <code>omega</code> is expressed in <strong>cycles per second</strong>. Therefore,</p>
+<div class="arithmatex">\[
+\theta_{\rm s}=2\pi\phi_{\rm s},
+\qquad
+\dot\theta_{\rm s}=2\pi\Omega_{\rm s}.
+\]</div>
+<p>Because <span class="arithmatex">\(R\)</span> changes with time,</p>
+<div class="arithmatex">\[
+\dot R=bR\dot\theta_{\rm s}.
+\]</div>
+<p>For the projected coordinate <span class="arithmatex">\(z=R\cos\theta_{\rm s}\sin i_{\rm s}\)</span>, the full line-of-sight velocity is</p>
+<div class="arithmatex">\[
+v_{\rm s,los}
+=
+R\dot\theta_{\rm s}
+\left[b\cos\theta_{\rm s}-\sin\theta_{\rm s}\right]
+\sin i_{\rm s}.
+\]</div>
+<p>The model is kinematic: it describes a trajectory but does not solve the dynamics that create the spiral.</p>
+<h3 id="spiral-plus-binary-orbit">Spiral plus binary orbit</h3>
+<p>The combined model adds the two projected velocities,</p>
+<div class="arithmatex">\[
+v_{\rm los}=v_{\rm orbit,los}+v_{\rm spiral,los},
+\]</div>
+<p>and applies a single Doppler transformation to the total velocity. The orbital and spiral components can have different phases and inclinations.</p>
+<h3 id="hierarchical-orbit-or-disc-model">Hierarchical orbit or disc model</h3>
+<p>The disc model contains two Keplerian components:</p>
+<ol>
+<li>The centre of mass of the inner pair <span class="arithmatex">\((M_1+M_3)\)</span> follows the outer binary orbit around the donor <span class="arithmatex">\(M_2\)</span>.</li>
+<li><code>Mass3</code>, which carries the observed feature, follows an inner orbit around <code>Mstar1</code>.</li>
+</ol>
+<p>The total projected velocity is</p>
+<div class="arithmatex">\[
+v_{\rm los}=v_{\rm outer,los}+v_{\rm inner,los}.
+\]</div>
+<p>This is a model for a coherently moving emitting region. It is not a continuous accretion-disc line-profile model and does not include shear, turbulence, emissivity gradients, or radiative transfer.</p>
+<hr />
+<h2 id="stellar-wind-density-cak-like-beta-law">Stellar-wind density: CAK-like beta law</h2>
+<p>The wind implementation uses a <strong>CAK-like beta velocity law</strong>,</p>
+<div class="arithmatex">\[
+v(r)=v_\infty\left(1-\frac{R_*}{r}\right)^\beta,
+\qquad r&gt;R_*.
+\]</div>
+<p>It is important to distinguish this prescription from a full solution of the Castor--Abbott--Klein line-driving equations. The package adopts the commonly used beta-law parameterization but does not solve the line force self-consistently.</p>
+<p>For a stationary, smooth, spherically symmetric wind, mass conservation gives</p>
+<div class="arithmatex">\[
+\dot M=4\pi r^2\rho(r)v(r),
+\]</div>
+<p>and hence</p>
+<div class="arithmatex">\[
+\rho(r)=\frac{\dot M}{4\pi r^2v(r)}.
+\]</div>
+<p>The local density encountered by the compact object is evaluated at the relative orbital separation from the donor. No barycentric mass correction is applied to this distance.</p>
+<p>The equivalent hydrogen number density is</p>
+<div class="arithmatex">\[
+n_{\rm H}(r)=\frac{X_{\rm H}\rho(r)}{m_{\rm p}},
+\]</div>
+<p>where <span class="arithmatex">\(X_{\rm H}\)</span> is the hydrogen mass fraction. The theoretical density and ionization functions allow this value to be supplied explicitly; the current fitting kernel uses <span class="arithmatex">\(X_{\rm H}=0.70\)</span>.</p>
+<hr />
+<h2 id="equivalent-hydrogen-column-density">Equivalent hydrogen column density</h2>
+<p>At a given orbital phase, the line of sight is parameterized by the distance <span class="arithmatex">\(z\)</span> from the compact object towards the observer. If <span class="arithmatex">\(r_{\rm orb}\)</span> is the donor--compact-object separation and <span class="arithmatex">\(\alpha\)</span> is the angle between the orbital radius vector and the line of sight, the distance from a point on the ray to the donor centre is</p>
+<div class="arithmatex">\[
+x(z)=
+\sqrt{r_{\rm orb}^2+z^2-2r_{\rm orb}z\cos\alpha}.
+\]</div>
+<p>The package geometry uses</p>
+<div class="arithmatex">\[
+\cos\alpha=\cos(2\pi\phi)\sin i.
+\]</div>
+<p>The equivalent hydrogen column is</p>
+<div class="arithmatex">\[
+N_{\rm H}(\phi)
+=
+\int_0^{z_{\rm max}} n_{\rm H}[x(z)]\,dz
+=
+\frac{X_{\rm H}}{m_{\rm p}}
+\int_0^{z_{\rm max}}\rho[x(z)]\,dz.
+\]</div>
+<p>The corrected models use adaptive numerical quadrature and integrate to <span class="arithmatex">\(z_{\rm max}=1000R_*\)</span>. Results are returned in units of <span class="arithmatex">\(10^{22}\,{\rm cm}^{-2}\)</span>.</p>
+<h3 id="eclipse-convention">Eclipse convention</h3>
+<p>If the line of sight intersects the stellar photosphere, the current package convention returns</p>
+<div class="arithmatex">\[
+N_{\rm H}=0.
+\]</div>
+<p>This value is an occultation flag expressed through the historical output convention. It does <strong>not</strong> mean that the physical column is zero. A future API would be clearer if it returned a separate eclipse mask.</p>
+<hr />
+<h2 id="wind-ionization">Wind ionization</h2>
+<p>The ionization parameter is</p>
+<div class="arithmatex">\[
+\xi=\frac{L_{\rm X}}{n_{\rm H}d^2},
+\]</div>
+<p>with units of erg cm s<span class="arithmatex">\(^{-1}\)</span>, where <span class="arithmatex">\(d\)</span> is the distance to the ionizing source.</p>
+<p>The one-dimensional line-of-sight calculation returns <span class="arithmatex">\(\log_{10}\xi\)</span>, together with <span class="arithmatex">\(n_{\rm H}\)</span> and the remaining hydrogen column beyond each position,</p>
+<div class="arithmatex">\[
+N_{\rm H}(&gt;z)=\int_z^{z_{\rm max}}n_{\rm H}(z')\,dz'.
+\]</div>
+<p>The two-dimensional ionization map evaluates <span class="arithmatex">\(\xi\)</span> on a polar grid centred on the donor and includes a geometrical stellar shadow. It does not calculate attenuation of the ionizing continuum through the wind before reaching each grid cell.</p>
+<p>!!! warning "Luminosity units"
+    The one-dimensional ionization profile retains the historical input convention of luminosity in units of <span class="arithmatex">\(10^{32}\,{\rm erg\,s^{-1}}\)</span>. <code>ionization_map_phase</code> accepts luminosity directly in <span class="arithmatex">\({\rm erg\,s^{-1}}\)</span>. This difference should be kept explicit in scripts until the API is unified.</p>
+<p>The ionization routines do not solve thermal balance, ionic populations, recombination, or non-equilibrium effects. They should not be interpreted as replacements for XSTAR, Cloudy, SPEX, XSPEC photoionization tables, or another radiative-transfer calculation.</p>
+<hr />
+<h2 id="timing-analysis">Timing analysis</h2>
+<h3 id="hardness-and-colour-ratios">Hardness and colour ratios</h3>
+<p>For hard- and soft-band values <span class="arithmatex">\(H\)</span> and <span class="arithmatex">\(S\)</span>, the hardness ratio is</p>
+<div class="arithmatex">\[
+HR=\frac{H-S}{H+S}.
+\]</div>
+<p>Assuming independent one-sigma uncertainties, error propagation gives</p>
+<div class="arithmatex">\[
+\sigma_{HR}=
+\sqrt{
+\left(\frac{2S}{(H+S)^2}\sigma_H\right)^2+
+\left(\frac{2H}{(H+S)^2}\sigma_S\right)^2
+}.
+\]</div>
+<p>The colour ratio is</p>
+<div class="arithmatex">\[
+CR=\frac{H}{S},
+\]</div>
+<p>with</p>
+<div class="arithmatex">\[
+\sigma_{CR}=
+\sqrt{
+\left(\frac{\sigma_H}{S}\right)^2+
+\left(\frac{H\sigma_S}{S^2}\right)^2
+}.
+\]</div>
+<p>These expressions assume no covariance between the two bands.</p>
+<h3 id="inverse-variance-rebinning">Inverse-variance rebinning</h3>
+<p>For measurements <span class="arithmatex">\(y_i\)</span> with uncertainties <span class="arithmatex">\(\sigma_i\)</span>, the package combines points with weights</p>
+<div class="arithmatex">\[
+w_i=\frac{1}{\sigma_i^2},
+\]</div>
+<p>so that</p>
+<div class="arithmatex">\[
+\bar y=\frac{\sum_iw_iy_i}{\sum_iw_i},
+\qquad
+\sigma_{\bar y}=\sqrt{\frac{1}{\sum_iw_i}}.
+\]</div>
+<p><code>rebin_snr</code> accumulates consecutive points until</p>
+<div class="arithmatex">\[
+\frac{|\bar y|}{\sigma_{\bar y}}\geq {\rm S/N}_{\rm min}
+\]</div>
+<p>and at least <code>min_bins</code> input points have been collected. The current convention is the usual <strong>signal divided by noise</strong>; for example, <code>min_snr=5</code> means S/N <span class="arithmatex">\(\geq5\)</span>.</p>
+<p><code>rebin_resolution</code> uses the temporal overlap between input and output bins and preserves the time-integrated quantity. For rates or fluxes,</p>
+<div class="arithmatex">\[
+I=\sum_i y_i\Delta t_i,
+\qquad
+\bar y=\frac{I}{\sum_i\Delta t_i},
+\]</div>
+<p>and, for independent errors,</p>
+<div class="arithmatex">\[
+\sigma_I=\sqrt{\sum_i(\sigma_i\Delta t_i)^2},
+\qquad
+\sigma_{\bar y}=\frac{\sigma_I}{\sum_i\Delta t_i}.
+\]</div>
+<p>For gapped light curves, real bin widths or exposures should be supplied rather than inferred only from bin centres.</p>
+<h3 id="pulse-folding">Pulse folding</h3>
+<p>For a trial period <span class="arithmatex">\(P\)</span>, pulse phase is</p>
+<div class="arithmatex">\[
+\phi_{\rm pulse}=
+\frac{(t-t_0)\bmod P}{P}.
+\]</div>
+<p>The package sorts the light curve by pulse phase and can return the unbinned folded data or rebin the profile by S/N or by a fixed number of phase-sorted points. Folding does not itself account for period derivatives, binary demodulation, or a changing pulse profile.</p>
+<h3 id="lomb-scargle-period-search">Lomb--Scargle period search</h3>
+<p>The sliding-window routine computes an uncertainty-weighted Lomb--Scargle periodogram inside successive time intervals. <code>window_sec</code> and <code>step_sec</code> are physical time durations in the same units as the input times.</p>
+<p>Candidate peaks are retained when their false-alarm probability satisfies the user threshold. The frequency uncertainty is estimated from the local profile-(\chi^2) curve around each Lomb--Scargle peak. After refining the peak frequency (f_{\rm best}), the lower and upper frequency bounds, (f_-) and (f_+), are defined by</p>
+<p>[
+\chi^2(f)-\chi^2(f_{\rm best})=\Delta\chi^2,
+]</p>
+<p>with (\Delta\chi^2=1) by default. Under the usual Gaussian and single-parameter assumptions, this approximately corresponds to a local (68.3%) confidence interval. The frequency uncertainty is estimated from the local profile-(\chi^2) curve around each Lomb--Scargle peak. After refining the peak frequency (f_{\rm best}), the lower and upper frequency bounds, (f_-) and (f_+), are defined by</p>
+<div class="arithmatex">\[
+\chi^2(f)-\chi^2(f_{\rm best})=\Delta\chi^2,
+\]</div>
+<p>with (\Delta\chi^2=1) by default. Under the usual Gaussian and single-parameter assumptions, this approximately corresponds to a local (68.3%) confidence interval. The frequency uncertainty is estimated from the local profile-(\chi^2) curve around each Lomb--Scargle peak. After refining the peak frequency (f_{\rm best}), the lower and upper frequency bounds, (f_-) and (f_+), are defined by</p>
+<div class="arithmatex">\[
+\chi^2(f)-\chi^2(f_{\rm best})=\Delta\chi^2,
+\]</div>
+<p>with (\Delta\chi^2=1) by default. Under the usual Gaussian and single-parameter assumptions, this approximately corresponds to a local (68.3%) confidence interval. The resulting frequency uncertainties are therefore generally asymmetric,</p>
+<div class="arithmatex">\[
+\sigma_{f,-}=f_{\rm best}-f_-,
+\]</div>
+<p>and</p>
+<div class="arithmatex">\[
+\sigma_{f,+}=f_+-f_{\rm best}.
+\]</div>
+<p>The corresponding period bounds are obtained directly from the nonlinear transformation (P=1/f),</p>
+<div class="arithmatex">\[
+P_{\rm lower}=\frac{1}{f_+},
+\]</div>
+<p>and</p>
+<div class="arithmatex">\[
+P_{\rm upper}=\frac{1}{f_-}.
+\]</div>
+<p>This gives asymmetric period uncertainties,</p>
+<div class="arithmatex">\[
+\sigma_{P,-}=P_{\rm best}-P_{\rm lower},
+\]</div>
+<p>and</p>
+<div class="arithmatex">\[
+\sigma_{P,+}=P_{\rm upper}-P_{\rm best}.
+\]</div>
+<p>The periodogram power S/N is estimated robustly as</p>
+<p>$$
+{\rm S/N}_{\rm power}
+=====================</p>
+<p>\frac{P_{\rm peak}-\operatorname{median}(P)}
+{1.4826,\operatorname{MAD}(P)}.
+$$</p>
+<p>These profile-(\chi^2) uncertainties are local confidence estimates around a selected peak. They do not account for ambiguity between aliases or multiple competing peaks. Likewise, the standard Lomb--Scargle false-alarm probability does not automatically include red-noise effects, the full number of sliding-window trials, or subsequent selection cuts.</p>
+<hr />
+<h2 id="model-fitting">Model fitting</h2>
+<h3 id="weighted-objective-function">Weighted objective function</h3>
+<p>For observed values <span class="arithmatex">\(y_i\)</span>, model values <span class="arithmatex">\(m_i(\boldsymbol\theta)\)</span>, and uncertainties <span class="arithmatex">\(\sigma_i\)</span>, the fitting routines minimize</p>
+<div class="arithmatex">\[
+\chi^2(\boldsymbol\theta)
+=
+\sum_i
+\left[
+\frac{y_i-m_i(\boldsymbol\theta)}{\sigma_i}
+\right]^2.
+\]</div>
+<p>A standard statistical interpretation of <span class="arithmatex">\(\chi^2\)</span> requires appropriate, independent uncertainties and a suitable model. If no measurement errors are supplied, the package creates working weights, but the resulting absolute <span class="arithmatex">\(\chi^2\)</span> should not be interpreted as a calibrated goodness-of-fit probability.</p>
+<h3 id="discrete-and-extended-observations">Discrete and extended observations</h3>
+<p>In <code>discrete</code> mode, each datum is represented by one time:</p>
+<div class="arithmatex">\[
+m_i=m(t_i).
+\]</div>
+<p>In <code>extended</code> mode, each datum covers a time interval <span class="arithmatex">\([t_{i,0},t_{i,1}]\)</span>. The physically relevant prediction is the bin-averaged observable,</p>
+<div class="arithmatex">\[
+\bar m_i=
+\frac{1}{t_{i,1}-t_{i,0}}
+\int_{t_{i,0}}^{t_{i,1}}m(t)\,dt.
+\]</div>
+<p>The implementation approximates this integral by sampling and averaging the <strong>final observable</strong>. Narrow bins, as defined by <code>extended_binsize</code> in orbital-phase cycles, are evaluated at the midpoint.</p>
+<hr />
+<h2 id="particle-swarm-optimization">Particle Swarm Optimization</h2>
+<p>Particle Swarm Optimization (PSO) is a derivative-free global optimization method. It is useful for the strongly non-linear, bounded, and sometimes multi-modal models in <code>xraybinaryorbit</code>.</p>
+<h3 id="what-is-a-particle">What is a particle?</h3>
+<p>A particle is one complete candidate solution. For a model with <span class="arithmatex">\(D\)</span> fitted parameters, particle <span class="arithmatex">\(k\)</span> has a position</p>
+<div class="arithmatex">\[
+\mathbf{x}_k=(\theta_{1,k},\theta_{2,k},\ldots,\theta_{D,k}).
+\]</div>
+<p>A particle is <strong>not</strong> one parameter. For example, in <code>fit_orbit_ps</code>, one particle simultaneously contains a proposed phase, semi-major axis, period, eccentricity, periapsis, inclination, masses, wind velocity, and rest feature.</p>
+<p>Particles are initialized within the lower and upper bounds. At every swarm update, each particle is evaluated through the full physical model and assigned an objective value, here the weighted <span class="arithmatex">\(\chi^2\)</span>.</p>
+<h3 id="how-particles-move">How particles move</h3>
+<p>In standard PSO, particle velocity and position are updated schematically as</p>
+<div class="arithmatex">\[
+\mathbf{v}_k^{(j+1)}=
+\omega\mathbf{v}_k^{(j)}
++c_{\rm p}\mathbf{r}_{\rm p}
+\left(\mathbf{p}_k-\mathbf{x}_k^{(j)}\right)
++c_{\rm g}\mathbf{r}_{\rm g}
+\left(\mathbf{g}-\mathbf{x}_k^{(j)}\right),
+\]</div>
+<div class="arithmatex">\[
+\mathbf{x}_k^{(j+1)}=
+\mathbf{x}_k^{(j)}+\mathbf{v}_k^{(j+1)}.
+\]</div>
+<p>Here:</p>
+<ul>
+<li><span class="arithmatex">\(\mathbf{p}_k\)</span> is the best position previously found by that particle;</li>
+<li><span class="arithmatex">\(\mathbf{g}\)</span> is the best position found by the entire swarm;</li>
+<li><span class="arithmatex">\(\omega\)</span> controls inertia;</li>
+<li><span class="arithmatex">\(c_{\rm p}\)</span> and <span class="arithmatex">\(c_{\rm g}\)</span> control attraction to the personal and global best positions;</li>
+<li><span class="arithmatex">\(\mathbf{r}_{\rm p}\)</span> and <span class="arithmatex">\(\mathbf{r}_{\rm g}\)</span> are random vectors.</li>
+</ul>
+<h3 id="meaning-of-the-package-controls">Meaning of the package controls</h3>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>swarmsize</code></td>
+<td>Number of particles in one swarm. More particles sample parameter space more densely but increase the cost of every update.</td>
+</tr>
+<tr>
+<td><code>maxiter</code></td>
+<td>Maximum number of internal swarm updates in one PSO run. It is not the number of independent fits.</td>
+</tr>
+<tr>
+<td><code>num_iterations</code></td>
+<td>Number of complete, independent PSO runs launched by <code>xraybinaryorbit</code>. Each run starts a new swarm.</td>
+</tr>
+</tbody>
+</table>
+<p>An approximate upper scale for the number of model evaluations is</p>
+<div class="arithmatex">\[
+N_{\rm eval}\sim
+N_{\rm runs}\,N_{\rm particles}\,(N_{\rm updates}+1),
+\]</div>
+<p>although early stopping can reduce it. This explains why increasing all three controls simultaneously can make a fit much slower, especially for <span class="arithmatex">\(N_{\rm H}\)</span>, where each objective evaluation contains numerical line-of-sight integrations.</p>
+<h3 id="which-pso-result-is-returned">Which PSO result is returned?</h3>
+<p>For each independent run, the package stores the best parameter vector and its <span class="arithmatex">\(\chi^2\)</span>. The run with the lowest <span class="arithmatex">\(\chi^2\)</span> is selected as the reported best solution.</p>
+<p>The <code>Std</code> row in the returned table is</p>
+<div class="arithmatex">\[
+\sigma_{\rm run}(\theta_j)
+=
+\operatorname{std}
+\left(
+\theta_{j,1},\ldots,\theta_{j,N_{\rm runs}}
+\right),
+\]</div>
+<p>the dispersion of the best parameter from each independent run.</p>
+<p>!!! warning "PSO <code>Std</code> is not a confidence interval"
+    This value measures optimizer stability under the chosen bounds, swarm size, stopping criteria, and random initialization. It is not a posterior standard deviation, a one-sigma observational uncertainty, or a profile-likelihood interval. With only a few independent runs, it can be especially unstable.</p>
+<p>A small PSO <code>Std</code> means that the optimizer repeatedly found similar solutions. It does not prove that the parameter is physically well constrained. Conversely, a large value may reveal multiple minima, insufficient swarm exploration, or a genuine parameter degeneracy.</p>
+<h3 id="recommended-pso-checks">Recommended PSO checks</h3>
+<ul>
+<li>Use physically justified bounds.</li>
+<li>Run enough independent swarms to examine stability.</li>
+<li>Inspect whether best-fit values lie on a bound.</li>
+<li>Compare the best <span class="arithmatex">\(\chi^2\)</span> values from all runs.</li>
+<li>Plot residuals and the model, not only the parameter table.</li>
+<li>For scientific confidence intervals, use profile likelihoods, bootstrap simulations, or posterior sampling around the identified solution.</li>
+</ul>
+<hr />
+<h2 id="bounded-least-squares-and-its-errors">Bounded least squares and its errors</h2>
+<p>The <code>_ls</code> functions use bounded non-linear least squares through <code>scipy.optimize.curve_fit</code>. The initial point is the midpoint of the supplied bounds.</p>
+<p>When measurement uncertainties are supplied, they are passed as <code>sigma</code> with <code>absolute_sigma=True</code>. The parameter covariance matrix is approximated locally from the Jacobian near the optimum, and the reported errors are</p>
+<div class="arithmatex">\[
+\sigma_{\theta_j}=\sqrt{C_{jj}},
+\]</div>
+<p>where <span class="arithmatex">\(C\)</span> is the covariance matrix.</p>
+<p>These errors rely on a local linearization and are most meaningful when:</p>
+<ul>
+<li>the model is smooth near the optimum;</li>
+<li>the optimum is not on a bound;</li>
+<li>the parameters are locally identifiable;</li>
+<li>residuals are compatible with the assumed uncertainties;</li>
+<li>the likelihood is approximately Gaussian near the minimum.</li>
+</ul>
+<p>They can be misleading for multi-modal, highly degenerate, discontinuous, or boundary-limited problems. The LS routines return <span class="arithmatex">\(R^2\)</span> as a descriptive statistic,</p>
+<div class="arithmatex">\[
+R^2=1-
+\frac{\sum_i(y_i-m_i)^2}
+{\sum_i(y_i-\bar y)^2},
+\]</div>
+<p>but <span class="arithmatex">\(R^2\)</span> is not a replacement for <span class="arithmatex">\(\chi^2\)</span>, residual analysis, or physical validation.</p>
+<h3 id="pso-and-ls-errors-are-different-quantities">PSO and LS errors are different quantities</h3>
+<table>
+<thead>
+<tr>
+<th>Output</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PSO <code>Std</code></td>
+<td>Run-to-run dispersion of independently optimized best values</td>
+</tr>
+<tr>
+<td>LS <code>Std</code></td>
+<td>Local one-sigma approximation from the covariance matrix</td>
+</tr>
+</tbody>
+</table>
+<p>They should not be compared as though they were calculated from the same statistical definition.</p>
+<hr />
+<h2 id="main-physical-degeneracies">Main physical degeneracies</h2>
+<h3 id="doppler-orbit">Doppler orbit</h3>
+<p>The velocity amplitude scales approximately as</p>
+<div class="arithmatex">\[
+K\propto\frac{a_1\sin i}{P_{\rm orb}},
+\]</div>
+<p>so semi-major axis and inclination can be strongly correlated. Initial phase, periapsis, and eccentricity can also compensate for each other when orbital coverage is incomplete. The rest feature can correlate with the mean offset, while <code>wind_vel</code> can absorb part of a sinusoidal component.</p>
+<h3 id="spiral-models">Spiral models</h3>
+<p><code>semimajor_spiral</code>, <code>b</code>, and <code>omega</code> are correlated because they jointly control the spatial scale, expansion, phase evolution, and velocity amplitude. A short observation may not distinguish an expanding spiral from a sinusoid with a slowly changing amplitude.</p>
+<h3 id="hierarchical-orbit">Hierarchical orbit</h3>
+<p>Two periodic components can generate aliases and exchange amplitude when their periods are similar or when only a small fraction of the outer orbit is covered. <code>Mass3</code> can remain weakly constrained if both orbital scales are also free.</p>
+<h3 id="absorption">Absorption</h3>
+<p>To first order,</p>
+<div class="arithmatex">\[
+N_{\rm H}\propto\frac{\dot M}{v_\infty},
+\]</div>
+<p>so mass-loss rate and terminal velocity are strongly degenerate. Inclination, separation, eccentricity, periapsis, and <span class="arithmatex">\(\beta\)</span> can also trade off. With only a few <span class="arithmatex">\(N_{\rm H}\)</span> measurements, fitting all wind and orbital parameters simultaneously is generally not identifiable.</p>
+<hr />
+<h2 id="scope-and-limitations">Scope and limitations</h2>
+<p>The orbital models assume fixed Keplerian motion and do not include apsidal precession, relativistic delays, secular period evolution, Roche distortion, or dynamical mass transfer.</p>
+<p>The wind model assumes a smooth, stationary, spherically symmetric flow. It does not self-consistently include clumping, porosity, an accretion wake, focused streams, radiative inhibition, ionization feedback on acceleration, shocks, or magnetic structure.</p>
+<p>The spiral and disc models are phenomenological kinematic descriptions. A good fit alone does not establish that the corresponding hydrodynamic structure exists.</p>
+<p>The timing tools assume that the supplied uncertainties are meaningful. Lomb--Scargle peak FAP values and peak-width errors can be optimistic when the light curve contains red noise, strong non-stationarity, or extensive multiple testing.</p>
+<hr />
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href=".." class="btn btn-neutral float-left" title="GETTING STARTED"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../functions/" class="btn btn-neutral float-right" title="FUNCTIONS">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href=".." style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../functions/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../javascripts/mathjax.js"></script>
+      <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
