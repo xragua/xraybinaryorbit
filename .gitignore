@@ -49,3 +49,7 @@ xraybinaryorbit/theoretical/doppler_related_old.py
 /phase_time.txt
 /spiral.txt
 /spiral_doppler_evolution.png
+
+# Local packaging configuration
+setup.py
+setup.cfg
