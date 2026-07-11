@@ -1,10 +1,16 @@
+from pathlib import Path
+
 from setuptools import setup, find_packages
+
+long_description = Path("README.md").read_text(encoding="utf-8")
 
 setup(
     name='xraybinaryorbit',  # Your package name
     version='1.1.0',  # Version of your package
     license='MIT',  # License type
     description='A package for x-ray binary orbital modulations.',  # Short description
+    long_description=long_description,
+    long_description_content_type='text/markdown',
     author='LAEX',  # Your name
     author_email='graciela.sanjurjo@ua.es',  # Your email address
     url='https://github.com/xragua/xraybinaryorbit/',  # URL of your GitHub repository
