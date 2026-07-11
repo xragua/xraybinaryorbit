@@ -53,3 +53,15 @@ xraybinaryorbit/theoretical/doppler_related_old.py
 # Local packaging configuration
 setup.py
 setup.cfg
+
+# Local packaging configuration
+setup.py
+setup.cfg
+
+# Local packaging files
+setup.py
+setup.cfg
+my-project/MATHJAX_SETUP.md
+my-project/mkdocs_math_snippet.yml
+my-project/MATHJAX_SETUP.md
+my-project/mkdocs_math_snippet.yml
