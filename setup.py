@@ -2,13 +2,13 @@ from setuptools import setup, find_packages
 
 setup(
     name='xraybinaryorbit',  # Your package name
-    version='1.0.1',  # Version of your package
+    version='1.1.0',  # Version of your package
     license='MIT',  # License type
     description='A package for x-ray binary orbital modulations.',  # Short description
     author='LAEX',  # Your name
     author_email='graciela.sanjurjo@ua.es',  # Your email address
     url='https://github.com/xragua/xraybinaryorbit/',  # URL of your GitHub repository
-    download_url='https://github.com/xragua/xraybinaryorbit/archive/refs/tags/one.tar.gz',  # Download URL for the package
+    download_url='https://github.com/xragua/xraybinaryorbit/archive/refs/tags/v1.1.0.tar.gz',  # Download URL for the package
     keywords=['astronomy', 'x-ray', 'binary', 'orbit'],  # Keywords describing your package
 
     # Dependencies
