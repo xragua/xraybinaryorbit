@@ -11,8 +11,7 @@ import xraybinaryorbit as xbo
 
 NH = inspect.getmodule(xbo.fit_nh_ps)
 
-
-def test_eclipsed_line_of_sight_returns_zero_column():
+def test_eclipsed_line_of_sight_is_marked_as_nan():
     value = NH._nh_at_phase(
         phase=0.0,
         semimajor=2.0,
@@ -24,7 +23,8 @@ def test_eclipsed_line_of_sight_returns_zero_column():
         wind_infinite_velocity=1000.0,
         beta=0.8,
     )
-    assert value == 0.0
+
+    assert np.isnan(value)
 
 
 def test_nh_scales_linearly_with_mass_loss_and_inverse_wind_speed():
