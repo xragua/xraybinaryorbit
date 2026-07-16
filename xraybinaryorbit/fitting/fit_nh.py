@@ -18,6 +18,9 @@ M_PROTON_G = 1.67262192369e-24
 SECONDS_PER_YEAR = 365.25 * 24.0 * 3600.0
 HYDROGEN_MASS_FRACTION = 0.70
 LOS_UPPER_LIMIT_RSTAR = 1000.0
+# Used only when every requested phase lies inside eclipse. Geometry is sampled
+# cheaply, and NH is integrated only at the two visible eclipse boundaries.
+ECLIPSE_REFERENCE_SAMPLES = 2048
 
 
 def _validate_parameters(
@@ -122,9 +125,11 @@ def _nh_at_phase(
         )
     )
 
-    # Historical package convention: an occulted direct source returns NH=0.
+    # NH is not directly observable while the compact object is occulted.
+    # NaN is used internally and replaced by the maximum visible orbital NH in
+    # _nh_for_phases, keeping the eclipse convention consistent for fitting.
     if separation <= 1.0 or _line_of_sight_intersects_star(separation, cos_alpha):
-        return 0.0
+        return np.nan
 
     rstar_cm = Rstar * R_SUN_CM
     mdot_g_s = mass_loss_rate * M_SUN_G / SECONDS_PER_YEAR
@@ -159,9 +164,88 @@ def _nh_at_phase(
     return HYDROGEN_MASS_FRACTION * mass_column / M_PROTON_G / 1.0e22
 
 
+def _maximum_visible_nh(parameters):
+    """Estimate the orbital NH maximum immediately outside eclipse.
+
+    The eclipse geometry is evaluated on a dense phase grid without performing
+    integrations at every point. NH is then integrated only at the visible grid
+    samples adjacent to the eclipse boundaries, which keeps this usable inside
+    particle-swarm optimisation.
+    """
+    phase_grid = np.linspace(
+        0.0,
+        1.0,
+        ECLIPSE_REFERENCE_SAMPLES,
+        endpoint=False,
+    )
+    separation = _relative_separation_rstar(
+        phase_grid,
+        parameters[1],
+        parameters[3],
+        parameters[4],
+    )
+    cos_alpha = np.clip(
+        np.cos(2.0 * np.pi * phase_grid)
+        * np.sin(np.deg2rad(parameters[5])),
+        -1.0,
+        1.0,
+    )
+    z_closest = np.maximum(separation * cos_alpha, 0.0)
+    minimum_radius = np.sqrt(
+        separation**2
+        + z_closest**2
+        - 2.0 * separation * z_closest * cos_alpha
+    )
+    occulted = (separation <= 1.0) | (minimum_radius <= 1.0)
+    visible = ~occulted
+
+    if not np.any(visible):
+        raise ValueError(
+            "The compact object is occulted over the complete orbit; "
+            "a finite out-of-eclipse NH maximum cannot be defined."
+        )
+
+    # Prefer the first visible sample on each side of the eclipse. If the orbit
+    # is never eclipsing, use the visible line of sight closest to the donor.
+    edge_visible = visible & (
+        np.roll(occulted, 1) | np.roll(occulted, -1)
+    )
+    candidate_indices = np.flatnonzero(edge_visible)
+    if candidate_indices.size == 0:
+        visible_indices = np.flatnonzero(visible)
+        candidate_indices = np.array(
+            [visible_indices[np.argmin(minimum_radius[visible])]],
+            dtype=int,
+        )
+
+    candidate_nh = np.asarray(
+        [
+            _nh_at_phase(
+                phase_grid[index],
+                parameters[1],
+                parameters[3],
+                parameters[4],
+                parameters[5],
+                parameters[6],
+                parameters[7],
+                parameters[8],
+                parameters[9],
+            )
+            for index in candidate_indices
+        ],
+        dtype=float,
+    )
+    candidate_nh = candidate_nh[np.isfinite(candidate_nh)]
+    if candidate_nh.size == 0:
+        raise FloatingPointError(
+            "Could not calculate a finite NH immediately outside eclipse."
+        )
+    return float(np.max(candidate_nh))
+
+
 def _nh_for_phases(phases, parameters):
     phases = np.atleast_1d(np.asarray(phases, dtype=float))
-    return np.asarray(
+    nh = np.asarray(
         [
             _nh_at_phase(
                 phase,
@@ -178,6 +262,16 @@ def _nh_for_phases(phases, parameters):
         ],
         dtype=float,
     )
+
+    eclipse_mask = ~np.isfinite(nh)
+    if np.any(eclipse_mask):
+        orbit_maximum = _maximum_visible_nh(parameters)
+        visible_values = nh[~eclipse_mask]
+        if visible_values.size:
+            orbit_maximum = max(orbit_maximum, float(np.max(visible_values)))
+        nh[eclipse_mask] = orbit_maximum
+
+    return nh
 
 
 def _samples_for_bin(phase_width, extended_binsize):

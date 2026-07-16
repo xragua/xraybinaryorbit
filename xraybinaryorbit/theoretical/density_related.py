@@ -244,8 +244,10 @@ def absorption_column_through_orbit_theoretical(
 
     Notes
     -----
-    If the line of sight crosses the stellar photosphere, NH is set to zero,
-    following the convention previously documented by this function.
+    If the line of sight crosses the stellar photosphere, the direct source is
+    occulted and NH is not directly observable. For a continuous orbital model,
+    eclipse samples are assigned the maximum finite NH calculated outside the
+    eclipse over the sampled orbit.
     """
 
     parameter_names = [
@@ -311,6 +313,7 @@ def absorption_column_through_orbit_theoretical(
 
     z_upper = Rstar_cm * 1000
     nh = []
+    eclipse_mask = []
 
     for phase, Rorb in zip(th, Rorb_plot):
         cos_alpha = np.clip(
@@ -320,14 +323,19 @@ def absorption_column_through_orbit_theoretical(
             1.0,
         )
 
-        if Rorb <= Rstar_cm or _segment_intersects_star(
+        occulted = Rorb <= Rstar_cm or _segment_intersects_star(
             Rorb,
             cos_alpha,
             0.0,
             z_upper,
             Rstar_cm,
-        ):
-            nh.append(0.0)
+        )
+        eclipse_mask.append(occulted)
+
+        if occulted:
+            # The direct source is not observable in eclipse. Store NaN for now
+            # and replace it below with the maximum visible orbital NH.
+            nh.append(np.nan)
             continue
 
         def integrand(z):
@@ -354,6 +362,16 @@ def absorption_column_through_orbit_theoretical(
         )
 
     nh = np.asarray(nh, dtype=float)
+    eclipse_mask = np.asarray(eclipse_mask, dtype=bool)
+
+    if np.any(eclipse_mask):
+        visible_mask = (~eclipse_mask) & np.isfinite(nh)
+        if not np.any(visible_mask):
+            raise ValueError(
+                "The compact object is occulted at every sampled orbital phase; "
+                "a finite out-of-eclipse NH maximum cannot be defined."
+            )
+        nh[eclipse_mask] = np.nanmax(nh[visible_mask])
 
     if show_plot:
         fig = plt.figure(figsize=(12, 3))
